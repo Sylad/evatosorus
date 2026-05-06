@@ -1,0 +1,159 @@
+---
+import CodexLayout from '../../layouts/CodexLayout.astro';
+import { PERIODS } from '../../data/periods';
+import { getSpeciesByPeriod } from '../../data/species';
+---
+<CodexLayout
+  title="Voyage temporel — Evatosorus"
+  description="186 millions d'années, trois ères. Trias, Jurassique, Crétacé."
+  active="periodes"
+>
+  <header class="period-header">
+    <p class="codex-eyebrow">voyage temporel</p>
+    <h1>252 → 66 millions d'années</h1>
+    <p class="codex-lede">
+      Le Mésozoïque s'étend sur 186 millions d'années. Trois ères, trois climats,
+      trois géographies — d'un supercontinent brûlant peuplé de petits
+      bipèdes carnivores à un monde fragmenté terminé par un astéroïde.
+    </p>
+  </header>
+
+  <div class="period-grid">
+    {PERIODS.map((p) => {
+      const count = getSpeciesByPeriod(p.id).length;
+      return (
+        <a href={`/periodes/${p.id}/`} class="period-card" style={`--accent:${p.accentColor}`}>
+          <div class="period-meta">
+            <span class="period-num">{p.startMa} → {p.endMa} Ma</span>
+            <span class="period-duration">{p.durationMa} Ma</span>
+          </div>
+          <h2>{p.name}</h2>
+          <p class="period-blurb">{p.blurb}</p>
+          <div class="period-iconics">
+            {p.iconicSpecies.slice(0, 4).map((sp) => (
+              <span class="iconic-pill">{sp}</span>
+            ))}
+          </div>
+          <div class="period-cta">
+            <span>{count} espèces dans le codex</span>
+            <span class="arrow">→</span>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+
+  <style>
+    .period-header {
+      margin-bottom: 3rem;
+    }
+    .codex-eyebrow {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.32em;
+      color: var(--color-evato-amber);
+      text-transform: uppercase;
+      margin: 0 0 0.4rem;
+    }
+    .period-header h1 {
+      font-size: 2.4rem;
+      margin: 0 0 0.5rem;
+    }
+    .codex-lede {
+      max-width: 60ch;
+      color: var(--color-evato-bone-muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+    .period-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 720px) {
+      .period-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .period-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      padding: 1.6rem;
+      background: linear-gradient(160deg, rgba(26, 18, 10, 0.85), rgba(13, 10, 6, 0.7));
+      border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+      border-radius: 8px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .period-card::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: radial-gradient(ellipse at 30% 0%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 60%);
+      pointer-events: none;
+    }
+    .period-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 18px 32px -16px color-mix(in srgb, var(--accent) 60%, transparent);
+    }
+    .period-meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .period-card h2 {
+      font-size: 1.8rem;
+      margin: 0;
+      color: var(--color-evato-bone);
+    }
+    .period-blurb {
+      color: var(--color-evato-bone-muted);
+      font-size: 0.95rem;
+      line-height: 1.55;
+      margin: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .period-iconics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .iconic-pill {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.55rem;
+      background: rgba(13, 10, 6, 0.7);
+      border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+      color: var(--color-evato-bone-muted);
+      border-radius: 999px;
+    }
+    .period-cta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 0.6rem;
+      font-family: var(--font-display);
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .arrow {
+      transition: transform 220ms ease;
+    }
+    .period-card:hover .arrow {
+      transform: translateX(4px);
+    }
+  </style>
+</CodexLayout>

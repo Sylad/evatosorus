@@ -1,0 +1,184 @@
+---
+import CodexLayout from '../../layouts/CodexLayout.astro';
+import SpeciesCard from '../../components/SpeciesCard.astro';
+import { PERIODS, PERIODS_BY_ID } from '../../data/periods';
+import { getSpeciesByPeriod } from '../../data/species';
+
+export function getStaticPaths() {
+  return PERIODS.map((p) => ({ params: { id: p.id } }));
+}
+
+const { id } = Astro.params;
+const period = PERIODS_BY_ID[id!];
+if (!period) return Astro.redirect('/periodes/');
+const species = getSpeciesByPeriod(period.id).sort((a, b) => {
+  if (a.iconic && !b.iconic) return -1;
+  if (!a.iconic && b.iconic) return 1;
+  return a.name.localeCompare(b.name);
+});
+---
+<CodexLayout
+  title={`${period.name} — Evatosorus`}
+  description={period.blurb}
+  active="periodes"
+>
+  <a href="/periodes/" class="back-link">← Voyage temporel</a>
+
+  <header class="period-detail-header" style={`--accent:${period.accentColor}`}>
+    <p class="codex-eyebrow">{period.startMa} → {period.endMa} Ma · {period.durationMa} millions d'années</p>
+    <h1>{period.name}</h1>
+    <p class="period-blurb">{period.blurb}</p>
+  </header>
+
+  <section class="period-detail-grid">
+    <div class="info-card">
+      <h2>Climat</h2>
+      <p>{period.climate}</p>
+    </div>
+    <div class="info-card">
+      <h2>Géographie</h2>
+      <p>{period.pangea}</p>
+    </div>
+    <div class="info-card info-card-wide">
+      <h2>Événements clés</h2>
+      <ul>
+        {period.iconicEvents.map((e) => <li>{e}</li>)}
+      </ul>
+    </div>
+    <div class="info-card info-card-wide">
+      <h2>Sous-périodes</h2>
+      <ul class="epoch-list">
+        {period.epochs.map((e) => (
+          <li>
+            <span class="epoch-name">{e.name}</span>
+            <span class="epoch-range">{e.startMa} → {e.endMa} Ma</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="species-section">
+    <h2 class="species-heading">{species.length} espèces dans cette ère</h2>
+    {species.length > 0 ? (
+      <div class="species-grid">
+        {species.map((s) => <SpeciesCard species={s} />)}
+      </div>
+    ) : (
+      <p class="empty">Aucune espèce dans cette période pour l'instant — le script PaleoBioDB en ramènera.</p>
+    )}
+  </section>
+
+  <style>
+    .back-link {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-evato-bone-muted);
+      text-decoration: none;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+    }
+    .back-link:hover {
+      color: var(--color-evato-amber);
+    }
+    .period-detail-header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+    }
+    .codex-eyebrow {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.32em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin: 0 0 0.4rem;
+    }
+    .period-detail-header h1 {
+      font-size: 3rem;
+      margin: 0 0 1rem;
+      color: color-mix(in srgb, var(--accent) 70%, var(--color-evato-bone-muted));
+    }
+    .period-blurb {
+      max-width: 65ch;
+      font-size: 1.1rem;
+      line-height: 1.65;
+      color: var(--color-evato-bone-muted);
+      margin: 0;
+    }
+    .period-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+      margin-bottom: 3rem;
+    }
+    @media (max-width: 720px) {
+      .period-detail-grid { grid-template-columns: 1fr; }
+    }
+    .info-card {
+      background: rgba(26, 18, 10, 0.55);
+      border: 1px solid rgba(212, 165, 94, 0.18);
+      border-radius: 6px;
+      padding: 1.2rem 1.4rem;
+    }
+    .info-card-wide { grid-column: span 2; }
+    @media (max-width: 720px) {
+      .info-card-wide { grid-column: auto; }
+    }
+    .info-card h2 {
+      font-size: 0.85rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-evato-amber);
+      margin: 0 0 0.6rem;
+    }
+    .info-card p, .info-card li {
+      color: var(--color-evato-bone);
+      line-height: 1.55;
+    }
+    .info-card ul {
+      padding-left: 1.1rem;
+      margin: 0;
+    }
+    .info-card li { margin-bottom: 0.4rem; }
+    .epoch-list {
+      list-style: none;
+      padding: 0;
+    }
+    .epoch-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px dashed rgba(212, 165, 94, 0.12);
+    }
+    .epoch-list li:last-child { border-bottom: 0; }
+    .epoch-name {
+      font-family: var(--font-display);
+      letter-spacing: 0.06em;
+      color: var(--color-evato-bone);
+    }
+    .epoch-range {
+      font-size: 0.85rem;
+      color: var(--color-evato-bone-muted);
+    }
+    .species-heading {
+      font-size: 1.5rem;
+      margin: 0 0 1.2rem;
+      color: var(--color-evato-bone);
+    }
+    .species-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.4rem;
+    }
+    .empty {
+      color: var(--color-evato-bone-muted);
+      font-style: italic;
+      padding: 2rem 0;
+      text-align: center;
+    }
+  </style>
+</CodexLayout>

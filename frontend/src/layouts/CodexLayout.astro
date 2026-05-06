@@ -1,0 +1,145 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  active?: 'codex' | 'periodes' | 'carte' | 'about' | 'home';
+}
+
+const { title, description, active = 'home' } = Astro.props;
+
+const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] = [
+  { id: 'home',     label: 'Accueil',         href: '/' },
+  { id: 'codex',    label: 'Codex',           href: '/codex/' },
+  { id: 'periodes', label: 'Voyage temporel', href: '/periodes/' },
+  { id: 'carte',    label: 'Carte paléo',     href: '/carte/' },
+  { id: 'about',    label: 'À propos',        href: '/about/' },
+];
+---
+<BaseLayout title={title} description={description}>
+  <div class="amber-ambient" aria-hidden="true"></div>
+
+  <div class="codex-shell">
+    <aside class="codex-sidebar">
+      <a href="/" class="codex-brand">
+        <span class="brand-mark">𓆗</span>
+        <span class="brand-name">Evatosorus</span>
+        <span class="brand-sub">codex mésozoïque</span>
+      </a>
+
+      <nav class="codex-nav" aria-label="Navigation principale">
+        {NAV.map((n) => (
+          <a
+            href={n.href}
+            class:list={["codex-nav-link", { active: n.id === active }]}
+          >{n.label}</a>
+        ))}
+      </nav>
+
+      <div class="codex-aside-foot">
+        <p class="text-xs text-evato-bone-ghost italic">
+          252 → 66 Ma<br/>
+          1500+ espèces, 3 ères, 1 supercontinent.
+        </p>
+      </div>
+    </aside>
+
+    <main class="codex-main">
+      <slot />
+    </main>
+  </div>
+
+  <style>
+    .codex-shell {
+      position: relative;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+    @media (max-width: 900px) {
+      .codex-shell { grid-template-columns: 1fr; }
+    }
+    .codex-sidebar {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      max-height: 100vh;
+      padding: 2rem 1.5rem;
+      border-right: 1px solid rgba(212, 165, 94, 0.18);
+      backdrop-filter: blur(6px);
+      background: rgba(13, 10, 6, 0.45);
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    @media (max-width: 900px) {
+      .codex-sidebar {
+        position: relative;
+        max-height: none;
+        border-right: 0;
+        border-bottom: 1px solid rgba(212, 165, 94, 0.18);
+      }
+    }
+    .codex-brand {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+    .brand-mark {
+      display: block;
+      font-size: 2.4rem;
+      color: var(--color-evato-amber);
+      filter: drop-shadow(0 0 8px rgba(212, 165, 94, 0.5));
+    }
+    .brand-name {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      letter-spacing: 0.08em;
+      color: var(--color-evato-amber-bright);
+      margin-top: 0.25rem;
+    }
+    .brand-sub {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      letter-spacing: 0.32em;
+      color: var(--color-evato-bone-muted);
+      text-transform: uppercase;
+      margin-top: 0.15rem;
+    }
+    .codex-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .codex-nav-link {
+      display: block;
+      padding: 0.55rem 0.8rem;
+      border-left: 2px solid transparent;
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-evato-bone-muted);
+      text-decoration: none;
+      transition: color 200ms, border-color 200ms, background 200ms;
+    }
+    .codex-nav-link:hover {
+      color: var(--color-evato-amber-bright);
+      border-left-color: var(--color-evato-amber);
+      background: rgba(212, 165, 94, 0.05);
+    }
+    .codex-nav-link.active {
+      color: var(--color-evato-amber-bright);
+      border-left-color: var(--color-evato-amber-bright);
+      background: rgba(212, 165, 94, 0.08);
+    }
+    .codex-main {
+      padding: 2.5rem clamp(1.25rem, 3vw, 3rem) 4rem;
+      max-width: 1280px;
+    }
+  </style>
+</BaseLayout>

@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* ────────── Palette Mésozoïque ──────────
+     Inspiration : ambre fossile, fougère primitive, terre rouge, charbon volcanique.
+     Différentiation explicite vs Eywa (cyan bioluminescent → ambre/jade chaud terreux). */
+  --color-evato-bg: #0d0a06;          /* charbon volcanique, plus chaud que Eywa */
+  --color-evato-bg-soft: #1a120a;     /* surfaces cards, lift à 1 niveau */
+  --color-evato-amber: #d4a55e;       /* ambre fossile — accent principal */
+  --color-evato-amber-bright: #ffc879;/* hover/glow */
+  --color-evato-jade: #5e8f6e;        /* fougère primitive — secondaire végétal */
+  --color-evato-rust: #c75131;        /* terre rouge / sang séché — predator/danger */
+  --color-evato-bone: #ebd9c5;        /* texte courant, ivoire fossile */
+  --color-evato-bone-muted: #b8a78f;  /* texte secondaire, captions */
+  --color-evato-bone-ghost: rgba(235, 217, 197, 0.35);
+
+  /* ────────── Typographies ──────────
+     Cinzel : titres lapidaires (lettres romaines, évocation pierre/musée).
+     Crimson Text : copy académique mais lisible (BBC documentaire). */
+  --font-display: 'Cinzel', serif;
+  --font-body: 'Crimson Text', Georgia, serif;
+
+  /* ────────── Glow shadows ────────── */
+  --shadow-glow-amber: 0 0 18px rgba(212, 165, 94, 0.45);
+  --shadow-glow-amber-strong: 0 0 32px rgba(255, 200, 121, 0.6);
+  --shadow-glow-rust: 0 0 16px rgba(199, 81, 49, 0.45);
+}
+
+@layer base {
+  html {
+    background: var(--color-evato-bg);
+    color: var(--color-evato-bone);
+    font-family: var(--font-body);
+    font-size: 17.5px;
+    line-height: 1.65;
+  }
+  body {
+    min-height: 100vh;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: 0.06em;
+  }
+}
+
+/* ────────── Word-hover glow (ambre) ──────────
+   Reproduit le pattern Eywa .bio-word, mais en ambre fossile.
+   Appliqué via un script inline qui split les paragraphes en spans. */
+.amber-word {
+  transition: color 250ms ease, text-shadow 250ms ease;
+}
+.amber-word:hover {
+  color: var(--color-evato-amber-bright);
+  text-shadow:
+    0 0 8px rgba(255, 200, 121, 0.7),
+    0 0 18px rgba(212, 165, 94, 0.45),
+    0 1px 2px rgba(13, 10, 6, 0.85);
+}
+
+/* ────────── Ambient glow (4 radial blobs, comme Eywa) ──────────
+   Atmosphère ambre/jade/rust derrière le contenu. */
+.amber-ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 15% 20%, rgba(212, 165, 94, 0.15) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 10%, rgba(199, 81, 49, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 90%, rgba(94, 143, 110, 0.10) 0%, transparent 55%),
+    radial-gradient(ellipse at 20% 80%, rgba(255, 200, 121, 0.08) 0%, transparent 60%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .amber-word {
+    transition: none;
+  }
+}

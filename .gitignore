@@ -1,0 +1,10 @@
+node_modules/
+.astro/
+dist/
+.env
+.env.local
+.DS_Store
+*.log
+
+# Generated species/period data — committed once stable, re-generated via /scripts
+frontend/src/data/generated/

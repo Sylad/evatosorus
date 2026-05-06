@@ -1,0 +1,131 @@
+---
+import type { Species } from '../data/species.types';
+import { DIET_ICONS, DIET_LABELS, TAXON_GROUP_LABELS } from '../data/species';
+
+interface Props {
+  species: Species;
+}
+const { species: s } = Astro.props;
+const periodLabel = s.periodId === 'trias' ? 'Trias' : s.periodId === 'jurassique' ? 'Jurassique' : 'Crétacé';
+const periodColor = s.periodId === 'trias' ? '#c75131' : s.periodId === 'jurassique' ? '#5e8f6e' : '#d4a55e';
+---
+<a href={`/especes/${s.id}/`} class="species-card group">
+  <div class="card-image">
+    {s.imageUrl ? (
+      <img src={s.imageUrl} alt={s.commonName ?? s.name} loading="lazy" />
+    ) : (
+      <div class="card-image-fallback">
+        <span>𓆗</span>
+      </div>
+    )}
+    <span class="card-period" style={`--p:${periodColor}`}>{periodLabel}</span>
+  </div>
+  <div class="card-body">
+    <h3 class="card-title">{s.commonName ?? s.name}</h3>
+    <p class="card-sci">{s.name}</p>
+    <div class="card-meta">
+      <span title={DIET_LABELS[s.diet]}>{DIET_ICONS[s.diet]} {DIET_LABELS[s.diet]}</span>
+      <span class="dot">·</span>
+      <span>{TAXON_GROUP_LABELS[s.taxonGroup] ?? s.taxonGroup}</span>
+    </div>
+    {s.lengthM ? (
+      <p class="card-size">{s.lengthM} m{s.weightKg ? ` · ${(s.weightKg / 1000).toLocaleString('fr-FR', { maximumFractionDigits: 1 })} t` : ''}</p>
+    ) : null}
+  </div>
+</a>
+
+<style>
+  .species-card {
+    display: flex;
+    flex-direction: column;
+    background: rgba(26, 18, 10, 0.55);
+    border: 1px solid rgba(212, 165, 94, 0.18);
+    border-radius: 6px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+  }
+  .species-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(212, 165, 94, 0.6);
+    box-shadow: 0 14px 28px -16px rgba(212, 165, 94, 0.55);
+  }
+  .card-image {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1a120a 0%, #0d0a06 100%);
+  }
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 6s ease, filter 220ms ease;
+    filter: saturate(0.85) brightness(0.92);
+  }
+  .species-card:hover .card-image img {
+    transform: scale(1.08);
+    filter: saturate(1) brightness(1);
+  }
+  .card-image-fallback {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    font-size: 3rem;
+    color: rgba(212, 165, 94, 0.35);
+  }
+  .card-period {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(13, 10, 6, 0.78);
+    color: var(--p);
+    border: 1px solid var(--p);
+  }
+  .card-body {
+    padding: 1rem 1.1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    letter-spacing: 0.04em;
+    color: var(--color-evato-amber-bright);
+    margin: 0;
+  }
+  .card-sci {
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--color-evato-bone-muted);
+    margin: 0;
+  }
+  .card-meta {
+    font-size: 0.75rem;
+    color: var(--color-evato-bone-muted);
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 0.3rem;
+  }
+  .card-meta .dot {
+    color: rgba(212, 165, 94, 0.5);
+  }
+  .card-size {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    color: var(--color-evato-amber);
+    margin: 0.2rem 0 0;
+  }
+</style>

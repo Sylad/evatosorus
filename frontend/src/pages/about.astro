@@ -1,0 +1,196 @@
+---
+import CodexLayout from '../layouts/CodexLayout.astro';
+import { SPECIES_INDEX } from '../data/species';
+---
+<CodexLayout
+  title="À propos — Evatosorus"
+  description="Pourquoi ce site, pour qui, comment c'est fait."
+  active="about"
+>
+  <article class="about">
+    <header>
+      <p class="codex-eyebrow">à propos</p>
+      <h1>Evatosorus</h1>
+      <p class="lede">
+        Un codex visuel des dinosaures, du Mésozoïque tout entier — Trias,
+        Jurassique, Crétacé. {SPECIES_INDEX.count} espèces fichées, leurs paysages,
+        leurs continents perdus, leur disparition.
+      </p>
+    </header>
+
+    <section data-amber-split>
+      <h2>Pour qui</h2>
+      <p>
+        D'abord pour <strong>Eva</strong>, ma nièce de 18 ans, fan visuelle
+        depuis toujours. Ce site fait suite à <a href="https://eywa-eywa.pages.dev">Eywa</a>,
+        son codex de Pandora. Cette fois on remonte 252 millions d'années en
+        arrière.
+      </p>
+      <p>
+        Plus largement : pour qui aime les dinosaures et veut un coin
+        d'internet qui n'a pas l'esthétique d'un wiki des années 2010 — qui
+        respecte la paléontologie sérieuse mais sait qu'un T-Rex est avant
+        tout une créature qu'on regarde avec des yeux d'enfant.
+      </p>
+    </section>
+
+    <section data-amber-split>
+      <h2>Comment c'est fait</h2>
+      <p>
+        Stack : <strong>Astro 6</strong> + <strong>Tailwind 4</strong> +
+        <strong>React 19</strong> pour les composants interactifs (filtres,
+        carte). Tout est généré statiquement et déployé sur
+        <strong>Cloudflare Pages</strong>. Pas de backend, pas de base de
+        données — les fiches sont compilées au build depuis
+        <a href="https://paleobiodb.org" target="_blank" rel="noopener">PaleoBioDB</a>
+        (taxonomie, occurrences, datations) et
+        <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>
+        (paleo-art domaine public).
+      </p>
+      <p>
+        La carte tourne sur <strong>Leaflet</strong> avec les tuiles
+        <a href="https://carto.com" target="_blank" rel="noopener">CARTO Dark</a>
+        (gratuit). Le tout pèse moins de 200 KB hors images.
+      </p>
+    </section>
+
+    <section data-amber-split>
+      <h2>Codé avec deux IA et un humain</h2>
+      <p>
+        Comme pour Eywa, ce site a été <em>vibe-codé</em> à trois :
+      </p>
+      <ul>
+        <li><strong>Sylvain</strong> — direction artistique, choix éditoriaux, validation finale.</li>
+        <li><strong>ChatGPT</strong> — recherche visuelle, contributions de mockups et de logos.</li>
+        <li><strong>Claude Code</strong> (Anthropic, Opus 4.7) — l'écriture du code Astro/React/CSS, l'import PaleoBioDB, les blurbs vulgarisés.</li>
+      </ul>
+      <p>
+        L'humain a piloté, les deux IA ont accéléré. Code en open-source sur
+        <a href="https://github.com/sylad/evatosorus" target="_blank" rel="noopener">GitHub</a>.
+      </p>
+    </section>
+
+    <section data-amber-split>
+      <h2>Sources & crédits</h2>
+      <ul class="sources">
+        <li><strong>Données paléontologiques</strong> — <a href="https://paleobiodb.org" target="_blank" rel="noopener">Paleobiology Database (PBDB)</a>, données ouvertes sous CC0/CC-BY.</li>
+        <li><strong>Illustrations & paleo-art</strong> — <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>, domaine public ou CC-BY-SA selon le contributeur (crédité sur chaque fiche).</li>
+        <li><strong>Échelle stratigraphique</strong> — <a href="https://stratigraphy.org/chart" target="_blank" rel="noopener">ICS International Chronostratigraphic Chart 2024</a>.</li>
+        <li><strong>Cartes</strong> — <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, tuiles CARTO Dark No Labels.</li>
+      </ul>
+      <p>
+        Toute erreur scientifique m'incombe — la paléontologie évolue vite,
+        certaines fiches sont à jour de l'état de l'art en 2024-2026, d'autres
+        s'appuient sur des consensus plus anciens.
+      </p>
+    </section>
+
+    <section data-amber-split class="about-cta">
+      <h2>Toi aussi tu peux faire un site comme ça</h2>
+      <p>
+        Si l'esthétique te plaît et que tu te dis « moi aussi je veux faire un
+        truc comme ça pour mon hobby / mon univers fictif préféré / ma région » :
+        <strong>vas-y</strong>. Prends un sujet qui t'enflamme, ouvre Claude Code,
+        décris le site dans ton langage naturel. Le code apparaîtra. C'est exactement
+        comme ça qu'Evatosorus est né, en partant de zéro un mardi soir.
+      </p>
+    </section>
+  </article>
+
+  <script is:inline>
+    (() => {
+      const split = () => {
+        document.querySelectorAll('[data-amber-split] p').forEach((p) => {
+          if (p.dataset.amberSplitDone === '1') return;
+          Array.from(p.childNodes).forEach((node) => {
+            if (node.nodeType !== Node.TEXT_NODE) return;
+            const text = node.textContent ?? '';
+            if (!text.trim()) return;
+            const frag = document.createDocumentFragment();
+            text.split(/(\s+)/).forEach((tok) => {
+              if (/^\s+$/.test(tok) || tok === '') {
+                frag.appendChild(document.createTextNode(tok));
+              } else {
+                const span = document.createElement('span');
+                span.className = 'amber-word';
+                span.textContent = tok;
+                frag.appendChild(span);
+              }
+            });
+            p.replaceChild(frag, node);
+          });
+          p.dataset.amberSplitDone = '1';
+        });
+      };
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', split);
+      else split();
+      document.addEventListener('astro:page-load', split);
+    })();
+  </script>
+
+  <style>
+    .about {
+      max-width: 70ch;
+    }
+    .codex-eyebrow {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.32em;
+      color: var(--color-evato-amber);
+      text-transform: uppercase;
+      margin: 0 0 0.4rem;
+    }
+    .about h1 {
+      font-size: 2.6rem;
+      margin: 0 0 0.8rem;
+    }
+    .lede {
+      font-size: 1.2rem;
+      line-height: 1.7;
+      color: var(--color-evato-bone-muted);
+      margin: 0 0 2.5rem;
+    }
+    .about h2 {
+      font-size: 1.4rem;
+      letter-spacing: 0.06em;
+      margin: 2.5rem 0 0.8rem;
+      color: var(--color-evato-amber-bright);
+      border-bottom: 1px solid rgba(212, 165, 94, 0.18);
+      padding-bottom: 0.4rem;
+    }
+    .about p, .about li {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--color-evato-bone);
+    }
+    .about ul {
+      padding-left: 1.4rem;
+    }
+    .about ul li { margin-bottom: 0.4rem; }
+    .about a {
+      color: var(--color-evato-amber);
+      text-decoration: underline;
+      text-decoration-color: rgba(212, 165, 94, 0.3);
+      text-underline-offset: 3px;
+    }
+    .about a:hover {
+      color: var(--color-evato-amber-bright);
+      text-decoration-color: var(--color-evato-amber-bright);
+    }
+    .sources li {
+      margin-bottom: 0.5rem;
+    }
+    .about-cta {
+      margin-top: 3rem;
+      padding: 1.6rem 1.8rem;
+      background: linear-gradient(135deg, rgba(212, 165, 94, 0.06), rgba(199, 81, 49, 0.04));
+      border: 1px solid rgba(212, 165, 94, 0.25);
+      border-radius: 6px;
+    }
+    .about-cta h2 {
+      border: 0;
+      padding: 0;
+      margin: 0 0 0.8rem;
+    }
+  </style>
+</CodexLayout>

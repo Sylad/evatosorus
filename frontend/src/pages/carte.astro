@@ -1,0 +1,121 @@
+---
+import CodexLayout from '../layouts/CodexLayout.astro';
+import { PaleoMap } from '../components/PaleoMap';
+import { SPECIES } from '../data/species';
+
+// Flatten species locations to one marker per (species, location).
+const markers = SPECIES.flatMap((s) =>
+  (s.locations ?? [])
+    .filter((l) => typeof l.lat === 'number' && typeof l.lng === 'number')
+    .map((l) => ({
+      speciesId: s.id,
+      name: s.name,
+      commonName: s.commonName,
+      lat: l.lat!,
+      lng: l.lng!,
+      country: l.country,
+      periodId: s.periodId,
+      imageUrl: s.imageUrl,
+    })),
+);
+
+const periodCounts = {
+  trias: markers.filter((m) => m.periodId === 'trias').length,
+  jurassique: markers.filter((m) => m.periodId === 'jurassique').length,
+  cretace: markers.filter((m) => m.periodId === 'cretace').length,
+};
+---
+<CodexLayout
+  title="Carte paléo-monde — Evatosorus"
+  description="Où ont vécu les dinosaures ? Tous les sites fossiles cartographiés sur le monde actuel."
+  active="carte"
+>
+  <header class="map-header">
+    <p class="codex-eyebrow">carte paléo-monde</p>
+    <h1>Où ont vécu les dinosaures ?</h1>
+    <p class="codex-lede">
+      Pendant le Mésozoïque, la Pangée s'est fragmentée puis a dérivé jusqu'à
+      la configuration actuelle. La carte montre où les fossiles ont été
+      trouvés sur le globe d'aujourd'hui — chaque pin est une espèce
+      attestée dans un site précis. Couleur = période géologique.
+    </p>
+  </header>
+
+  <div class="map-legend">
+    <span class="legend-item legend-trias">Trias · {periodCounts.trias} sites</span>
+    <span class="legend-item legend-jura">Jurassique · {periodCounts.jurassique} sites</span>
+    <span class="legend-item legend-cret">Crétacé · {periodCounts.cretace} sites</span>
+  </div>
+
+  <PaleoMap client:only="react" markers={markers} />
+
+  <p class="map-note">
+    Les coordonnées sont approximatives (capitales / régions fossiles), pas
+    le site précis du gisement. Les pins regroupent plusieurs espèces sur
+    le même point pour ne pas surcharger la carte.
+  </p>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+    is:inline
+  />
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+    is:inline
+  ></script>
+
+  <style>
+    .map-header {
+      margin-bottom: 1.5rem;
+    }
+    .codex-eyebrow {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.32em;
+      color: var(--color-evato-amber);
+      text-transform: uppercase;
+      margin: 0 0 0.4rem;
+    }
+    .map-header h1 {
+      font-size: 2.2rem;
+      margin: 0 0 0.5rem;
+    }
+    .codex-lede {
+      max-width: 65ch;
+      color: var(--color-evato-bone-muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+    .map-legend {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .legend-item {
+      font-family: var(--font-display);
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(13, 10, 6, 0.5);
+      border: 1px solid currentColor;
+    }
+    .legend-trias { color: #c75131; }
+    .legend-jura { color: #5e8f6e; }
+    .legend-cret { color: #d4a55e; }
+    .map-note {
+      font-size: 0.85rem;
+      color: var(--color-evato-bone-muted);
+      font-style: italic;
+      margin-top: 1rem;
+      max-width: 65ch;
+    }
+  </style>
+</CodexLayout>

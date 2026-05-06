@@ -1,0 +1,88 @@
+---
+interface Props {
+  size?: number;
+  glow?: boolean;
+}
+const { size = 420, glow = true } = Astro.props;
+const height = Math.round(size * 0.28);
+---
+<div class="evato-logo" style={`--logo-size:${size}px;--logo-h:${height}px;`}>
+  <svg
+    viewBox="0 0 600 168"
+    width={size}
+    height={height}
+    role="img"
+    aria-label="Evatosorus"
+    class:list={["evato-logo-svg", { glow }]}
+  >
+    <defs>
+      <linearGradient id="amber-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"  stop-color="#ffc879" />
+        <stop offset="55%" stop-color="#d4a55e" />
+        <stop offset="100%" stop-color="#a87b3c" />
+      </linearGradient>
+      <filter id="amber-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="2.4" result="b1" />
+        <feMerge>
+          <feMergeNode in="b1" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </defs>
+
+    <text
+      x="300" y="100"
+      text-anchor="middle"
+      font-family="Cinzel, serif"
+      font-weight="700"
+      font-size="68"
+      letter-spacing="6"
+      fill="url(#amber-grad)"
+      filter="url(#amber-glow)"
+    >EVATOSORUS</text>
+
+    <!-- skeletal underline : a stylized vertebra row -->
+    <g transform="translate(165 130)" stroke="#d4a55e" stroke-width="1.4" fill="none" opacity="0.85">
+      <line x1="0" y1="6" x2="270" y2="6" />
+      <circle cx="0" cy="6" r="3.5" fill="#d4a55e" />
+      <circle cx="270" cy="6" r="3.5" fill="#d4a55e" />
+      {Array.from({length: 9}).map((_, i) => (
+        <rect x={28 + i * 26} y="2" width="8" height="8" rx="1.5" fill="#d4a55e" opacity={0.6 + (i % 3) * 0.15} />
+      ))}
+    </g>
+
+    <text
+      x="300" y="158"
+      text-anchor="middle"
+      font-family="Crimson Text, serif"
+      font-style="italic"
+      font-size="14"
+      letter-spacing="3"
+      fill="#b8a78f"
+    >codex mésozoïque</text>
+  </svg>
+</div>
+
+<style>
+  .evato-logo {
+    width: var(--logo-size);
+    max-width: 100%;
+    height: var(--logo-h);
+    display: inline-block;
+  }
+  .evato-logo-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .evato-logo-svg.glow {
+    animation: amber-breathe 6s ease-in-out infinite;
+  }
+  @keyframes amber-breathe {
+    0%, 100% { filter: drop-shadow(0 0 14px rgba(212, 165, 94, 0.35)); }
+    50%      { filter: drop-shadow(0 0 28px rgba(255, 200, 121, 0.55)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .evato-logo-svg.glow { animation: none; }
+  }
+</style>

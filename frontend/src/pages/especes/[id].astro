@@ -1,0 +1,293 @@
+---
+import CodexLayout from '../../layouts/CodexLayout.astro';
+import { SPECIES, getSpeciesById, TAXON_GROUP_LABELS, DIET_LABELS, DIET_ICONS } from '../../data/species';
+import { PERIODS_BY_ID } from '../../data/periods';
+
+export function getStaticPaths() {
+  return SPECIES.map((s) => ({ params: { id: s.id } }));
+}
+
+const { id } = Astro.params;
+const s = getSpeciesById(id!);
+if (!s) return Astro.redirect('/codex/');
+
+const period = PERIODS_BY_ID[s.periodId];
+const otherSameGroup = SPECIES
+  .filter((x) => x.taxonGroup === s.taxonGroup && x.id !== s.id)
+  .slice(0, 6);
+---
+<CodexLayout
+  title={`${s.commonName ?? s.name} — Evatosorus`}
+  description={s.blurb ?? `${s.name}, un ${TAXON_GROUP_LABELS[s.taxonGroup] ?? ''} du ${period?.name ?? 'Mésozoïque'}.`}
+  active="codex"
+>
+  <a href="/codex/" class="back-link">← Codex</a>
+
+  <article class="species-detail">
+    <header class="detail-header">
+      <p class="codex-eyebrow" style={`--accent:${period?.accentColor ?? '#d4a55e'}`}>
+        {TAXON_GROUP_LABELS[s.taxonGroup]} · {period?.name ?? 'Mésozoïque'}
+      </p>
+      <h1>{s.commonName ?? s.name}</h1>
+      <p class="sci-name">{s.name}</p>
+    </header>
+
+    <div class="detail-grid">
+      <div class="detail-image">
+        {s.imageUrl ? (
+          <img src={s.imageUrl} alt={s.commonName ?? s.name} />
+        ) : (
+          <div class="image-fallback"><span>𓆗</span></div>
+        )}
+        {s.imageCredit && <p class="image-credit">© {s.imageCredit}</p>}
+      </div>
+
+      <aside class="detail-stats">
+        <dl>
+          <dt>Régime</dt>
+          <dd>{DIET_ICONS[s.diet]} {DIET_LABELS[s.diet]}</dd>
+          {s.lengthM && (<><dt>Longueur</dt><dd>{s.lengthM} m</dd></>)}
+          {s.heightM && s.heightM > 0 && (<><dt>Hauteur</dt><dd>{s.heightM} m</dd></>)}
+          {s.weightKg && (<><dt>Poids</dt><dd>{(s.weightKg / 1000).toLocaleString('fr-FR', { maximumFractionDigits: 1 })} t</dd></>)}
+          {s.earlyMa && s.lateMa && (<><dt>Existence</dt><dd>{s.earlyMa} → {s.lateMa} Ma</dd></>)}
+          <dt>Période</dt>
+          <dd><a href={`/periodes/${s.periodId}/`}>{period?.name ?? '?'}</a></dd>
+          {s.locations && s.locations.length > 0 && (
+            <>
+              <dt>Régions</dt>
+              <dd>{s.locations.map((l) => l.country).join(', ')}</dd>
+            </>
+          )}
+        </dl>
+      </aside>
+    </div>
+
+    {s.blurb && (
+      <section class="detail-blurb" data-amber-split>
+        <p>{s.blurb}</p>
+      </section>
+    )}
+
+    {s.wikipediaUrl && (
+      <p class="external">
+        Lire la fiche complète sur <a href={s.wikipediaUrl} target="_blank" rel="noopener noreferrer">Wikipedia</a>.
+      </p>
+    )}
+
+    {otherSameGroup.length > 0 && (
+      <section class="related">
+        <h2>Autres {TAXON_GROUP_LABELS[s.taxonGroup]?.toLowerCase()}</h2>
+        <div class="related-grid">
+          {otherSameGroup.map((o) => (
+            <a href={`/especes/${o.id}/`} class="related-card">
+              {o.imageUrl && <img src={o.imageUrl} alt={o.commonName ?? o.name} loading="lazy" />}
+              <span class="related-name">{o.commonName ?? o.name}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+  </article>
+
+  <script is:inline>
+    (() => {
+      const split = () => {
+        document.querySelectorAll('[data-amber-split]').forEach((p) => {
+          if (p.dataset.amberSplitDone === '1') return;
+          Array.from(p.childNodes).forEach((node) => {
+            if (node.nodeType !== Node.TEXT_NODE) return;
+            const text = node.textContent ?? '';
+            if (!text.trim()) return;
+            const frag = document.createDocumentFragment();
+            text.split(/(\s+)/).forEach((tok) => {
+              if (/^\s+$/.test(tok) || tok === '') {
+                frag.appendChild(document.createTextNode(tok));
+              } else {
+                const span = document.createElement('span');
+                span.className = 'amber-word';
+                span.textContent = tok;
+                frag.appendChild(span);
+              }
+            });
+            p.replaceChild(frag, node);
+          });
+          p.dataset.amberSplitDone = '1';
+        });
+      };
+      // Re-run on Astro page transitions
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', split);
+      else split();
+      document.addEventListener('astro:page-load', split);
+
+      // Recurse one level deeper to also split block children (paragraphs).
+      const splitDeep = (root) => {
+        root.querySelectorAll('p').forEach((p) => {
+          if (!p.dataset.amberSplitDone && p.closest('[data-amber-split]')) {
+            p.dataset.amberSplit = '1';
+          }
+        });
+      };
+      splitDeep(document);
+    })();
+  </script>
+
+  <style>
+    .back-link {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-evato-bone-muted);
+      text-decoration: none;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+    }
+    .back-link:hover { color: var(--color-evato-amber); }
+
+    .detail-header {
+      margin-bottom: 2rem;
+    }
+    .codex-eyebrow {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.32em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin: 0 0 0.4rem;
+    }
+    .detail-header h1 {
+      font-size: 3rem;
+      margin: 0 0 0.3rem;
+      color: var(--color-evato-amber-bright);
+    }
+    .sci-name {
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--color-evato-bone-muted);
+      margin: 0;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.6rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 720px) {
+      .detail-grid { grid-template-columns: 1fr; }
+    }
+    .detail-image {
+      background: rgba(26, 18, 10, 0.55);
+      border: 1px solid rgba(212, 165, 94, 0.18);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .detail-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .image-fallback {
+      aspect-ratio: 16 / 10;
+      display: grid;
+      place-items: center;
+      font-size: 5rem;
+      color: rgba(212, 165, 94, 0.35);
+    }
+    .image-credit {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.7rem;
+      color: var(--color-evato-bone-muted);
+      text-align: right;
+      margin: 0;
+    }
+    .detail-stats {
+      background: rgba(26, 18, 10, 0.55);
+      border: 1px solid rgba(212, 165, 94, 0.18);
+      border-radius: 6px;
+      padding: 1.4rem;
+    }
+    .detail-stats dl {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.6rem 0;
+      margin: 0;
+    }
+    .detail-stats dt {
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-evato-amber);
+    }
+    .detail-stats dd {
+      margin: 0 0 0.4rem;
+      font-size: 1rem;
+      color: var(--color-evato-bone);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px dashed rgba(212, 165, 94, 0.12);
+    }
+    .detail-stats dd:last-child { border-bottom: 0; }
+    .detail-stats a { color: var(--color-evato-amber); text-decoration: underline; text-decoration-color: rgba(212, 165, 94, 0.3); }
+
+    .detail-blurb {
+      max-width: 70ch;
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: var(--color-evato-bone);
+      padding: 1.4rem 0;
+      border-top: 1px solid rgba(212, 165, 94, 0.18);
+      border-bottom: 1px solid rgba(212, 165, 94, 0.18);
+      margin-bottom: 1.5rem;
+    }
+    .external {
+      color: var(--color-evato-bone-muted);
+      font-size: 0.95rem;
+    }
+    .external a {
+      color: var(--color-evato-amber);
+      text-decoration: underline;
+      text-decoration-color: rgba(212, 165, 94, 0.3);
+    }
+    .related {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(212, 165, 94, 0.18);
+    }
+    .related h2 {
+      font-size: 1.2rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-evato-amber);
+      margin: 0 0 1rem;
+    }
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0.8rem;
+    }
+    .related-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      background: rgba(26, 18, 10, 0.55);
+      border: 1px solid rgba(212, 165, 94, 0.18);
+      border-radius: 4px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 200ms ease;
+    }
+    .related-card:hover { border-color: var(--color-evato-amber); }
+    .related-card img {
+      aspect-ratio: 16 / 10;
+      width: 100%;
+      object-fit: cover;
+    }
+    .related-name {
+      padding: 0.4rem 0.6rem 0.6rem;
+      font-size: 0.85rem;
+      color: var(--color-evato-bone-muted);
+    }
+    .related-card:hover .related-name { color: var(--color-evato-bone); }
+  </style>
+</CodexLayout>
