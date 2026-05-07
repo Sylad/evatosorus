@@ -4,7 +4,7 @@ import BaseLayout from './BaseLayout.astro';
 interface Props {
   title?: string;
   description?: string;
-  active?: 'codex' | 'periodes' | 'carte' | 'films' | 'about' | 'home';
+  active?: 'codex' | 'periodes' | 'carte' | 'films' | 'videos' | 'about' | 'home';
 }
 
 const { title, description, active = 'home' } = Astro.props;
@@ -15,6 +15,7 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
   { id: 'periodes', label: 'Voyage temporel', href: '/periodes/' },
   { id: 'carte',    label: 'Carte paléo',     href: '/carte/' },
   { id: 'films',    label: 'Films',           href: '/films/' },
+  { id: 'videos',   label: 'Vidéos YouTube',  href: '/videos/' },
   { id: 'about',    label: 'À propos',        href: '/about/' },
 ];
 ---

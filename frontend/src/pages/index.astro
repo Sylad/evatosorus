@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EvatoLogo from '../components/EvatoLogo.astro';
-import { CycleBackdrop } from '../components/cinema/CycleBackdrop';
+import { HeroVideoCycle } from '../components/cinema/HeroVideoCycle';
 import { DustField } from '../components/cinema/DustField';
 ---
 <BaseLayout
@@ -9,75 +9,50 @@ import { DustField } from '../components/cinema/DustField';
   description="Un codex visuel des dinosaures — Trias, Jurassique, Crétacé. 1500+ espèces, paleo-art domaine public."
 >
   <!--
-    Landing — single viewport, pas de scroll forcé. Trois couches :
-      1. CycleBackdrop : 3 phases (Trias → Jurassique → Crétacé) qui se
-         fondent toutes les 25s sur une boucle de 75s.
-      2. DustField : poussière ambre/cendre qui dérive vers le haut,
-         évocation cendre volcanique + pollen de fougères primitives.
-      3. amber-ambient : 4 radial blobs pour la cohésion globale.
-    Le visiteur s'assied, respire, regarde le Mésozoïque défiler.
+    Landing — full-viewport background video. Trois couches :
+      1. HeroVideoCycle : 3 MP4 openart.ai (T-Rex jungle/volcan/orage)
+         empilés en background fixed, cross-fade toutes les 25s.
+      2. DustField : poussière ambre/cendre par-dessus la vidéo.
+      3. Voile sombre gradient (main::before) pour la lisibilité du logo.
+    Le contenu (logo + tagline + CTAs) flotte au centre sur la vidéo.
   -->
-  <CycleBackdrop client:only="react" />
+  <HeroVideoCycle client:only="react" />
   <DustField client:only="react" />
-  <div class="amber-ambient" aria-hidden="true"></div>
 
-  <main class="relative z-10 min-h-screen flex items-center px-6 py-12 lg:py-20">
-    <div class="hero-grid">
-      <!--
-        Hero image — paleo-art cinématique du T-Rex iridescent, fougères et
-        empreinte de main ocre. Source originale 2304x1728. Le voile gradient
-        sur l'image (::after) la fond avec le bg pour qu'elle ne flotte pas.
-      -->
-      <figure class="hero-image">
-        <video
-          autoplay
-          loop
-          muted
-          playsinline
-          preload="auto"
-          poster="/hero-trex.jpg"
-          aria-label="Tyrannosaurus rex dans une jungle préhistorique, sous l'orage, avec une empreinte de main ocre sur le flanc"
-        >
-          <source src="/hero-trex-1.mp4" type="video/mp4" />
-          <!-- Fallback statique : le navigateur affiche le poster si la vidéo
-               échoue ou est désactivée (Save Data, prefers-reduced-motion). -->
-          <img
-            src="/hero-trex.jpg"
-            alt="Tyrannosaurus rex dans une jungle préhistorique"
-          />
-        </video>
-        <figcaption>« Avant nous, il y a eu eux. »</figcaption>
-      </figure>
+  <main class="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6 py-12">
+    <EvatoLogo size={500} />
 
-      <div class="hero-content">
-        <EvatoLogo size={460} />
+    <p class="mt-8 max-w-2xl text-evato-bone text-lg italic font-body landing-tagline" data-amber-split>
+      <span class="font-semibold not-italic">Evatosorus</span> — un codex visuel
+      du Mésozoïque, ces 186 millions d'années où des géants ont régné sur la Terre.
+    </p>
 
-        <p class="mt-7 max-w-xl text-evato-bone text-lg italic font-body landing-tagline" data-amber-split>
-          <span class="font-semibold not-italic">Evatosorus</span> — un codex visuel
-          du Mésozoïque, ces 186 millions d'années où des géants ont régné sur la Terre.
-        </p>
+    <p class="mt-4 max-w-xl text-evato-bone-muted text-base italic font-body landing-sub" data-amber-split>
+      « Avant nous, il y a eu eux. »<br/>
+      Trias, Jurassique, Crétacé. 1500 espèces, leurs paysages, leurs continents perdus.
+    </p>
 
-        <p class="mt-4 max-w-xl text-evato-bone-muted text-base italic font-body landing-sub" data-amber-split>
-          Trias, Jurassique, Crétacé. 1500 espèces, leurs paysages, leurs continents perdus.
-        </p>
-
-        <div class="mt-10 flex flex-wrap gap-3 hero-cta-row">
-          <a href="/codex/"
-             class="px-5 py-2.5 rounded border border-evato-amber text-evato-amber hover:shadow-glow-amber-strong hover:bg-evato-amber/10 transition backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
-            Explorer le codex
-          </a>
-          <a href="/periodes/"
-             class="px-5 py-2.5 rounded border border-evato-jade text-evato-jade hover:shadow-glow-amber hover:bg-evato-jade/10 transition backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
-            Voyage temporel
-          </a>
-          <a href="/carte/"
-             class="px-5 py-2.5 rounded border border-evato-rust text-evato-rust hover:shadow-glow-rust hover:bg-evato-rust/10 transition backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
-            Carte paléo-monde
-          </a>
-          <a href="/films/"
-             class="px-5 py-2.5 rounded border border-evato-bone-muted text-evato-bone hover:border-evato-bone hover:bg-evato-bone/5 transition backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
-            Films
-          </a>
+    <div class="mt-10 flex flex-wrap gap-3 justify-center">
+      <a href="/codex/"
+         class="px-5 py-2.5 rounded border border-evato-amber text-evato-amber hover:shadow-glow-amber-strong hover:bg-evato-amber/10 transition backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
+        Explorer le codex
+      </a>
+      <a href="/periodes/"
+         class="px-5 py-2.5 rounded border border-evato-jade text-evato-jade hover:shadow-glow-amber hover:bg-evato-jade/10 transition backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
+        Voyage temporel
+      </a>
+      <a href="/carte/"
+         class="px-5 py-2.5 rounded border border-evato-rust text-evato-rust hover:shadow-glow-rust hover:bg-evato-rust/10 transition backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
+        Carte paléo-monde
+      </a>
+      <a href="/films/"
+         class="px-5 py-2.5 rounded border border-evato-bone-muted text-evato-bone hover:border-evato-bone hover:bg-evato-bone/5 transition backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
+        Films
+      </a>
+      <a href="/videos/"
+         class="px-5 py-2.5 rounded border border-evato-bone-muted text-evato-bone hover:border-evato-bone hover:bg-evato-bone/5 transition backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
+        Vidéos YouTube
+      </a>
           <a href="/about/"
              class="px-5 py-2.5 rounded text-evato-bone-muted hover:text-evato-bone transition-colors backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
             À propos
@@ -127,40 +102,36 @@ import { DustField } from '../components/cinema/DustField';
 </script>
 
 <style>
-  /* Voile sombre pour la lisibilité du foreground sur backdrops vifs. */
+  /*
+    Voile combiné : radial dark au centre pour la lisibilité du logo
+    (sans cacher complètement la vidéo aux bords) + tint ambre subtle
+    pour la cohésion avec la palette globale.
+  */
   main::before {
     content: '';
     position: fixed;
     inset: 0;
     z-index: 5;
     pointer-events: none;
-    background: linear-gradient(
-      to bottom,
-      rgba(13, 10, 6, 0.30) 0%,
-      rgba(13, 10, 6, 0.55) 70%,
-      rgba(13, 10, 6, 0.80) 100%
-    );
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(13, 10, 6, 0.7) 0%, rgba(13, 10, 6, 0.4) 45%, rgba(13, 10, 6, 0.2) 80%),
+      linear-gradient(to bottom, rgba(13, 10, 6, 0.25) 0%, rgba(13, 10, 6, 0.55) 100%);
   }
 
-  /* Hero grid : image | logo+contenu, ratio 1.1:1 desktop, stack mobile. */
-  .hero-grid {
-    width: 100%;
-    max-width: 1280px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    gap: clamp(2rem, 4vw, 4rem);
-    align-items: center;
-  }
-  @media (max-width: 960px) {
-    .hero-grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
+  /* Tint ambre par-dessus le voile, très léger (10%), pour la cohésion. */
+  main::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 6;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 15% 20%, rgba(212, 165, 94, 0.08) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 80%, rgba(199, 81, 49, 0.06) 0%, transparent 55%);
   }
 
-  /* Image hero : encadrée d'un trait ambre, glow, voile dégradé en bas
-     pour la fondre dans le bg sans rupture nette. */
+  /* Legacy CSS hero-grid kept only as no-op fallback (composant retiré). */
+  .hero-grid { display: contents; }
   .hero-image {
     position: relative;
     margin: 0;
@@ -172,6 +143,7 @@ import { DustField } from '../components/cinema/DustField';
       0 24px 48px -16px rgba(0, 0, 0, 0.65),
       0 0 60px -20px rgba(212, 165, 94, 0.4);
     aspect-ratio: 4 / 3;
+    display: none; /* hero-image n'est plus utilisé sur la landing */
   }
   .hero-image::after {
     content: '';
