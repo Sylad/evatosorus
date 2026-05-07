@@ -33,41 +33,39 @@ const height = Math.round(size * 0.45);
     </defs>
 
     <!--
-      Crâne T-Rex stylisé en line-art ambre, posé au-dessus du wordmark.
-      Vue de profil gauche → droite : museau allongé, mâchoire avec
-      dents, orbite oculaire creuse, fenêtre antéorbitaire. Pas une
-      reconstitution scientifique exacte — un glyphe identitaire.
+      Empreinte 3-doigts T-Rex stylisée, posée au-dessus du wordmark.
+      Cohérence avec l'image hero (la marque ocre sur le flanc du T-Rex).
+      Vue de dessus, doigts ouverts, griffes pointues. Reconnaissable
+      instantanément, contrairement au crâne stylisé précédent qui
+      ressemblait à un paresseux.
     -->
-    <g
-      transform="translate(300 70)"
-      stroke="url(#amber-grad)"
-      stroke-width="2.2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      fill="none"
-      filter="url(#amber-glow)"
-    >
-      <!-- Outline crâne (vue profil) -->
-      <path d="M -90 0 L -75 -22 L -45 -32 L -10 -36 L 30 -32 L 60 -24 L 80 -10 L 88 6 L 84 18 L 60 22 L 30 24 L -10 26 L -45 26 L -75 22 L -90 12 Z" />
-      <!-- Fenêtre antéorbitaire (devant l'œil) -->
-      <ellipse cx="-25" cy="-8" rx="12" ry="6" fill="#0d0a06" stroke="url(#amber-grad)" stroke-width="1.6" />
-      <!-- Orbite oculaire -->
-      <circle cx="20" cy="-12" r="5" fill="#ffc879" stroke="none" opacity="0.9" />
-      <circle cx="20" cy="-12" r="8" fill="none" stroke-width="1.6" />
-      <!-- Crête sourcilière (ridge above eye) -->
-      <path d="M 8 -22 Q 22 -28 38 -22" stroke-width="1.4" />
-      <!-- Narine -->
-      <ellipse cx="-78" cy="-6" rx="4" ry="2.5" fill="#0d0a06" stroke-width="1.2" />
-      <!-- Dents de la mâchoire supérieure (5 dents stylisées) -->
-      <g stroke-width="1.4" fill="#d4a55e">
-        <polygon points="-80,12 -76,22 -72,12" />
-        <polygon points="-65,14 -60,26 -55,14" />
-        <polygon points="-45,16 -40,28 -35,16" />
-        <polygon points="-20,18 -15,28 -10,18" />
-        <polygon points="5,18 10,26 15,18" />
-      </g>
-      <!-- Petite ligne de tension / cheek bone -->
-      <path d="M 35 0 L 60 8" stroke-width="1.2" opacity="0.7" />
+    <g transform="translate(300 65)" filter="url(#amber-glow)">
+      <!-- Coussin central (talon + paume) -->
+      <path
+        d="M -22 -2 Q -28 14 -18 28 Q -8 38 0 38 Q 8 38 18 28 Q 28 14 22 -2 Q 12 -16 0 -18 Q -12 -16 -22 -2 Z"
+        fill="url(#amber-grad)" opacity="0.92"
+      />
+      <!-- Doigt central (le plus long) avec griffe -->
+      <path
+        d="M -8 -16 L -6 -42 Q -4 -52 0 -54 Q 4 -52 6 -42 L 8 -16 Z"
+        fill="url(#amber-grad)" opacity="0.95"
+      />
+      <!-- Griffe pointue centrale -->
+      <path d="M -3 -52 L 0 -62 L 3 -52 Z" fill="#ffc879" />
+      <!-- Doigt latéral gauche -->
+      <path
+        d="M -22 -6 Q -38 -12 -44 -22 Q -48 -32 -42 -34 Q -36 -34 -28 -22 L -22 -6 Z"
+        fill="url(#amber-grad)" opacity="0.9"
+      />
+      <!-- Griffe gauche -->
+      <path d="M -42 -34 L -48 -38 L -41 -32 Z" fill="#ffc879" />
+      <!-- Doigt latéral droit -->
+      <path
+        d="M 22 -6 Q 38 -12 44 -22 Q 48 -32 42 -34 Q 36 -34 28 -22 L 22 -6 Z"
+        fill="url(#amber-grad)" opacity="0.9"
+      />
+      <!-- Griffe droite -->
+      <path d="M 42 -34 L 48 -38 L 41 -32 Z" fill="#ffc879" />
     </g>
 
     <text

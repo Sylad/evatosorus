@@ -5,7 +5,6 @@ type FilterState = {
   period: 'all' | 'trias' | 'jurassique' | 'cretace';
   diet: 'all' | 'carnivore' | 'herbivore' | 'omnivore' | 'piscivore';
   group: string;
-  withImageOnly: boolean;
 };
 
 const PAGE_SIZE = 60;
@@ -19,11 +18,9 @@ export function CodexFilters({ taxonGroups }: { taxonGroups: { id: string; label
     period: 'all',
     diet: 'all',
     group: 'all',
-    withImageOnly: true, // par défaut on cache les fiches sans image
   });
-  const [count, setCount] = useState(0);
   const [matchCount, setMatchCount] = useState(0);
-  const [visibleLimit, setVisibleLimit] = useState(PAGE_SIZE);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filterFn = useMemo(() => {
     const needle = state.q.trim().toLowerCase();
@@ -31,12 +28,10 @@ export function CodexFilters({ taxonGroups }: { taxonGroups: { id: string; label
       const periodId = el.dataset.period ?? '';
       const diet = el.dataset.diet ?? '';
       const group = el.dataset.group ?? '';
-      const hasImage = el.dataset.hasImage === 'true';
       const haystack = (el.dataset.haystack ?? '').toLowerCase();
       if (state.period !== 'all' && periodId !== state.period) return false;
       if (state.diet !== 'all' && diet !== state.diet) return false;
       if (state.group !== 'all' && group !== state.group) return false;
-      if (state.withImageOnly && !hasImage) return false;
       if (needle && !haystack.includes(needle)) return false;
       return true;
     };
@@ -45,32 +40,35 @@ export function CodexFilters({ taxonGroups }: { taxonGroups: { id: string; label
   useEffect(() => {
     const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-species-card]'));
     let matching = 0;
-    let shown = 0;
+    const startIdx = (currentPage - 1) * PAGE_SIZE;
+    const endIdx = startIdx + PAGE_SIZE;
     for (const c of cards) {
       const ok = filterFn(c);
       if (!ok) {
         c.style.display = 'none';
         continue;
       }
-      matching++;
-      if (shown < visibleLimit) {
+      if (matching >= startIdx && matching < endIdx) {
         c.style.display = '';
-        shown++;
       } else {
         c.style.display = 'none';
       }
+      matching++;
     }
-    setCount(shown);
     setMatchCount(matching);
-  }, [filterFn, visibleLimit]);
+    // Si on a dépassé le total après un filtre, revenir à la dernière page valide
+    const maxPage = Math.max(1, Math.ceil(matching / PAGE_SIZE));
+    if (currentPage > maxPage) setCurrentPage(maxPage);
+  }, [filterFn, currentPage]);
 
-  // Reset la limite quand le filtre change (sinon "voir plus" deviendrait
-  // bizarre si on filtre puis on charge plus).
+  // Reset à page 1 quand un filtre change (sinon on peut tomber sur une page vide).
   useEffect(() => {
-    setVisibleLimit(PAGE_SIZE);
-  }, [state.q, state.period, state.diet, state.group, state.withImageOnly]);
+    setCurrentPage(1);
+  }, [state.q, state.period, state.diet, state.group]);
 
-  const canLoadMore = count < matchCount;
+  const totalPages = Math.max(1, Math.ceil(matchCount / PAGE_SIZE));
+  const startNum = matchCount === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+  const endNum = Math.min(currentPage * PAGE_SIZE, matchCount);
 
   return (
     <div className="codex-filters">
@@ -83,16 +81,8 @@ export function CodexFilters({ taxonGroups }: { taxonGroups: { id: string; label
           className="filter-search"
           aria-label="Recherche par nom"
         />
-        <label className="toggle-image">
-          <input
-            type="checkbox"
-            checked={state.withImageOnly}
-            onChange={(e) => setState((s) => ({ ...s, withImageOnly: e.target.checked }))}
-          />
-          <span>Avec image</span>
-        </label>
         <span className="filter-count">
-          {count}<span className="of-total"> / {matchCount}</span>
+          {startNum}-{endNum}<span className="of-total"> sur {matchCount}</span>
         </span>
       </div>
 
@@ -142,14 +132,16 @@ export function CodexFilters({ taxonGroups }: { taxonGroups: { id: string; label
         </fieldset>
       </div>
 
-      {canLoadMore && (
-        <button
-          type="button"
-          className="load-more"
-          onClick={() => setVisibleLimit((l) => l + PAGE_SIZE)}
-        >
-          Voir plus ({Math.min(PAGE_SIZE, matchCount - count)} de plus, {matchCount - count} restantes)
-        </button>
+      {totalPages > 1 && (
+        <nav className="pagination" aria-label="Pagination">
+          <button type="button" className="page-btn" disabled={currentPage === 1} onClick={() => setCurrentPage(1)} aria-label="Première page">«</button>
+          <button type="button" className="page-btn" disabled={currentPage === 1} onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} aria-label="Page précédente">‹</button>
+          <span className="page-indicator">
+            Page <strong>{currentPage}</strong> sur <strong>{totalPages}</strong>
+          </span>
+          <button type="button" className="page-btn" disabled={currentPage === totalPages} onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} aria-label="Page suivante">›</button>
+          <button type="button" className="page-btn" disabled={currentPage === totalPages} onClick={() => setCurrentPage(totalPages)} aria-label="Dernière page">»</button>
+        </nav>
       )}
 
       <style>{`
@@ -163,46 +155,53 @@ export function CodexFilters({ taxonGroups }: { taxonGroups: { id: string; label
           gap: 1rem;
           margin-bottom: 2rem;
         }
-        .toggle-image {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.4rem;
-          padding: 0.4rem 0.8rem;
-          background: rgba(13, 10, 6, 0.5);
-          border: 1px solid rgba(212, 165, 94, 0.25);
-          border-radius: 4px;
-          color: var(--color-evato-bone-muted);
-          cursor: pointer;
-          font-size: 0.85rem;
-          transition: border-color 200ms, color 200ms;
-        }
-        .toggle-image:hover { color: var(--color-evato-bone); border-color: var(--color-evato-amber); }
-        .toggle-image input { accent-color: var(--color-evato-amber); }
         .of-total {
           color: var(--color-evato-bone-muted);
           font-size: 0.7rem;
           margin-left: 0.25rem;
         }
-        .load-more {
-          margin: 1.5rem auto 0;
-          padding: 0.7rem 1.6rem;
-          background: rgba(13, 10, 6, 0.78);
-          border: 2px solid var(--color-evato-amber);
+        .pagination {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          margin-top: 1.5rem;
+          padding-top: 1.2rem;
+          border-top: 1px solid rgba(212, 165, 94, 0.18);
+        }
+        .page-btn {
+          width: 38px;
+          height: 38px;
+          border: 1px solid rgba(212, 165, 94, 0.4);
           border-radius: 4px;
+          background: rgba(13, 10, 6, 0.6);
           color: var(--color-evato-amber);
           font-family: var(--font-display);
-          font-size: 0.78rem;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
+          font-size: 1.05rem;
           font-weight: 700;
           cursor: pointer;
-          transition: transform 200ms, box-shadow 200ms, color 200ms;
-          align-self: center;
+          transition: border-color 200ms, color 200ms, background 200ms, transform 150ms;
         }
-        .load-more:hover {
-          transform: translateY(-2px);
+        .page-btn:hover:not(:disabled) {
+          border-color: var(--color-evato-amber-bright);
           color: var(--color-evato-amber-bright);
-          box-shadow: 0 0 0 1px var(--color-evato-amber-bright), 0 0 28px rgba(255, 200, 121, 0.5);
+          background: rgba(13, 10, 6, 0.85);
+          transform: translateY(-1px);
+        }
+        .page-btn:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+        .page-indicator {
+          padding: 0 0.8rem;
+          font-family: var(--font-display);
+          font-size: 0.85rem;
+          letter-spacing: 0.12em;
+          color: var(--color-evato-bone-muted);
+        }
+        .page-indicator strong {
+          color: var(--color-evato-amber-bright);
+          font-weight: 700;
         }
         .filter-row {
           display: flex;

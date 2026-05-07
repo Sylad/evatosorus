@@ -156,25 +156,29 @@ import { DustField } from '../components/cinema/DustField';
   }
 
   /*
-    Texte landing boosté : tagline et sub-tagline en couleurs plus vives
-    avec text-shadow épais (lisibilité sur la vidéo qui peut avoir des
-    zones lumineuses), font-weight bumpé.
+    Texte landing en blanc pur + contour noir épais (effet sous-titres TV)
+    pour rester ultra-lisible sur les zones lumineuses des MP4. Pas
+    d'italique fade : weight 600, contour 4-direction 1px, glow ambre
+    derrière.
   */
   .landing-tagline,
   .landing-sub {
-    color: #fff5e2 !important;
+    color: #ffffff !important;
     text-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.95),
-      0 1px 3px rgba(0, 0, 0, 0.85),
-      0 0 24px rgba(255, 200, 121, 0.25);
-    font-weight: 500;
-  }
-  .landing-sub {
-    color: #ffd9a0 !important;
+      -1.5px -1.5px 0 rgba(0, 0, 0, 0.95),
+       1.5px -1.5px 0 rgba(0, 0, 0, 0.95),
+      -1.5px  1.5px 0 rgba(0, 0, 0, 0.95),
+       1.5px  1.5px 0 rgba(0, 0, 0, 0.95),
+       0 0 12px rgba(0, 0, 0, 0.85),
+       0 0 28px rgba(255, 200, 121, 0.45);
+    font-weight: 600;
   }
   .landing-tagline .font-semibold {
     color: #ffe2a8 !important;
-    font-weight: 700;
+    font-weight: 800;
+  }
+  .landing-sub {
+    color: #ffe2a8 !important;
   }
 
   /*
