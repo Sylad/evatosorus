@@ -85,71 +85,96 @@ import { DustField } from '../components/cinema/DustField';
 
 <style>
   /*
-    CTAs landing : fonds gradient saturés au lieu de juste border + texte coloré.
-    Le bouton DOMINE le foreground, pas le contraire. Hover passe à un gradient
-    plus lumineux + glow épais. Border 2px, font 800, lettres très espacées.
+    CTAs landing : retour au design border + texte coloré (préféré par Sylvain),
+    mais avec couleurs vraiment saturées et fond opaque pour ressortir sur la
+    vidéo de fond.
   */
   .cta {
-    padding: 0.85rem 1.6rem;
+    padding: 0.7rem 1.3rem;
     border-radius: 4px;
     border: 2px solid;
     font-family: var(--font-display);
-    font-size: 0.85rem;
-    letter-spacing: 0.22em;
+    font-size: 0.82rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     text-decoration: none;
-    transition: transform 220ms ease, box-shadow 240ms ease, filter 240ms ease;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
-    font-weight: 800;
-    color: #1a0e02;
-    box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    background: rgba(13, 10, 6, 0.78);
+    backdrop-filter: blur(8px);
+    transition: transform 200ms ease, box-shadow 220ms ease, background 220ms ease, color 200ms ease, border-color 200ms ease;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
+    font-weight: 700;
   }
   .cta:hover {
-    transform: translateY(-3px);
-    filter: brightness(1.18) saturate(1.1);
-    box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    background: rgba(13, 10, 6, 0.92);
   }
   .cta-amber {
-    background: linear-gradient(135deg, #ffd28b 0%, #d4a55e 60%, #a87b3c 100%);
-    border-color: #ffe2a8;
+    border-color: #ffc879;
+    color: #ffc879;
   }
   .cta-amber:hover {
-    box-shadow: 0 12px 28px -8px #ffc879cc, inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    color: #ffe2a8;
+    border-color: #ffe2a8;
+    box-shadow: 0 0 0 1px #ffe2a8, 0 0 32px rgba(255, 200, 121, 0.7);
   }
   .cta-jade {
-    background: linear-gradient(135deg, #a3d6b3 0%, #5e8f6e 60%, #3e6a4d 100%);
-    border-color: #c8e8d2;
+    border-color: #7fd194;
+    color: #7fd194;
   }
   .cta-jade:hover {
-    box-shadow: 0 12px 28px -8px #7fb892cc, inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    color: #a3e8b3;
+    border-color: #a3e8b3;
+    box-shadow: 0 0 0 1px #a3e8b3, 0 0 28px rgba(127, 209, 148, 0.65);
   }
   .cta-rust {
-    background: linear-gradient(135deg, #ff8c66 0%, #c75131 60%, #8c3220 100%);
-    border-color: #ffaa86;
-    color: #fff5e8;
+    border-color: #ff7a4a;
+    color: #ff7a4a;
   }
   .cta-rust:hover {
-    box-shadow: 0 12px 28px -8px #c75131dd, inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    color: #ff9c70;
+    border-color: #ff9c70;
+    box-shadow: 0 0 0 1px #ff9c70, 0 0 30px rgba(255, 122, 74, 0.7);
   }
   .cta-bone {
-    background: linear-gradient(135deg, #ebd9c5 0%, #b8a78f 60%, #8c7d68 100%);
-    border-color: #fff5e2;
+    border-color: #ebd9c5;
+    color: #ebd9c5;
   }
   .cta-bone:hover {
-    box-shadow: 0 12px 28px -8px #ebd9c5cc, inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    color: #fff5e2;
+    border-color: #fff5e2;
+    box-shadow: 0 0 0 1px #fff5e2, 0 0 24px rgba(232, 230, 221, 0.55);
   }
   .cta-ghost {
     background: rgba(13, 10, 6, 0.55);
     border-color: rgba(212, 165, 94, 0.45);
-    color: #ebd9c5;
-    box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
+    color: #b8a78f;
   }
   .cta-ghost:hover {
-    background: rgba(13, 10, 6, 0.78);
-    border-color: var(--color-evato-amber-bright);
+    border-color: #ffc879;
     color: #fff5e2;
-    box-shadow: 0 0 0 1px var(--color-evato-amber-bright), 0 8px 20px -6px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 0 1px #ffc879, 0 0 22px rgba(255, 200, 121, 0.5);
+  }
+
+  /*
+    Texte landing boosté : tagline et sub-tagline en couleurs plus vives
+    avec text-shadow épais (lisibilité sur la vidéo qui peut avoir des
+    zones lumineuses), font-weight bumpé.
+  */
+  .landing-tagline,
+  .landing-sub {
+    color: #fff5e2 !important;
+    text-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.95),
+      0 1px 3px rgba(0, 0, 0, 0.85),
+      0 0 24px rgba(255, 200, 121, 0.25);
+    font-weight: 500;
+  }
+  .landing-sub {
+    color: #ffd9a0 !important;
+  }
+  .landing-tagline .font-semibold {
+    color: #ffe2a8 !important;
+    font-weight: 700;
   }
 
   /*
