@@ -6,8 +6,9 @@ dist/
 .DS_Store
 *.log
 
-# Generated species/period data — committed once stable, re-generated via /scripts
-frontend/src/data/generated/
+# Generated species/period data : committed pour reproductibilité du build
+# Cloudflare Pages. Re-générer via `npm run import:paleobiodb`.
+# (Ligne d'ignore retirée volontairement — le JSON est versionné.)
 
 # Heavy GIF sources (>25 MB Cloudflare cap). Convert to MP4/WebM and version those instead.
 frontend/public/*.gif

@@ -105,13 +105,15 @@ output directory `frontend/dist`. C'est tout.
 
 ## Crédits
 
-Vibé à trois :
+Vibé à plusieurs :
 - **Sylvain** (humain) — direction artistique, choix éditoriaux, code review
 - **Claude Code** (Anthropic, Opus 4.7 1M context) — code Astro/React/CSS, blurbs vulgarisés
-- **ChatGPT** — recherches visuelles, mockups, idées de palettes
+- **ChatGPT** — recherches visuelles, idées de palettes, brainstorming des sections
+- **[openart.ai](https://openart.ai)** — image hero du T-Rex et les trois vidéos d'animation (landing / films / about)
 
 Toutes les fiches espèce sont CC-BY (texte) ; les images viennent de Wikimedia
-Commons avec leur licence d'origine, créditée sur chaque fiche.
+Commons avec leur licence d'origine, créditée sur chaque fiche. L'image hero
+et les animations vidéo sont des générations openart.ai à partir de prompts curés.
 
 ## Licence
 

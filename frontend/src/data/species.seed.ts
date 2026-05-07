@@ -26,7 +26,7 @@ export const SPECIES_SEED: Species[] = [
     locations: [{ country: 'États-Unis', lat: 45.7, lng: -106.6 }, { country: 'Canada', lat: 50.7, lng: -111.5 }],
     blurb: "Roi prédateur du Crétacé supérieur. Mâchoires capables d'écraser un os à 5800 kg/cm². Vit 30 ans, court à 30 km/h, vise les proies blessées.",
     imageUrl: '/hero-trex.jpg',
-    imageCredit: 'Generated artwork — collab humain × ChatGPT',
+    imageCredit: 'Image générée sur openart.ai',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Tyrannosaurus',
     iconic: true,
   },
