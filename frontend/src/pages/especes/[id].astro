@@ -1,6 +1,6 @@
 ---
 import CodexLayout from '../../layouts/CodexLayout.astro';
-import { SPECIES, getSpeciesById, TAXON_GROUP_LABELS, DIET_LABELS, DIET_ICONS } from '../../data/species';
+import { SPECIES, getSpeciesById, getSpeciesVideos, TAXON_GROUP_LABELS, DIET_LABELS, DIET_ICONS } from '../../data/species';
 import { PERIODS_BY_ID } from '../../data/periods';
 
 export function getStaticPaths() {
@@ -15,6 +15,7 @@ const period = PERIODS_BY_ID[s.periodId];
 const otherSameGroup = SPECIES
   .filter((x) => x.taxonGroup === s.taxonGroup && x.id !== s.id)
   .slice(0, 6);
+const videos = getSpeciesVideos(s.id);
 ---
 <CodexLayout
   title={`${s.commonName ?? s.name} — Evatosorus`}
@@ -83,6 +84,27 @@ const otherSameGroup = SPECIES
     {s.blurb && (
       <section class="detail-blurb" data-amber-split>
         <p>{s.blurb}</p>
+      </section>
+    )}
+
+    {videos.length > 0 && (
+      <section class="detail-videos">
+        <h2>Galerie vidéo</h2>
+        <p class="videos-caption">Reconstitutions animées — IA paleo-art (openart.ai).</p>
+        <div class="videos-grid">
+          {videos.map((src) => (
+            <video
+              src={src}
+              autoplay
+              muted
+              loop
+              playsinline
+              controls
+              preload="metadata"
+              poster="/hero-trex.jpg"
+            />
+          ))}
+        </div>
       </section>
     )}
 
@@ -285,6 +307,39 @@ const otherSameGroup = SPECIES
       text-decoration: underline;
       text-decoration-color: rgba(212, 165, 94, 0.3);
     }
+    .detail-videos {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(212, 165, 94, 0.18);
+    }
+    .detail-videos h2 {
+      font-size: 1.2rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-evato-amber);
+      margin: 0 0 0.4rem;
+    }
+    .videos-caption {
+      font-size: 0.85rem;
+      color: var(--color-evato-bone-muted);
+      font-style: italic;
+      margin: 0 0 1rem;
+    }
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1rem;
+    }
+    .videos-grid video {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      background: #0d0a06;
+      border: 1px solid rgba(212, 165, 94, 0.18);
+      border-radius: 6px;
+      display: block;
+    }
+
     .related {
       margin-top: 3rem;
       padding-top: 2rem;
