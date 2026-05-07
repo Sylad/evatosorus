@@ -74,7 +74,8 @@ export function DustField() {
         inset: 0,
         zIndex: 1,
         pointerEvents: 'none',
-        mixBlendMode: 'screen',
+        // mix-blend-mode 'screen' lavait les couleurs du foreground —
+        // retiré, on laisse les particles en composition normale.
       }}
     />
   );

@@ -205,17 +205,10 @@ import { DustField } from '../components/cinema/DustField';
       linear-gradient(to bottom, rgba(13, 10, 6, 0.25) 0%, rgba(13, 10, 6, 0.55) 100%);
   }
 
-  /* Tint ambre par-dessus le voile, très léger (10%), pour la cohésion. */
-  main::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: 6;
-    pointer-events: none;
-    background:
-      radial-gradient(ellipse at 15% 20%, rgba(212, 165, 94, 0.08) 0%, transparent 55%),
-      radial-gradient(ellipse at 85% 80%, rgba(199, 81, 49, 0.06) 0%, transparent 55%);
-  }
+  /* main::after retiré — son tint ambre lavait les couleurs vives du
+     foreground (le combo avec DustField screen-mode rendait le tout
+     palichon). On garde juste le voile dark main::before pour la
+     lisibilité du texte sur la vidéo. */
 
   /* Legacy CSS hero-grid kept only as no-op fallback (composant retiré). */
   .hero-grid { display: contents; }
