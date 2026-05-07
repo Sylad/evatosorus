@@ -1,0 +1,291 @@
+---
+import CodexLayout from '../../layouts/CodexLayout.astro';
+import { FILMS, SAGA_LABELS } from '../../data/films';
+import { getSpeciesById } from '../../data/species';
+
+export function getStaticPaths() {
+  return FILMS.map((f) => ({ params: { id: f.id } }));
+}
+
+const { id } = Astro.params;
+const film = FILMS.find((f) => f.id === id);
+if (!film) return Astro.redirect('/films/');
+
+const cast = (film.speciesIds ?? [])
+  .map((sid) => getSpeciesById(sid))
+  .filter((s): s is NonNullable<typeof s> => Boolean(s));
+
+const idx = FILMS.findIndex((f) => f.id === film.id);
+const prev = idx > 0 ? FILMS[idx - 1] : null;
+const next = idx < FILMS.length - 1 ? FILMS[idx + 1] : null;
+---
+<CodexLayout
+  title={`${film.title} (${film.year}) — Evatosorus`}
+  description={film.blurb}
+  active="films"
+>
+  <a href="/films/" class="back-link">← Tous les films</a>
+
+  <article class="film-detail">
+    <header class="film-header">
+      <p class="codex-eyebrow">{SAGA_LABELS[film.saga]} · {film.year}</p>
+      <h1>{film.title}</h1>
+      <p class="director">{film.director} · {film.durationMin} min · IMDb {film.imdb}</p>
+    </header>
+
+    <div class="film-grid">
+      <div class="film-poster">
+        <img src={film.posterUrl} alt={`Affiche de ${film.title}`} />
+      </div>
+
+      <div class="film-body">
+        <p class="film-blurb" data-amber-split>{film.blurb}</p>
+
+        {film.iconicScene && (
+          <div class="film-iconic">
+            <h3>Scène culte</h3>
+            <p>{film.iconicScene}</p>
+          </div>
+        )}
+
+        <div class="film-links">
+          {film.trailerUrl && (
+            <a href={film.trailerUrl} target="_blank" rel="noopener noreferrer" class="film-link">
+              ▶ Bande-annonce
+            </a>
+          )}
+          <a href={film.wikipediaUrl} target="_blank" rel="noopener noreferrer" class="film-link">
+            Lire sur Wikipedia
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {cast.length > 0 && (
+      <section class="film-cast">
+        <h2>Espèces à l'affiche</h2>
+        <div class="cast-grid">
+          {cast.map((s) => (
+            <a href={`/especes/${s.id}/`} class="cast-card">
+              {s.imageUrl && <img src={s.imageUrl} alt={s.commonName ?? s.name} loading="lazy" />}
+              <span class="cast-name">{s.commonName ?? s.name}</span>
+              <span class="cast-sci">{s.name}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <nav class="film-nav">
+      {prev ? (
+        <a href={`/films/${prev.id}/`} class="film-nav-link">← {prev.title}</a>
+      ) : <span></span>}
+      {next ? (
+        <a href={`/films/${next.id}/`} class="film-nav-link film-nav-next">{next.title} →</a>
+      ) : null}
+    </nav>
+  </article>
+
+  <script is:inline>
+    (() => {
+      const split = () => {
+        document.querySelectorAll('[data-amber-split]').forEach((p) => {
+          if (p.dataset.amberSplitDone === '1') return;
+          Array.from(p.childNodes).forEach((node) => {
+            if (node.nodeType !== Node.TEXT_NODE) return;
+            const text = node.textContent ?? '';
+            if (!text.trim()) return;
+            const frag = document.createDocumentFragment();
+            text.split(/(\s+)/).forEach((tok) => {
+              if (/^\s+$/.test(tok) || tok === '') {
+                frag.appendChild(document.createTextNode(tok));
+              } else {
+                const span = document.createElement('span');
+                span.className = 'amber-word';
+                span.textContent = tok;
+                frag.appendChild(span);
+              }
+            });
+            p.replaceChild(frag, node);
+          });
+          p.dataset.amberSplitDone = '1';
+        });
+      };
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', split);
+      else split();
+      document.addEventListener('astro:page-load', split);
+    })();
+  </script>
+
+  <style>
+    .back-link {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-evato-bone-muted);
+      text-decoration: none;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+    }
+    .back-link:hover { color: var(--color-evato-amber); }
+
+    .film-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(212, 165, 94, 0.18);
+    }
+    .codex-eyebrow {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.32em;
+      color: var(--color-evato-amber);
+      text-transform: uppercase;
+      margin: 0 0 0.4rem;
+    }
+    .film-header h1 {
+      font-size: 2.6rem;
+      margin: 0 0 0.4rem;
+      color: var(--color-evato-amber-bright);
+    }
+    .director {
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--color-evato-bone-muted);
+      margin: 0;
+    }
+    .film-grid {
+      display: grid;
+      grid-template-columns: minmax(220px, 320px) 1fr;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    @media (max-width: 720px) {
+      .film-grid { grid-template-columns: 1fr; }
+    }
+    .film-poster {
+      background: rgba(26, 18, 10, 0.55);
+      border: 1px solid rgba(212, 165, 94, 0.18);
+      border-radius: 6px;
+      overflow: hidden;
+      aspect-ratio: 27 / 40;
+    }
+    .film-poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .film-blurb {
+      font-size: 1.1rem;
+      line-height: 1.75;
+      color: var(--color-evato-bone);
+      margin: 0 0 1.5rem;
+    }
+    .film-iconic {
+      background: rgba(212, 165, 94, 0.06);
+      border-left: 3px solid var(--color-evato-amber);
+      padding: 1rem 1.2rem;
+      margin: 1.5rem 0;
+    }
+    .film-iconic h3 {
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--color-evato-amber);
+      margin: 0 0 0.4rem;
+    }
+    .film-iconic p {
+      margin: 0;
+      font-style: italic;
+      color: var(--color-evato-bone);
+    }
+    .film-links {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    .film-link {
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(212, 165, 94, 0.4);
+      border-radius: 4px;
+      color: var(--color-evato-amber);
+      text-decoration: none;
+      font-family: var(--font-display);
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: border-color 200ms ease, background 200ms ease;
+    }
+    .film-link:hover {
+      border-color: var(--color-evato-amber);
+      background: rgba(212, 165, 94, 0.08);
+    }
+    .film-cast {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(212, 165, 94, 0.18);
+    }
+    .film-cast h2 {
+      font-size: 1.2rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-evato-amber);
+      margin: 0 0 1rem;
+    }
+    .cast-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0.8rem;
+    }
+    .cast-card {
+      display: flex;
+      flex-direction: column;
+      background: rgba(26, 18, 10, 0.55);
+      border: 1px solid rgba(212, 165, 94, 0.18);
+      border-radius: 4px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 200ms ease;
+    }
+    .cast-card:hover { border-color: var(--color-evato-amber); }
+    .cast-card img {
+      aspect-ratio: 16 / 10;
+      width: 100%;
+      object-fit: cover;
+    }
+    .cast-name {
+      padding: 0.4rem 0.6rem 0;
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      color: var(--color-evato-amber-bright);
+    }
+    .cast-sci {
+      padding: 0 0.6rem 0.5rem;
+      font-style: italic;
+      font-size: 0.75rem;
+      color: var(--color-evato-bone-muted);
+    }
+    .film-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(212, 165, 94, 0.18);
+    }
+    .film-nav-link {
+      font-family: var(--font-display);
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-evato-bone-muted);
+      text-decoration: none;
+    }
+    .film-nav-link:hover { color: var(--color-evato-amber); }
+    .film-nav-next { margin-left: auto; }
+  </style>
+</CodexLayout>

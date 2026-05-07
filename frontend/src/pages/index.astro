@@ -29,12 +29,23 @@ import { DustField } from '../components/cinema/DustField';
         sur l'image (::after) la fond avec le bg pour qu'elle ne flotte pas.
       -->
       <figure class="hero-image">
-        <img
-          src="/hero-trex.jpg"
-          alt="Tyrannosaurus rex dans une jungle préhistorique, sous l'orage, avec une empreinte de main ocre sur le flanc"
-          loading="eager"
-          fetchpriority="high"
-        />
+        <video
+          autoplay
+          loop
+          muted
+          playsinline
+          preload="auto"
+          poster="/hero-trex.jpg"
+          aria-label="Tyrannosaurus rex dans une jungle préhistorique, sous l'orage, avec une empreinte de main ocre sur le flanc"
+        >
+          <source src="/hero-trex-1.mp4" type="video/mp4" />
+          <!-- Fallback statique : le navigateur affiche le poster si la vidéo
+               échoue ou est désactivée (Save Data, prefers-reduced-motion). -->
+          <img
+            src="/hero-trex.jpg"
+            alt="Tyrannosaurus rex dans une jungle préhistorique"
+          />
+        </video>
         <figcaption>« Avant nous, il y a eu eux. »</figcaption>
       </figure>
 
@@ -62,6 +73,10 @@ import { DustField } from '../components/cinema/DustField';
           <a href="/carte/"
              class="px-5 py-2.5 rounded border border-evato-rust text-evato-rust hover:shadow-glow-rust hover:bg-evato-rust/10 transition backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
             Carte paléo-monde
+          </a>
+          <a href="/films/"
+             class="px-5 py-2.5 rounded border border-evato-bone-muted text-evato-bone hover:border-evato-bone hover:bg-evato-bone/5 transition backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
+            Films
           </a>
           <a href="/about/"
              class="px-5 py-2.5 rounded text-evato-bone-muted hover:text-evato-bone transition-colors backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">

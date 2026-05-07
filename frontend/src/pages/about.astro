@@ -18,6 +18,13 @@ import { SPECIES_INDEX } from '../data/species';
       </p>
     </header>
 
+    <figure class="about-hero">
+      <video autoplay loop muted playsinline preload="auto" poster="/hero-trex.jpg">
+        <source src="/hero-trex-3.mp4" type="video/mp4" />
+        <img src="/hero-trex.jpg" alt="" />
+      </video>
+    </figure>
+
     <section data-amber-split>
       <h2>Pour qui</h2>
       <p>
@@ -131,6 +138,20 @@ import { SPECIES_INDEX } from '../data/species';
   <style>
     .about {
       max-width: 70ch;
+    }
+    .about-hero {
+      margin: 2rem 0 2.5rem;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(212, 165, 94, 0.3);
+      aspect-ratio: 16 / 9;
+      box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.6);
+    }
+    .about-hero video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
     .codex-eyebrow {
       font-family: var(--font-display);

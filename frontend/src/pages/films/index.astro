@@ -1,0 +1,243 @@
+---
+import CodexLayout from '../../layouts/CodexLayout.astro';
+import { FILMS, FILMS_BY_SAGA, SAGA_LABELS } from '../../data/films';
+
+const sagaOrder: Array<keyof typeof FILMS_BY_SAGA> = ['park', 'world', 'rebirth'];
+---
+<CodexLayout
+  title="Films — Evatosorus"
+  description={`La saga Jurassic Park / Jurassic World : ${FILMS.length} films, du chef-d'œuvre Spielberg de 1993 au cycle Rebirth.`}
+  active="films"
+>
+  <div class="films-hero">
+    <video autoplay loop muted playsinline preload="auto" poster="/hero-trex.jpg">
+      <source src="/hero-trex-2.mp4" type="video/mp4" />
+      <img src="/hero-trex.jpg" alt="" />
+    </video>
+    <div class="films-hero-overlay">
+      <p class="codex-eyebrow">cinéma</p>
+      <h1>La saga Jurassic Park</h1>
+      <p class="hero-tag">
+        « God help us, we're in the hands of engineers. »
+      </p>
+    </div>
+  </div>
+
+  <header class="films-header">
+    <p class="codex-lede">
+      Depuis 1993, la franchise a redéfini l'image cinématographique du
+      dinosaure. {FILMS.length} films, trois cycles narratifs, le même fantasme
+      tenace : ramener les géants. On décortique chaque entrée, du
+      chef-d'œuvre Spielberg au reboot Edwards.
+    </p>
+  </header>
+
+  {sagaOrder.map((saga) => {
+    const films = FILMS_BY_SAGA[saga];
+    if (!films.length) return null;
+    return (
+      <section class="saga-block">
+        <h2 class="saga-title">{SAGA_LABELS[saga]}</h2>
+        <div class="films-grid">
+          {films.map((f) => (
+            <a href={`/films/${f.id}/`} class="film-card">
+              <div class="poster">
+                <img src={f.posterUrl} alt={`Affiche de ${f.title}`} loading="lazy" />
+                <span class="year">{f.year}</span>
+              </div>
+              <div class="film-meta">
+                <h3>{f.title}</h3>
+                <p class="director">{f.director}</p>
+                <div class="film-tags">
+                  <span class="tag">{f.durationMin} min</span>
+                  <span class="tag tag-imdb">★ {f.imdb}</span>
+                </div>
+                <p class="film-blurb-snippet">{f.blurb.split('.').slice(0, 1).join('.') + '.'}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    );
+  })}
+
+  <style>
+    .films-hero {
+      position: relative;
+      margin: 0 0 1.5rem;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(212, 165, 94, 0.3);
+      aspect-ratio: 21 / 9;
+      background: #0d0a06;
+      box-shadow: 0 18px 36px -16px rgba(0, 0, 0, 0.7);
+    }
+    .films-hero video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(1.05);
+    }
+    .films-hero-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 2rem 2.5rem;
+      background: linear-gradient(
+        to top,
+        rgba(13, 10, 6, 0.85) 0%,
+        rgba(13, 10, 6, 0.5) 40%,
+        rgba(13, 10, 6, 0.05) 70%,
+        rgba(13, 10, 6, 0.4) 100%
+      );
+    }
+    .films-hero-overlay h1 {
+      font-size: 2.6rem;
+      margin: 0.4rem 0;
+      color: var(--color-evato-amber-bright);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+    }
+    .hero-tag {
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--color-evato-bone);
+      margin: 0.5rem 0 0;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85);
+    }
+    @media (max-width: 720px) {
+      .films-hero { aspect-ratio: 16 / 10; }
+      .films-hero-overlay { padding: 1.2rem; }
+      .films-hero-overlay h1 { font-size: 1.8rem; }
+    }
+    .films-header { margin-bottom: 2.5rem; }
+    .codex-eyebrow {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.32em;
+      color: var(--color-evato-amber);
+      text-transform: uppercase;
+      margin: 0 0 0.4rem;
+    }
+    .films-header h1 {
+      font-size: 2.4rem;
+      margin: 0 0 0.5rem;
+    }
+    .codex-lede {
+      max-width: 65ch;
+      color: var(--color-evato-bone-muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+    .saga-block {
+      margin-bottom: 3rem;
+    }
+    .saga-title {
+      font-size: 0.9rem;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--color-evato-amber);
+      padding-bottom: 0.5rem;
+      margin: 0 0 1.5rem;
+      border-bottom: 1px solid rgba(212, 165, 94, 0.18);
+    }
+    .films-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.4rem;
+    }
+    .film-card {
+      display: flex;
+      flex-direction: column;
+      background: rgba(26, 18, 10, 0.55);
+      border: 1px solid rgba(212, 165, 94, 0.18);
+      border-radius: 6px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+    }
+    .film-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 165, 94, 0.6);
+      box-shadow: 0 14px 28px -16px rgba(212, 165, 94, 0.55);
+    }
+    .poster {
+      position: relative;
+      aspect-ratio: 27 / 40; /* poster cinéma classique */
+      background: #1a120a;
+      overflow: hidden;
+    }
+    .poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 6s ease;
+      filter: saturate(0.92) brightness(0.92);
+    }
+    .film-card:hover .poster img {
+      transform: scale(1.04);
+      filter: saturate(1) brightness(1);
+    }
+    .year {
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      padding: 0.25rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(13, 10, 6, 0.85);
+      color: var(--color-evato-amber);
+      border: 1px solid var(--color-evato-amber);
+    }
+    .film-meta {
+      padding: 0.9rem 1rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .film-meta h3 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+      margin: 0;
+      color: var(--color-evato-amber-bright);
+      line-height: 1.25;
+    }
+    .director {
+      font-style: italic;
+      font-size: 0.82rem;
+      color: var(--color-evato-bone-muted);
+      margin: 0;
+    }
+    .film-tags {
+      display: flex;
+      gap: 0.4rem;
+      margin: 0.2rem 0 0.4rem;
+    }
+    .tag {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(13, 10, 6, 0.6);
+      border: 1px solid rgba(212, 165, 94, 0.25);
+      color: var(--color-evato-bone-muted);
+    }
+    .tag-imdb {
+      color: var(--color-evato-amber);
+      border-color: var(--color-evato-amber);
+    }
+    .film-blurb-snippet {
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: var(--color-evato-bone-muted);
+      margin: 0;
+    }
+  </style>
+</CodexLayout>

@@ -8,3 +8,11 @@ dist/
 
 # Generated species/period data — committed once stable, re-generated via /scripts
 frontend/src/data/generated/
+
+# Heavy GIF sources (>25 MB Cloudflare cap). Convert to MP4/WebM and version those instead.
+frontend/public/*.gif
+frontend/public/**/*.gif
+
+# Windows Zone.Identifier ADS leak from WSL/copy from Windows.
+*:Zone.Identifier
+*.Identifier
