@@ -1,146 +1,39 @@
 ---
+/**
+ * Wordmark Evatosorus seul (skull est dans EvatoSkull séparé). Texte SVG
+ * net, sans filter blur (qui dilluait la couleur précédemment).
+ * Drop-shadow CSS multi-couches pour le halo néon — l'astuce pour avoir
+ * un texte ULTRA net + un glow autour, sans qu'ils se mangent.
+ */
 interface Props {
   size?: number;
-  glow?: boolean;
 }
-const { size = 420, glow = true } = Astro.props;
-// Aspect ratio bumped (0.28 → 0.45) to make room for the skull silhouette
-// crowning the wordmark.
-const height = Math.round(size * 0.45);
+const { size = 460 } = Astro.props;
+const height = Math.round(size * 0.22);
 ---
 <div class="evato-logo" style={`--logo-size:${size}px;--logo-h:${height}px;`}>
   <svg
-    viewBox="0 0 600 270"
+    viewBox="0 0 600 130"
     width={size}
     height={height}
     role="img"
     aria-label="Evatosorus"
-    class:list={["evato-logo-svg", { glow }]}
+    class="evato-logo-svg"
   >
-    <defs>
-      <!-- Couleurs solid : jaune fluo intense, plus de gradients qui font perdre la luminosité. -->
-      <radialGradient id="light-orb">
-        <stop offset="0%"  stop-color="#ffffff" stop-opacity="1" />
-        <stop offset="35%" stop-color="#fff05a" stop-opacity="0.95" />
-        <stop offset="100%" stop-color="#ffea00" stop-opacity="0" />
-      </radialGradient>
-      <!-- Glow halo épais derrière le wordmark + skull (lumineux blanc/jaune) -->
-      <filter id="bright-glow" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="4" result="b1" />
-        <feGaussianBlur stdDeviation="1.5" result="b2" in="SourceGraphic" />
-        <feMerge>
-          <feMergeNode in="b1" />
-          <feMergeNode in="b2" />
-          <feMergeNode in="SourceGraphic" />
-        </feMerge>
-      </filter>
-      <filter id="orb-glow" x="-300%" y="-300%" width="700%" height="700%">
-        <feGaussianBlur stdDeviation="4" result="b" />
-        <feMerge>
-          <feMergeNode in="b" />
-          <feMergeNode in="SourceGraphic" />
-        </feMerge>
-      </filter>
-
-      <!--
-        Crâne T-Rex de profil gauche → droite. Forme angulaire :
-        - Occiput haut à gauche (proéminence arrière)
-        - Crâne descendant vers le museau (front nasal)
-        - Pointe museau à droite avec narine
-        - Mâchoire inférieure visible avec ligne de dents
-        - Œil rond + fenêtre antéorbitaire
-      -->
-      <path id="trex-skull-path" d="
-        M -85 6
-        L -88 -18
-        L -75 -32
-        L -55 -32
-        L -30 -30
-        L 0 -28
-        L 32 -22
-        L 58 -16
-        L 78 -10
-        L 86 -2
-        L 84 6
-        L 70 8
-        L 55 10
-        L 38 12
-        L 14 13
-        L -14 14
-        L -42 12
-        L -65 8
-        L -82 4
-        Z
-      "/>
-    </defs>
-
-    <!--
-      Crâne T-Rex en outline jaune fluo, avec dents + œil + narine.
-      Une boule lumineuse blanche parcourt le contour en boucle 8s.
-    -->
-    <g transform="translate(300 65)" filter="url(#bright-glow)">
-      <!-- Outline principal -->
-      <use href="#trex-skull-path"
-           stroke="#ffea00" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"
-           fill="none" />
-      <!-- Ligne de mâchoire (sépare gueule/crâne) -->
-      <path d="M -65 -4 Q 0 4 70 0" stroke="#ffea00" stroke-width="1.8" fill="none" opacity="0.75" />
-      <!-- Dents pointues le long de la mâchoire supérieure -->
-      <g fill="#ffea00">
-        <polygon points="50,8 53,16 56,8" />
-        <polygon points="28,10 31,19 34,10" />
-        <polygon points="2,11 5,21 8,11" />
-        <polygon points="-22,11 -19,20 -16,11" />
-        <polygon points="-44,10 -41,18 -38,10" />
-      </g>
-      <!-- Orbite oculaire -->
-      <circle cx="32" cy="-18" r="6" stroke="#ffea00" stroke-width="2" fill="none" />
-      <circle cx="32" cy="-18" r="2.3" fill="#ffffff" />
-      <!-- Crête sourcilière -->
-      <path d="M 22 -27 L 44 -25" stroke="#ffea00" stroke-width="1.6" fill="none" opacity="0.85" />
-      <!-- Narine -->
-      <ellipse cx="72" cy="-6" rx="3.5" ry="1.8" stroke="#ffea00" stroke-width="1.4" fill="none" />
-      <!-- Fenêtre antéorbitaire (cavité devant l'œil, distinctive du T-Rex) -->
-      <ellipse cx="14" cy="-14" rx="9" ry="4" stroke="#ffea00" stroke-width="1.5" fill="none" opacity="0.7" />
-    </g>
-
-    <!--
-      Boule de lumière qui suit le contour du crâne — externe au filter
-      glow pour rester ultra brillante sans flou.
-    -->
-    <g transform="translate(300 65)">
-      <circle r="5.5" fill="url(#light-orb)" filter="url(#orb-glow)">
-        <animateMotion dur="8s" repeatCount="indefinite">
-          <mpath href="#trex-skull-path" />
-        </animateMotion>
-      </circle>
-      <circle r="2.5" fill="#ffffff" opacity="0.9">
-        <animateMotion dur="8s" repeatCount="indefinite">
-          <mpath href="#trex-skull-path" />
-        </animateMotion>
-      </circle>
-    </g>
-
-    <!--
-      Label EVATOSORUS : effet néon enseigne — fill jaune-blanc lumineux
-      + double halo jaune électrique (filter bright-glow) qui irradie
-      autour des lettres. Lecture nette même sur fond chargé.
-    -->
     <text
-      x="300" y="200"
+      x="300" y="68"
       text-anchor="middle"
       font-family="Cinzel, serif"
       font-weight="900"
-      font-size="72"
+      font-size="68"
       letter-spacing="7"
       fill="#fff5a0"
       stroke="#ffea00"
-      stroke-width="0.8"
-      filter="url(#bright-glow)"
+      stroke-width="0.9"
     >EVATOSORUS</text>
 
-    <!-- skeletal underline : a stylized vertebra row, en jaune néon -->
-    <g transform="translate(165 230)" stroke="#ffea00" stroke-width="1.6" fill="none">
+    <!-- Vertèbres skeleton ambre clair -->
+    <g transform="translate(165 92)" stroke="#ffea00" stroke-width="1.6" fill="none">
       <line x1="0" y1="6" x2="270" y2="6" />
       <circle cx="0" cy="6" r="3.5" fill="#ffea00" />
       <circle cx="270" cy="6" r="3.5" fill="#ffea00" />
@@ -150,14 +43,14 @@ const height = Math.round(size * 0.45);
     </g>
 
     <text
-      x="300" y="258"
+      x="300" y="120"
       text-anchor="middle"
       font-family="Crimson Text, serif"
       font-style="italic"
       font-size="14"
       letter-spacing="3"
       fill="#fff5dc"
-      opacity="0.9"
+      opacity="0.92"
     >codex mésozoïque</text>
   </svg>
 </div>
@@ -173,15 +66,25 @@ const height = Math.round(size * 0.45);
     display: block;
     width: 100%;
     height: 100%;
+    /* Drop-shadow CSS multi-couches : halo + ombre dure. Pas de filter SVG
+       qui dilue les lettres comme une mauvaise photocopie. */
+    filter:
+      drop-shadow(0 0 22px rgba(255, 234, 0, 0.55))
+      drop-shadow(0 0 8px rgba(255, 234, 0, 0.45))
+      drop-shadow(0 1px 2px rgba(0, 0, 0, 0.95));
+    animation: logo-pulse 6s ease-in-out infinite;
   }
-  .evato-logo-svg.glow {
-    animation: amber-breathe 6s ease-in-out infinite;
-  }
-  @keyframes amber-breathe {
-    0%, 100% { filter: drop-shadow(0 0 14px rgba(212, 165, 94, 0.35)); }
-    50%      { filter: drop-shadow(0 0 28px rgba(255, 200, 121, 0.55)); }
+  @keyframes logo-pulse {
+    0%, 100% { filter:
+      drop-shadow(0 0 18px rgba(255, 234, 0, 0.45))
+      drop-shadow(0 0 6px rgba(255, 234, 0, 0.35))
+      drop-shadow(0 1px 2px rgba(0, 0, 0, 0.95)); }
+    50% { filter:
+      drop-shadow(0 0 28px rgba(255, 234, 0, 0.7))
+      drop-shadow(0 0 12px rgba(255, 234, 0, 0.55))
+      drop-shadow(0 1px 2px rgba(0, 0, 0, 0.95)); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .evato-logo-svg.glow { animation: none; }
+    .evato-logo-svg { animation: none; }
   }
 </style>

@@ -1,22 +1,25 @@
 ---
 /**
- * Crâne T-Rex outline jaune avec boule de lumière qui suit le contour.
- * Réutilisable dans la sidebar des pages internes (CodexLayout) et autres
- * endroits où l'on veut juste l'icône sans le wordmark complet.
+ * Crâne T-Rex outline jaune (silhouette canonique vue de profil, museau
+ * à droite) avec boule de lumière qui suit le contour. Path traité avec
+ * dents intégrées (zigzag) pour matcher la silhouette stencil classique
+ * (Jurassic Park-like).
+ *
+ * Réutilisable : landing logo + sidebar CodexLayout.
  */
 interface Props {
   size?: number;
   duration?: number;
 }
-const { size = 64, duration = 8 } = Astro.props;
+const { size = 200, duration = 8 } = Astro.props;
 const seed = Math.random().toString(36).slice(2, 8);
 ---
 <svg
-  viewBox="-100 -42 200 60"
+  viewBox="-110 -60 220 130"
   width={size}
-  height={Math.round(size * 0.3)}
+  height={Math.round(size * 0.6)}
   role="img"
-  aria-label="Crâne T-Rex"
+  aria-label="Crâne de Tyrannosaurus rex"
   class="evato-skull"
 >
   <defs>
@@ -25,7 +28,7 @@ const seed = Math.random().toString(36).slice(2, 8);
       <stop offset="35%" stop-color="#fff05a" stop-opacity="0.95" />
       <stop offset="100%" stop-color="#ffea00" stop-opacity="0" />
     </radialGradient>
-    <filter id={`skull-glow-${seed}`} x="-50%" y="-50%" width="200%" height="200%">
+    <filter id={`skull-glow-${seed}`} x="-30%" y="-30%" width="160%" height="160%">
       <feGaussianBlur stdDeviation="2" result="b1" />
       <feMerge>
         <feMergeNode in="b1" />
@@ -39,57 +42,105 @@ const seed = Math.random().toString(36).slice(2, 8);
         <feMergeNode in="SourceGraphic" />
       </feMerge>
     </filter>
-    <path id={`trex-skull-${seed}`} d="
-      M -85 6
-      L -88 -18
-      L -75 -32
-      L -55 -32
-      L -30 -30
-      L 0 -28
-      L 32 -22
-      L 58 -16
-      L 78 -10
-      L 86 -2
-      L 84 6
-      L 70 8
+
+    <!--
+      Mâchoire supérieure : démarrage en bas-arrière (jaw hinge), monte
+      par l'occiput, top crâne, descend vers museau, narine, retourne
+      sous le museau, puis dents zigzag jusqu'au back. C'est ce path qui
+      porte la boule de lumière.
+
+      La géométrie est inspirée de la silhouette T-Rex skull canon que
+      Sylvain m'a montrée : crête arrière haute, museau allongé, dents
+      pointues sous la mâchoire.
+    -->
+    <path id={`trex-skull-upper-${seed}`} d="
+      M -95 -8
+      L -100 -28
+      L -88 -42
+      L -62 -46
+      L -38 -42
+      L -10 -38
+      L 22 -32
+      L 50 -24
+      L 72 -16
+      L 88 -8
+      L 95 0
+      L 90 6
+      L 75 8
       L 55 10
-      L 38 12
-      L 14 13
-      L -14 14
-      L -42 12
-      L -65 8
+      L 30 10
+      L 28 16 L 22 10
+      L 18 16 L 12 10
+      L 8 16 L 2 10
+      L -2 16 L -8 10
+      L -14 18 L -20 10
+      L -26 18 L -32 10
+      L -38 16 L -44 10
+      L -50 14 L -56 10
+      L -64 12 L -72 8
       L -82 4
+      Z
+    "/>
+
+    <!-- Mâchoire inférieure : forme allongée plus mince, gueule légèrement entrouverte -->
+    <path id={`trex-skull-lower-${seed}`} d="
+      M -76 18
+      L -78 26
+      L -64 34
+      L -38 36
+      L -34 28 L -28 36
+      L -22 28 L -16 36
+      L -10 28 L -4 36
+      L 2 28 L 8 36
+      L 14 28 L 20 36
+      L 26 28 L 32 36
+      L 38 28 L 44 36
+      L 50 30 L 56 34
+      L 65 32
+      L 72 28
+      L 70 22
+      L 56 20
+      L 35 19
+      L 10 18
+      L -20 18
+      L -50 18
+      L -70 18
       Z
     "/>
   </defs>
 
   <g filter={`url(#skull-glow-${seed})`}>
-    <use href={`#trex-skull-${seed}`}
-         stroke="#ffea00" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"
+    <!-- Mâchoire supérieure outline -->
+    <use href={`#trex-skull-upper-${seed}`}
+         stroke="#ffea00" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"
          fill="none" />
-    <path d="M -65 -4 Q 0 4 70 0" stroke="#ffea00" stroke-width="1.8" fill="none" opacity="0.75" />
-    <g fill="#ffea00">
-      <polygon points="50,8 53,16 56,8" />
-      <polygon points="28,10 31,19 34,10" />
-      <polygon points="2,11 5,21 8,11" />
-      <polygon points="-22,11 -19,20 -16,11" />
-      <polygon points="-44,10 -41,18 -38,10" />
-    </g>
-    <circle cx="32" cy="-18" r="6" stroke="#ffea00" stroke-width="2" fill="none" />
-    <circle cx="32" cy="-18" r="2.3" fill="#ffffff" />
-    <path d="M 22 -27 L 44 -25" stroke="#ffea00" stroke-width="1.6" fill="none" opacity="0.85" />
-    <ellipse cx="72" cy="-6" rx="3.5" ry="1.8" stroke="#ffea00" stroke-width="1.4" fill="none" />
-    <ellipse cx="14" cy="-14" rx="9" ry="4" stroke="#ffea00" stroke-width="1.5" fill="none" opacity="0.7" />
+    <!-- Mâchoire inférieure outline -->
+    <use href={`#trex-skull-lower-${seed}`}
+         stroke="#ffea00" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"
+         fill="none" />
+    <!-- Orbite oculaire -->
+    <ellipse cx="42" cy="-22" rx="7" ry="6" stroke="#ffea00" stroke-width="2" fill="none" />
+    <circle cx="42" cy="-22" r="2.2" fill="#ffffff" />
+    <!-- Crête sourcilière (au-dessus de l'œil) -->
+    <path d="M 30 -32 Q 42 -36 56 -30" stroke="#ffea00" stroke-width="1.6" fill="none" opacity="0.85" />
+    <!-- Fenêtre antéorbitaire (devant l'œil — caractéristique T-Rex) -->
+    <path d="M 12 -30 Q 4 -28 6 -18 Q 14 -16 24 -22 Q 28 -28 22 -32 Z"
+          stroke="#ffea00" stroke-width="1.6" fill="none" opacity="0.85" />
+    <!-- Fenêtre supratemporale (sur le top du crâne, arrière) -->
+    <ellipse cx="-22" cy="-32" rx="10" ry="4" stroke="#ffea00" stroke-width="1.4" fill="none" opacity="0.7" />
+    <!-- Narine -->
+    <ellipse cx="80" cy="-2" rx="4" ry="2" stroke="#ffea00" stroke-width="1.4" fill="none" />
   </g>
 
+  <!-- Boule lumineuse + traînée qui parcourent le contour de la mâchoire supérieure -->
   <circle r="5.5" fill={`url(#skull-orb-${seed})`} filter={`url(#orb-${seed})`}>
     <animateMotion dur={`${duration}s`} repeatCount="indefinite">
-      <mpath href={`#trex-skull-${seed}`} />
+      <mpath href={`#trex-skull-upper-${seed}`} />
     </animateMotion>
   </circle>
-  <circle r="2.5" fill="#ffffff" opacity="0.9">
+  <circle r="2.5" fill="#ffffff" opacity="0.95">
     <animateMotion dur={`${duration}s`} repeatCount="indefinite">
-      <mpath href={`#trex-skull-${seed}`} />
+      <mpath href={`#trex-skull-upper-${seed}`} />
     </animateMotion>
   </circle>
 </svg>
