@@ -1,0 +1,13 @@
+{
+  "theropod": "/silhouettes/group-theropod.png",
+  "sauropod": "/silhouettes/group-sauropod.png",
+  "ornithopod": "/silhouettes/group-ornithopod.png",
+  "thyreophoran": "/silhouettes/group-thyreophoran.png",
+  "ceratopsian": "/silhouettes/group-ceratopsian.png",
+  "pachycephalosaur": "/silhouettes/group-pachycephalosaur.png",
+  "other-saurischian": "/silhouettes/group-other-saurischian.png",
+  "other-ornithischian": "/silhouettes/group-other-ornithischian.png",
+  "pterosaur": "/silhouettes/group-pterosaur.png",
+  "marine-reptile": "/silhouettes/group-marine-reptile.png",
+  "other": "/silhouettes/group-other.png"
+}

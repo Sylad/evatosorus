@@ -81,17 +81,117 @@ import { SPECIES_INDEX } from '../data/species';
     <section data-amber-split>
       <h2>Sources & crédits</h2>
       <ul class="sources">
-        <li><strong>Données paléontologiques</strong> — <a href="https://paleobiodb.org" target="_blank" rel="noopener">Paleobiology Database (PBDB)</a>, données ouvertes sous CC0/CC-BY.</li>
-        <li><strong>Illustrations & paleo-art</strong> — <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>, domaine public ou CC-BY-SA selon le contributeur (crédité sur chaque fiche).</li>
-        <li><strong>Échelle stratigraphique</strong> — <a href="https://stratigraphy.org/chart" target="_blank" rel="noopener">ICS International Chronostratigraphic Chart 2024</a>.</li>
-        <li><strong>Cartes</strong> — <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, tuiles CARTO Dark No Labels.</li>
-        <li><strong>Icône crâne T-Rex</strong> (logo, sidebar, favicon) — <a href="https://game-icons.net/1x1/lorc/t-rex-skull.html" target="_blank" rel="noopener">Lorc / game-icons.net</a>, sous licence <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC-BY 3.0</a>.</li>
+        <li>
+          <strong>Données paléontologiques</strong> —
+          <a href="https://paleobiodb.org" target="_blank" rel="noopener">Paleobiology Database (PBDB)</a>,
+          données ouvertes sous CC0/CC-BY. Source de la taxonomie, des intervalles
+          stratigraphiques et des occurrences fossiles pour les 1500+ espèces du codex.
+        </li>
+        <li>
+          <strong>Paleo-art « en chair »</strong> —
+          <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>,
+          domaine public ou CC-BY-SA selon le contributeur (crédité sur chaque fiche).
+          Reconstitutions notables : Nobu Tamura (NT.jpg), Dmitry Bogdanov (DB.jpg),
+          ainsi que le diorama du Field Museum pour Sue.
+        </li>
+        <li>
+          <strong>Silhouettes phylogénétiques</strong> —
+          <a href="https://www.phylopic.org" target="_blank" rel="noopener">PhyloPic</a>,
+          base CC0/CC-BY de silhouettes pour les taxons éteints. Affichées en
+          fallback sur les espèces sans paleo-art Wikipedia (auteurs crédités quand CC-BY).
+        </li>
+        <li>
+          <strong>Hero T-Rex + 3 animations vidéo</strong> —
+          générées sur <a href="https://openart.ai" target="_blank" rel="noopener">openart.ai</a>
+          à partir de prompts curés (jungle, orage, volcan, empreinte ocre).
+        </li>
+        <li>
+          <strong>Échelle stratigraphique</strong> —
+          <a href="https://stratigraphy.org/chart" target="_blank" rel="noopener">ICS International Chronostratigraphic Chart 2024</a>.
+          Bornes des trois ères et des sous-périodes (Trias inférieur/moyen/supérieur, etc.).
+        </li>
+        <li>
+          <strong>Cartes</strong> —
+          <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>,
+          tuiles <a href="https://carto.com" target="_blank" rel="noopener">CARTO Dark No Labels</a>.
+        </li>
+        <li>
+          <strong>Icône crâne T-Rex</strong> (logo, sidebar, favicon) —
+          <a href="https://game-icons.net/1x1/lorc/t-rex-skull.html" target="_blank" rel="noopener">Lorc / game-icons.net</a>,
+          sous licence <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC-BY 3.0</a>.
+        </li>
+        <li>
+          <strong>Typographies</strong> —
+          <a href="https://fonts.google.com/specimen/Cinzel" target="_blank" rel="noopener">Cinzel</a>
+          (titres, glyphes lapidaires) et
+          <a href="https://fonts.google.com/specimen/Crimson+Text" target="_blank" rel="noopener">Crimson Text</a>
+          (corps de texte), Google Fonts, Open Font License.
+        </li>
       </ul>
       <p>
         Toute erreur scientifique m'incombe — la paléontologie évolue vite,
         certaines fiches sont à jour de l'état de l'art en 2024-2026, d'autres
         s'appuient sur des consensus plus anciens.
       </p>
+    </section>
+
+    <section data-amber-split>
+      <h2>Inspirations</h2>
+      <ul class="sources">
+        <li>
+          <strong><a href="https://eywa-eywa.pages.dev" target="_blank" rel="noopener">Eywa</a></strong>
+          — le codex de Pandora (univers Avatar) que j'ai fait pour Eva avant Evatosorus.
+          Même approche immersive (CycleBackdrop, DustField, atmosphère temps-driven), même
+          stack Astro, même dédicataire. Eywa est le grand frère, Evatosorus le petit cousin
+          qui regarde 252 millions d'années en arrière.
+        </li>
+        <li>
+          <strong>La saga <a href="/films/" rel="noopener">Jurassic Park / Jurassic World</a></strong>
+          (Spielberg → Edwards) — qui a redéfini ce qu'est un dinosaure dans
+          l'imaginaire collectif. Sans elle, l'image hero de la landing aurait été
+          un squelette de musée plutôt qu'un T-Rex iridescent dans la jungle.
+        </li>
+        <li>
+          <strong><a href="https://www.youtube.com/@eons" target="_blank" rel="noopener">PBS Eons</a>,
+          <a href="https://www.youtube.com/@dirtybiology" target="_blank" rel="noopener">DirtyBiology</a> et
+          <a href="/videos/" rel="noopener">les chaînes YouTube paléo</a></strong>
+          — ton documentaire BBC, vulgarisation rigoureuse sans sensationnalisme.
+          C'est l'esthétique éditoriale visée pour les blurbs de chaque fiche.
+        </li>
+        <li>
+          <strong>Le dino offline du navigateur Chrome</strong> 🦖 — universellement reconnu,
+          inspiration tacite pour le format pixelisé du favicon initial (avant qu'on
+          passe à la silhouette de crâne Lorc, plus fidèle au sujet).
+        </li>
+        <li>
+          <strong>L'éditorial Eva-Pandora-Mésozoïque</strong> — l'idée d'un site qui parle
+          d'un sujet riche en images comme un musée raconté à voix basse, pas comme
+          une fiche Wikipedia. Le pari : tu peux faire ça en quelques heures avec une
+          IA de codage et un générateur d'images, tout seul.
+        </li>
+      </ul>
+    </section>
+
+    <section data-amber-split>
+      <h2>Mes autres sites</h2>
+      <ul class="sources">
+        <li>
+          <a href="https://eywa-eywa.pages.dev" target="_blank" rel="noopener">Eywa</a>
+          — codex de Pandora (Avatar), aussi pour Eva.
+        </li>
+        <li>
+          <a href="https://github.com/Sylad/finance-tracker" target="_blank" rel="noopener">Finance Tracker</a>
+          — analyse PDF bancaires + reconnaissance auto via Claude. Mode démo public.
+        </li>
+        <li>
+          <a href="https://github.com/Sylad/warhammer40k" target="_blank" rel="noopener">Warhammer 40K Codex</a>
+          — codex narratif AAA premium pour W40K, déployé sur NAS Synology.
+        </li>
+        <li>
+          <a href="https://github.com/Sylad/ol-companion" target="_blank" rel="noopener">OL Companion</a>
+          — suivi Olympique Lyonnais (calendrier, classement, news) avec carte L1.
+        </li>
+      </ul>
     </section>
 
     <section data-amber-split class="about-cta">
