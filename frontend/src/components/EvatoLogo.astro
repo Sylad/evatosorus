@@ -27,16 +27,16 @@ const height = Math.round(size * 0.22);
       font-weight="900"
       font-size="68"
       letter-spacing="7"
-      fill="#ffea00"
+      fill="#ffc879"
     >EVATOSORUS</text>
 
     <!-- Vertèbres skeleton ambre clair -->
-    <g transform="translate(165 92)" stroke="#ffea00" stroke-width="1.6" fill="none">
+    <g transform="translate(165 92)" stroke="#ffc879" stroke-width="1.6" fill="none">
       <line x1="0" y1="6" x2="270" y2="6" />
-      <circle cx="0" cy="6" r="3.5" fill="#ffea00" />
-      <circle cx="270" cy="6" r="3.5" fill="#ffea00" />
+      <circle cx="0" cy="6" r="3.5" fill="#ffc879" />
+      <circle cx="270" cy="6" r="3.5" fill="#ffc879" />
       {Array.from({length: 9}).map((_, i) => (
-        <rect x={28 + i * 26} y="2" width="8" height="8" rx="1.5" fill="#ffea00" opacity={0.7 + (i % 3) * 0.1} />
+        <rect x={28 + i * 26} y="2" width="8" height="8" rx="1.5" fill="#ffc879" opacity={0.7 + (i % 3) * 0.1} />
       ))}
     </g>
 
@@ -67,19 +67,19 @@ const height = Math.round(size * 0.22);
     /* Drop-shadow CSS multi-couches : halo + ombre dure. Pas de filter SVG
        qui dilue les lettres comme une mauvaise photocopie. */
     filter:
-      drop-shadow(0 0 22px rgba(255, 234, 0, 0.55))
-      drop-shadow(0 0 8px rgba(255, 234, 0, 0.45))
+      drop-shadow(0 0 22px rgba(255, 200, 121, 0.55))
+      drop-shadow(0 0 8px rgba(255, 200, 121, 0.45))
       drop-shadow(0 1px 2px rgba(0, 0, 0, 0.95));
     animation: logo-pulse 6s ease-in-out infinite;
   }
   @keyframes logo-pulse {
     0%, 100% { filter:
-      drop-shadow(0 0 18px rgba(255, 234, 0, 0.45))
-      drop-shadow(0 0 6px rgba(255, 234, 0, 0.35))
+      drop-shadow(0 0 18px rgba(255, 200, 121, 0.45))
+      drop-shadow(0 0 6px rgba(255, 200, 121, 0.35))
       drop-shadow(0 1px 2px rgba(0, 0, 0, 0.95)); }
     50% { filter:
-      drop-shadow(0 0 28px rgba(255, 234, 0, 0.7))
-      drop-shadow(0 0 12px rgba(255, 234, 0, 0.55))
+      drop-shadow(0 0 28px rgba(255, 200, 121, 0.7))
+      drop-shadow(0 0 12px rgba(255, 200, 121, 0.55))
       drop-shadow(0 1px 2px rgba(0, 0, 0, 0.95)); }
   }
   @media (prefers-reduced-motion: reduce) {

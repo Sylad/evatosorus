@@ -30,7 +30,7 @@ const TREX_SKULL_PATH = "M139.5 38.28c-40.73.57-73.1 25.79-105.61 38.33c-10.02 2
     <radialGradient id={`skull-orb-${seed}`}>
       <stop offset="0%"  stop-color="#ffffff" stop-opacity="1" />
       <stop offset="35%" stop-color="#fff05a" stop-opacity="0.95" />
-      <stop offset="100%" stop-color="#ffea00" stop-opacity="0" />
+      <stop offset="100%" stop-color="#ffc879" stop-opacity="0" />
     </radialGradient>
     <filter id={`orb-${seed}`} x="-200%" y="-200%" width="500%" height="500%">
       <feGaussianBlur stdDeviation="6" result="b" />
@@ -44,8 +44,8 @@ const TREX_SKULL_PATH = "M139.5 38.28c-40.73.57-73.1 25.79-105.61 38.33c-10.02 2
 
   <!-- Crâne avec contour jaune fluo + fill semi-transparent (lit comme silhouette) -->
   <use href={`#trex-skull-${seed}`}
-       stroke="#ffea00" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"
-       fill="#ffea00" fill-opacity="0.18" />
+       stroke="#ffc879" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"
+       fill="#ffc879" fill-opacity="0.18" />
 
   <!-- Boule lumineuse + petite traînée qui parcourent le contour -->
   <circle r="14" fill={`url(#skull-orb-${seed})`} filter={`url(#orb-${seed})`}>
@@ -64,7 +64,7 @@ const TREX_SKULL_PATH = "M139.5 38.28c-40.73.57-73.1 25.79-105.61 38.33c-10.02 2
   .evato-skull {
     display: block;
     filter:
-      drop-shadow(0 0 18px rgba(255, 234, 0, 0.45))
-      drop-shadow(0 0 6px rgba(255, 234, 0, 0.35));
+      drop-shadow(0 0 18px rgba(255, 200, 121, 0.45))
+      drop-shadow(0 0 6px rgba(255, 200, 121, 0.35));
   }
 </style>
