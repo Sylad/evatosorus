@@ -117,6 +117,30 @@ export const YOUTUBE_CHANNELS: YouTubeChannel[] = [
       "Production indé, narration calme, focus sur les transitions évolutives majeures (Cambrien, Trias après extinction Permo-Trias, oiseaux modernes). Pas la plus connue mais une des plus pointues.",
     accent: 'rust',
   },
+  {
+    id: 'prehistoric',
+    name: 'Prehistoric',
+    handle: '@prehistoricyoutube1559',
+    url: 'https://www.youtube.com/@prehistoricyoutube1559',
+    language: 'en',
+    subscribers: '~',
+    topics: ['Reconstitutions paleo', 'Animations 3D', 'Showcases'],
+    blurb:
+      "Chaîne dédiée aux reconstitutions visuelles et animations 3D des animaux préhistoriques. Approche plus contemplation que vulgarisation pure — idéale pour s'imprégner du look-and-feel des époques.",
+    accent: 'amber',
+  },
+  {
+    id: 'faits-dino',
+    name: 'FaitsDino',
+    handle: '@faitsdino',
+    url: 'https://www.youtube.com/@faitsdino',
+    language: 'fr',
+    subscribers: '~',
+    topics: ['Dinosaures FR', 'Faits & anecdotes', 'Format court'],
+    blurb:
+      "Chaîne FR centrée 100 % dinos. Format court, dense en faits, parfait pour découvrir un nouveau dino par jour. Bon complément à DirtyBiology pour qui préfère le focus dinos sans la digression biologique.",
+    accent: 'jade',
+  },
 ];
 
 export const LANGUAGE_LABELS: Record<YouTubeChannel['language'], string> = {

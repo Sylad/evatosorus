@@ -34,7 +34,7 @@ export const FILMS: Film[] = [
     durationMin: 127,
     imdb: 8.2,
     saga: 'park',
-    posterUrl: 'https://upload.wikimedia.org/wikipedia/en/e/e7/Jurassic_Park_poster.jpg',
+    posterUrl: '/films/jurassic-park-1993.jpg',
     trailerUrl: 'https://www.youtube.com/watch?v=lc0UehYemQA',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Jurassic_Park',
     blurb:
@@ -51,7 +51,7 @@ export const FILMS: Film[] = [
     durationMin: 129,
     imdb: 6.6,
     saga: 'park',
-    posterUrl: 'https://upload.wikimedia.org/wikipedia/en/c/c1/The_Lost_World_-_Jurassic_Park_poster.jpg',
+    posterUrl: '/films/lost-world-1997.jpg',
     trailerUrl: 'https://www.youtube.com/watch?v=XzUZX1QfO9Y',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Le_Monde_perdu_:_Jurassic_Park',
     blurb:
@@ -68,7 +68,7 @@ export const FILMS: Film[] = [
     durationMin: 92,
     imdb: 5.9,
     saga: 'park',
-    posterUrl: 'https://upload.wikimedia.org/wikipedia/en/4/41/Jurassic_park_iii.jpg',
+    posterUrl: '/films/jurassic-park-iii-2001.jpg',
     trailerUrl: 'https://www.youtube.com/watch?v=VTKWA1n1bxI',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Jurassic_Park_III',
     blurb:
@@ -85,7 +85,7 @@ export const FILMS: Film[] = [
     durationMin: 124,
     imdb: 7.0,
     saga: 'world',
-    posterUrl: 'https://upload.wikimedia.org/wikipedia/en/4/4a/Jurassic_World_poster.jpg',
+    posterUrl: '/films/jurassic-world-2015.jpg',
     trailerUrl: 'https://www.youtube.com/watch?v=RFinNxS5KN4',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Jurassic_World',
     blurb:
@@ -102,7 +102,7 @@ export const FILMS: Film[] = [
     durationMin: 128,
     imdb: 6.1,
     saga: 'world',
-    posterUrl: 'https://upload.wikimedia.org/wikipedia/en/2/2a/Jurassic_World_Fallen_Kingdom.png',
+    posterUrl: '/films/fallen-kingdom-2018.jpg',
     trailerUrl: 'https://www.youtube.com/watch?v=vn9mMeWcgoM',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Jurassic_World_:_Fallen_Kingdom',
     blurb:
@@ -119,7 +119,7 @@ export const FILMS: Film[] = [
     durationMin: 147,
     imdb: 5.6,
     saga: 'world',
-    posterUrl: 'https://upload.wikimedia.org/wikipedia/en/0/06/Jurassic_World_Dominion.jpg',
+    posterUrl: '/films/dominion-2022.jpg',
     trailerUrl: 'https://www.youtube.com/watch?v=fb5ELWi-ekk',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Jurassic_World_:_Le_Monde_d%27apr%C3%A8s',
     blurb:
@@ -136,7 +136,7 @@ export const FILMS: Film[] = [
     durationMin: 134,
     imdb: 6.3,
     saga: 'rebirth',
-    posterUrl: 'https://upload.wikimedia.org/wikipedia/en/8/8e/Jurassic_World_Rebirth_poster.jpg',
+    posterUrl: '/films/rebirth-2025.jpg',
     trailerUrl: 'https://www.youtube.com/watch?v=jan64x2MRqM',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Jurassic_World:_Rebirth',
     blurb:

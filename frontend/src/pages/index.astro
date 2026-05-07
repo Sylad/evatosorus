@@ -32,27 +32,12 @@ import { DustField } from '../components/cinema/DustField';
       Trias, Jurassique, Crétacé. 1500 espèces, leurs paysages, leurs continents perdus.
     </p>
 
-    <div class="mt-10 flex flex-wrap gap-3 justify-center">
-      <a href="/codex/"
-         class="px-5 py-2.5 rounded border border-evato-amber text-evato-amber hover:shadow-glow-amber-strong hover:bg-evato-amber/10 transition backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
-        Explorer le codex
-      </a>
-      <a href="/periodes/"
-         class="px-5 py-2.5 rounded border border-evato-jade text-evato-jade hover:shadow-glow-amber hover:bg-evato-jade/10 transition backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
-        Voyage temporel
-      </a>
-      <a href="/carte/"
-         class="px-5 py-2.5 rounded border border-evato-rust text-evato-rust hover:shadow-glow-rust hover:bg-evato-rust/10 transition backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
-        Carte paléo-monde
-      </a>
-      <a href="/films/"
-         class="px-5 py-2.5 rounded border border-evato-bone-muted text-evato-bone hover:border-evato-bone hover:bg-evato-bone/5 transition backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
-        Films
-      </a>
-      <a href="/videos/"
-         class="px-5 py-2.5 rounded border border-evato-bone-muted text-evato-bone hover:border-evato-bone hover:bg-evato-bone/5 transition backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
-        Vidéos YouTube
-      </a>
+    <div class="mt-10 flex flex-wrap gap-3 justify-center landing-ctas">
+      <a href="/codex/" class="cta cta-amber">Explorer le codex</a>
+      <a href="/periodes/" class="cta cta-jade">Voyage temporel</a>
+      <a href="/carte/" class="cta cta-rust">Carte paléo-monde</a>
+      <a href="/films/" class="cta cta-bone">Films</a>
+      <a href="/videos/" class="cta cta-bone">Vidéos YouTube</a>
           <a href="/about/"
              class="px-5 py-2.5 rounded text-evato-bone-muted hover:text-evato-bone transition-colors backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
             À propos
@@ -102,6 +87,63 @@ import { DustField } from '../components/cinema/DustField';
 </script>
 
 <style>
+  /*
+    CTAs landing : design plus opaque + saturé pour ressortir sur la vidéo
+    de fond. Background dark presque-opaque, border 2px, glow contrasté
+    sur la couleur d'accent, font-weight 600 pour la lisibilité.
+  */
+  .cta {
+    padding: 0.75rem 1.4rem;
+    border-radius: 6px;
+    border: 2px solid;
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    background: rgba(13, 10, 6, 0.72);
+    backdrop-filter: blur(8px);
+    transition: transform 200ms ease, box-shadow 220ms ease, background 220ms ease, color 200ms ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
+    font-weight: 600;
+  }
+  .cta:hover {
+    transform: translateY(-2px);
+    background: rgba(13, 10, 6, 0.88);
+  }
+  .cta-amber {
+    border-color: var(--color-evato-amber);
+    color: var(--color-evato-amber-bright);
+  }
+  .cta-amber:hover {
+    box-shadow: 0 0 0 1px var(--color-evato-amber-bright), 0 0 28px rgba(255, 200, 121, 0.55);
+    color: #ffe2a8;
+  }
+  .cta-jade {
+    border-color: #7fb892;
+    color: #a3d6b3;
+  }
+  .cta-jade:hover {
+    box-shadow: 0 0 0 1px #a3d6b3, 0 0 24px rgba(127, 184, 146, 0.5);
+    color: #c8e8d2;
+  }
+  .cta-rust {
+    border-color: #e36e4a;
+    color: #ff8c66;
+  }
+  .cta-rust:hover {
+    box-shadow: 0 0 0 1px #ff8c66, 0 0 26px rgba(199, 81, 49, 0.55);
+    color: #ffaa86;
+  }
+  .cta-bone {
+    border-color: #d4c8b3;
+    color: #ebd9c5;
+  }
+  .cta-bone:hover {
+    box-shadow: 0 0 0 1px #ebd9c5, 0 0 22px rgba(232, 230, 221, 0.4);
+    color: #fff5e2;
+  }
+
   /*
     Voile combiné : radial dark au centre pour la lisibilité du logo
     (sans cacher complètement la vidéo aux bords) + tint ambre subtle
