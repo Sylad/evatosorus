@@ -87,6 +87,14 @@ import { DustField } from '../components/cinema/DustField';
 
 <style>
   /*
+    PAS de voile main::before sur la landing : le radial-gradient dark
+    précédent (rgba 0.7 au centre) tuait toute la saturation du logo et
+    du texte. Sylvain l'a identifié 2026-05-07. Le drop-shadow CSS
+    multi-couches du logo + le contour noir text-shadow des paragraphes
+    gèrent déjà la lisibilité sur la vidéo de fond.
+  */
+
+  /*
     CTAs landing : retour au design border + texte coloré (préféré par Sylvain),
     mais avec couleurs vraiment saturées et fond opaque pour ressortir sur la
     vidéo de fond.
@@ -190,25 +198,13 @@ import { DustField } from '../components/cinema/DustField';
   }
 
   /*
-    Voile combiné : radial dark au centre pour la lisibilité du logo
-    (sans cacher complètement la vidéo aux bords) + tint ambre subtle
-    pour la cohésion avec la palette globale.
+    main::before retiré — c'était le coupable du foreground palichon
+    (Sylvain 2026-05-07). Le radial-gradient au centre 50%/50% en
+    rgba(13, 10, 6, 0.7) désaturait tout le logo et le texte qui
+    passaient à travers. Le drop-shadow CSS du logo + text-shadow épais
+    des paragraphes gèrent déjà la lisibilité sur les zones lumineuses
+    de la vidéo de fond.
   */
-  main::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: 5;
-    pointer-events: none;
-    background:
-      radial-gradient(ellipse at 50% 50%, rgba(13, 10, 6, 0.7) 0%, rgba(13, 10, 6, 0.4) 45%, rgba(13, 10, 6, 0.2) 80%),
-      linear-gradient(to bottom, rgba(13, 10, 6, 0.25) 0%, rgba(13, 10, 6, 0.55) 100%);
-  }
-
-  /* main::after retiré — son tint ambre lavait les couleurs vives du
-     foreground (le combo avec DustField screen-mode rendait le tout
-     palichon). On garde juste le voile dark main::before pour la
-     lisibilité du texte sur la vidéo. */
 
   /* Legacy CSS hero-grid kept only as no-op fallback (composant retiré). */
   .hero-grid { display: contents; }
