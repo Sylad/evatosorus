@@ -18,74 +18,134 @@ const height = Math.round(size * 0.45);
     class:list={["evato-logo-svg", { glow }]}
   >
     <defs>
-      <linearGradient id="amber-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%"  stop-color="#ffc879" />
-        <stop offset="55%" stop-color="#d4a55e" />
-        <stop offset="100%" stop-color="#a87b3c" />
-      </linearGradient>
-      <filter id="amber-glow" x="-20%" y="-20%" width="140%" height="140%">
-        <feGaussianBlur stdDeviation="2.4" result="b1" />
+      <!-- Couleurs solid : jaune fluo intense, plus de gradients qui font perdre la luminosité. -->
+      <radialGradient id="light-orb">
+        <stop offset="0%"  stop-color="#ffffff" stop-opacity="1" />
+        <stop offset="35%" stop-color="#fff05a" stop-opacity="0.95" />
+        <stop offset="100%" stop-color="#ffea00" stop-opacity="0" />
+      </radialGradient>
+      <!-- Glow halo épais derrière le wordmark + skull (lumineux blanc/jaune) -->
+      <filter id="bright-glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="b1" />
+        <feGaussianBlur stdDeviation="1.5" result="b2" in="SourceGraphic" />
         <feMerge>
           <feMergeNode in="b1" />
+          <feMergeNode in="b2" />
           <feMergeNode in="SourceGraphic" />
         </feMerge>
       </filter>
+      <filter id="orb-glow" x="-300%" y="-300%" width="700%" height="700%">
+        <feGaussianBlur stdDeviation="4" result="b" />
+        <feMerge>
+          <feMergeNode in="b" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+
+      <!--
+        Crâne T-Rex de profil gauche → droite. Forme angulaire :
+        - Occiput haut à gauche (proéminence arrière)
+        - Crâne descendant vers le museau (front nasal)
+        - Pointe museau à droite avec narine
+        - Mâchoire inférieure visible avec ligne de dents
+        - Œil rond + fenêtre antéorbitaire
+      -->
+      <path id="trex-skull-path" d="
+        M -85 6
+        L -88 -18
+        L -75 -32
+        L -55 -32
+        L -30 -30
+        L 0 -28
+        L 32 -22
+        L 58 -16
+        L 78 -10
+        L 86 -2
+        L 84 6
+        L 70 8
+        L 55 10
+        L 38 12
+        L 14 13
+        L -14 14
+        L -42 12
+        L -65 8
+        L -82 4
+        Z
+      "/>
     </defs>
 
     <!--
-      Empreinte 3-doigts T-Rex stylisée, posée au-dessus du wordmark.
-      Cohérence avec l'image hero (la marque ocre sur le flanc du T-Rex).
-      Vue de dessus, doigts ouverts, griffes pointues. Reconnaissable
-      instantanément, contrairement au crâne stylisé précédent qui
-      ressemblait à un paresseux.
+      Crâne T-Rex en outline jaune fluo, avec dents + œil + narine.
+      Une boule lumineuse blanche parcourt le contour en boucle 8s.
     -->
-    <g transform="translate(300 65)" filter="url(#amber-glow)">
-      <!-- Coussin central (talon + paume) -->
-      <path
-        d="M -22 -2 Q -28 14 -18 28 Q -8 38 0 38 Q 8 38 18 28 Q 28 14 22 -2 Q 12 -16 0 -18 Q -12 -16 -22 -2 Z"
-        fill="url(#amber-grad)" opacity="0.92"
-      />
-      <!-- Doigt central (le plus long) avec griffe -->
-      <path
-        d="M -8 -16 L -6 -42 Q -4 -52 0 -54 Q 4 -52 6 -42 L 8 -16 Z"
-        fill="url(#amber-grad)" opacity="0.95"
-      />
-      <!-- Griffe pointue centrale -->
-      <path d="M -3 -52 L 0 -62 L 3 -52 Z" fill="#ffc879" />
-      <!-- Doigt latéral gauche -->
-      <path
-        d="M -22 -6 Q -38 -12 -44 -22 Q -48 -32 -42 -34 Q -36 -34 -28 -22 L -22 -6 Z"
-        fill="url(#amber-grad)" opacity="0.9"
-      />
-      <!-- Griffe gauche -->
-      <path d="M -42 -34 L -48 -38 L -41 -32 Z" fill="#ffc879" />
-      <!-- Doigt latéral droit -->
-      <path
-        d="M 22 -6 Q 38 -12 44 -22 Q 48 -32 42 -34 Q 36 -34 28 -22 L 22 -6 Z"
-        fill="url(#amber-grad)" opacity="0.9"
-      />
-      <!-- Griffe droite -->
-      <path d="M 42 -34 L 48 -38 L 41 -32 Z" fill="#ffc879" />
+    <g transform="translate(300 65)" filter="url(#bright-glow)">
+      <!-- Outline principal -->
+      <use href="#trex-skull-path"
+           stroke="#ffea00" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"
+           fill="none" />
+      <!-- Ligne de mâchoire (sépare gueule/crâne) -->
+      <path d="M -65 -4 Q 0 4 70 0" stroke="#ffea00" stroke-width="1.8" fill="none" opacity="0.75" />
+      <!-- Dents pointues le long de la mâchoire supérieure -->
+      <g fill="#ffea00">
+        <polygon points="50,8 53,16 56,8" />
+        <polygon points="28,10 31,19 34,10" />
+        <polygon points="2,11 5,21 8,11" />
+        <polygon points="-22,11 -19,20 -16,11" />
+        <polygon points="-44,10 -41,18 -38,10" />
+      </g>
+      <!-- Orbite oculaire -->
+      <circle cx="32" cy="-18" r="6" stroke="#ffea00" stroke-width="2" fill="none" />
+      <circle cx="32" cy="-18" r="2.3" fill="#ffffff" />
+      <!-- Crête sourcilière -->
+      <path d="M 22 -27 L 44 -25" stroke="#ffea00" stroke-width="1.6" fill="none" opacity="0.85" />
+      <!-- Narine -->
+      <ellipse cx="72" cy="-6" rx="3.5" ry="1.8" stroke="#ffea00" stroke-width="1.4" fill="none" />
+      <!-- Fenêtre antéorbitaire (cavité devant l'œil, distinctive du T-Rex) -->
+      <ellipse cx="14" cy="-14" rx="9" ry="4" stroke="#ffea00" stroke-width="1.5" fill="none" opacity="0.7" />
     </g>
 
+    <!--
+      Boule de lumière qui suit le contour du crâne — externe au filter
+      glow pour rester ultra brillante sans flou.
+    -->
+    <g transform="translate(300 65)">
+      <circle r="5.5" fill="url(#light-orb)" filter="url(#orb-glow)">
+        <animateMotion dur="8s" repeatCount="indefinite">
+          <mpath href="#trex-skull-path" />
+        </animateMotion>
+      </circle>
+      <circle r="2.5" fill="#ffffff" opacity="0.9">
+        <animateMotion dur="8s" repeatCount="indefinite">
+          <mpath href="#trex-skull-path" />
+        </animateMotion>
+      </circle>
+    </g>
+
+    <!--
+      Label EVATOSORUS : effet néon enseigne — fill jaune-blanc lumineux
+      + double halo jaune électrique (filter bright-glow) qui irradie
+      autour des lettres. Lecture nette même sur fond chargé.
+    -->
     <text
       x="300" y="200"
       text-anchor="middle"
       font-family="Cinzel, serif"
-      font-weight="700"
-      font-size="68"
-      letter-spacing="6"
-      fill="url(#amber-grad)"
-      filter="url(#amber-glow)"
+      font-weight="900"
+      font-size="72"
+      letter-spacing="7"
+      fill="#fff5a0"
+      stroke="#ffea00"
+      stroke-width="0.8"
+      filter="url(#bright-glow)"
     >EVATOSORUS</text>
 
-    <!-- skeletal underline : a stylized vertebra row -->
-    <g transform="translate(165 230)" stroke="#d4a55e" stroke-width="1.4" fill="none" opacity="0.85">
+    <!-- skeletal underline : a stylized vertebra row, en jaune néon -->
+    <g transform="translate(165 230)" stroke="#ffea00" stroke-width="1.6" fill="none">
       <line x1="0" y1="6" x2="270" y2="6" />
-      <circle cx="0" cy="6" r="3.5" fill="#d4a55e" />
-      <circle cx="270" cy="6" r="3.5" fill="#d4a55e" />
+      <circle cx="0" cy="6" r="3.5" fill="#ffea00" />
+      <circle cx="270" cy="6" r="3.5" fill="#ffea00" />
       {Array.from({length: 9}).map((_, i) => (
-        <rect x={28 + i * 26} y="2" width="8" height="8" rx="1.5" fill="#d4a55e" opacity={0.6 + (i % 3) * 0.15} />
+        <rect x={28 + i * 26} y="2" width="8" height="8" rx="1.5" fill="#ffea00" opacity={0.7 + (i % 3) * 0.1} />
       ))}
     </g>
 
@@ -96,7 +156,8 @@ const height = Math.round(size * 0.45);
       font-style="italic"
       font-size="14"
       letter-spacing="3"
-      fill="#b8a78f"
+      fill="#fff5dc"
+      opacity="0.9"
     >codex mésozoïque</text>
   </svg>
 </div>
