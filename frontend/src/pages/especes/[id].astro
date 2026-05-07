@@ -34,12 +34,30 @@ const otherSameGroup = SPECIES
 
     <div class="detail-grid">
       <div class="detail-image">
-        {s.imageUrl ? (
-          <img src={s.imageUrl} alt={s.commonName ?? s.name} />
+        {/* Image principale = paleo-art "en chair" si dispo, sinon le squelette/fossile. */}
+        {(s.lifeRestorationUrl || s.imageUrl) ? (
+          <img
+            src={s.lifeRestorationUrl ?? s.imageUrl}
+            alt={s.commonName ?? s.name}
+          />
         ) : (
           <div class="image-fallback"><span>𓆗</span></div>
         )}
-        {s.imageCredit && <p class="image-credit">© {s.imageCredit}</p>}
+        <p class="image-caption">
+          {s.lifeRestorationUrl ? 'Reconstitution paleo-art' : 'Référence muséale'}
+          {s.lifeRestorationCredit && <span class="image-credit"> · © {s.lifeRestorationCredit}</span>}
+          {!s.lifeRestorationUrl && s.imageCredit && <span class="image-credit"> · © {s.imageCredit}</span>}
+        </p>
+        {/* Image secondaire : squelette/fossile, affiché sous l'image principale si on a aussi un paleo-art. */}
+        {s.lifeRestorationUrl && s.imageUrl && (
+          <div class="detail-secondary">
+            <img src={s.imageUrl} alt={`Squelette ou fossile de ${s.commonName ?? s.name}`} loading="lazy" />
+            <p class="image-caption">
+              Squelette / fossile
+              {s.imageCredit && <span class="image-credit"> · © {s.imageCredit}</span>}
+            </p>
+          </div>
+        )}
       </div>
 
       <aside class="detail-stats">
@@ -193,12 +211,31 @@ const otherSameGroup = SPECIES
       font-size: 5rem;
       color: rgba(212, 165, 94, 0.35);
     }
-    .image-credit {
-      padding: 0.4rem 0.8rem;
-      font-size: 0.7rem;
+    .image-caption {
+      padding: 0.5rem 0.9rem;
+      font-size: 0.78rem;
       color: var(--color-evato-bone-muted);
       text-align: right;
       margin: 0;
+      font-style: italic;
+      border-top: 1px solid rgba(212, 165, 94, 0.12);
+    }
+    .image-credit {
+      font-size: 0.72rem;
+      color: var(--color-evato-bone-muted);
+      opacity: 0.7;
+    }
+    .detail-secondary {
+      margin-top: 0.8rem;
+      border-top: 1px solid rgba(212, 165, 94, 0.18);
+      padding-top: 0.8rem;
+    }
+    .detail-secondary img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 4px;
+      filter: saturate(0.85);
     }
     .detail-stats {
       background: rgba(26, 18, 10, 0.55);

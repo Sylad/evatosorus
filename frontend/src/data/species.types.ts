@@ -41,9 +41,16 @@ export type Species = {
   locations?: { country: string; lat?: number; lng?: number }[];
   /** Description courte (1-3 phrases) en français — vulgarisée façon BBC. */
   blurb?: string;
-  /** Image principale (URL Wikimedia Commons ou local). */
+  /** Image principale — squelette/fossile (référence muséale). */
   imageUrl?: string;
   imageCredit?: string;
+  /**
+   * Reconstitution paleo-art : l'animal "en chair", vivant. Affichée en
+   * priorité sur la fiche détail si disponible. Le squelette devient
+   * image secondaire dans la galerie de la fiche.
+   */
+  lifeRestorationUrl?: string;
+  lifeRestorationCredit?: string;
   /** Lien externe canonique. */
   wikipediaUrl?: string;
   paleobiodbId?: number;

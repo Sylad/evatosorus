@@ -8,10 +8,16 @@ const taxonGroups = Array.from(new Set(SPECIES.map((s) => s.taxonGroup)))
   .map((id) => ({ id, label: TAXON_GROUP_LABELS[id] ?? id }))
   .sort((a, b) => a.label.localeCompare(b.label, 'fr'));
 
+// Sort : iconic en premier, puis espèces avec paleo-art ou image, puis le reste alphabétique.
+// Le user voit les fiches les plus illustrées en premier (1500 entrées dont
+// la plupart n'ont pas d'image car PaleoBioDB ne fournit pas de paleo-art).
 const sorted = [...SPECIES].sort((a, b) => {
-  // iconic species first, then alphabetical
   if (a.iconic && !b.iconic) return -1;
   if (!a.iconic && b.iconic) return 1;
+  const aHasImg = !!(a.lifeRestorationUrl || a.imageUrl);
+  const bHasImg = !!(b.lifeRestorationUrl || b.imageUrl);
+  if (aHasImg && !bHasImg) return -1;
+  if (!aHasImg && bHasImg) return 1;
   return a.name.localeCompare(b.name);
 });
 ---
@@ -39,6 +45,7 @@ const sorted = [...SPECIES].sort((a, b) => {
         data-period={s.periodId}
         data-diet={s.diet}
         data-group={s.taxonGroup}
+        data-has-image={(s.lifeRestorationUrl || s.imageUrl) ? 'true' : 'false'}
         data-haystack={`${s.name} ${s.commonName ?? ''} ${TAXON_GROUP_LABELS[s.taxonGroup] ?? ''}`}
       >
         <SpeciesCard species={s} />

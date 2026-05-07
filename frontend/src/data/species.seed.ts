@@ -28,6 +28,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/hero-trex.jpg',
     imageCredit: 'Image générée sur openart.ai',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Tyrannosaurus',
+    lifeRestorationUrl: '/hero-trex.jpg',
+    lifeRestorationCredit: 'Image générée sur openart.ai',
     iconic: true,
   },
   {
@@ -45,6 +47,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/velociraptor-mongoliensis.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Velociraptor',
+    lifeRestorationUrl: '/species-life/velociraptor-mongoliensis.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -62,6 +66,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/triceratops-horridus.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Triceratops',
+    lifeRestorationUrl: '/species-life/triceratops-horridus.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -79,6 +85,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/diplodocus-carnegii.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Diplodocus',
+    lifeRestorationUrl: '/species-life/diplodocus-carnegii.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -96,6 +104,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/brachiosaurus-altithorax.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Brachiosaurus',
+    lifeRestorationUrl: '/species-life/brachiosaurus-altithorax.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -113,6 +123,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/allosaurus-fragilis.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Allosaurus',
+    lifeRestorationUrl: '/species-life/allosaurus-fragilis.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -130,6 +142,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/stegosaurus-stenops.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Stegosaurus',
+    lifeRestorationUrl: '/species-life/stegosaurus-stenops.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -147,6 +161,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/spinosaurus-aegyptiacus.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Spinosaurus',
+    lifeRestorationUrl: '/species-life/spinosaurus-aegyptiacus.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -164,6 +180,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/ankylosaurus-magniventris.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Ankylosaurus',
+    lifeRestorationUrl: '/species-life/ankylosaurus-magniventris.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -181,6 +199,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/eoraptor-lunensis.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Eoraptor',
+    lifeRestorationUrl: '/species-life/eoraptor-lunensis.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -198,6 +218,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/archaeopteryx-lithographica.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Archaeopteryx',
+    lifeRestorationUrl: '/species-life/archaeopteryx-lithographica.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -215,6 +237,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/parasaurolophus-walkeri.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Parasaurolophus',
+    lifeRestorationUrl: '/species-life/parasaurolophus-walkeri.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -232,6 +256,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/iguanodon-bernissartensis.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Iguanodon',
+    lifeRestorationUrl: '/species-life/iguanodon-bernissartensis.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -249,6 +275,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/plateosaurus-trossingensis.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Plateosaurus',
+    lifeRestorationUrl: '/species-life/plateosaurus-trossingensis.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -266,6 +294,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/coelophysis-bauri.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Coelophysis',
+    lifeRestorationUrl: '/species-life/coelophysis-bauri.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -283,6 +313,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/compsognathus-longipes.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Compsognathus',
+    lifeRestorationUrl: '/species-life/compsognathus-longipes.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -300,6 +332,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/argentinosaurus-huinculensis.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Argentinosaurus',
+    lifeRestorationUrl: '/species-life/argentinosaurus-huinculensis.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -317,6 +351,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/carnotaurus-sastrei.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Carnotaurus',
+    lifeRestorationUrl: '/species-life/carnotaurus-sastrei.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -334,6 +370,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/pachycephalosaurus-wyomingensis.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Pachycephalosaurus',
+    lifeRestorationUrl: '/species-life/pachycephalosaurus-wyomingensis.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -351,6 +389,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/therizinosaurus-cheloniformis.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Therizinosaurus',
+    lifeRestorationUrl: '/species-life/therizinosaurus-cheloniformis.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -368,6 +408,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/mosasaurus-hoffmanni.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Mosasaurus',
+    lifeRestorationUrl: '/species-life/mosasaurus-hoffmanni.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
   },
   {
     id: 'pteranodon-longiceps',
@@ -384,6 +426,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/pteranodon-longiceps.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Pteranodon',
+    lifeRestorationUrl: '/species-life/pteranodon-longiceps.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
   },
   {
     id: 'deinonychus-antirrhopus',
@@ -400,6 +444,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/deinonychus-antirrhopus.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Deinonychus',
+    lifeRestorationUrl: '/species-life/deinonychus-antirrhopus.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
   {
@@ -417,6 +463,8 @@ export const SPECIES_SEED: Species[] = [
     imageUrl: '/species/giganotosaurus-carolinii.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Giganotosaurus',
+    lifeRestorationUrl: '/species-life/giganotosaurus-carolinii.jpg',
+    lifeRestorationCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     iconic: true,
   },
 ];

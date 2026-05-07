@@ -5,7 +5,10 @@ type FilterState = {
   period: 'all' | 'trias' | 'jurassique' | 'cretace';
   diet: 'all' | 'carnivore' | 'herbivore' | 'omnivore' | 'piscivore';
   group: string;
+  withImageOnly: boolean;
 };
+
+const PAGE_SIZE = 60;
 
 // Driven entirely by data attributes on the species cards rendered by
 // Astro — keeps the "1500 cards in DOM" path working without ever
@@ -16,8 +19,11 @@ export function CodexFilters({ taxonGroups }: { taxonGroups: { id: string; label
     period: 'all',
     diet: 'all',
     group: 'all',
+    withImageOnly: true, // par défaut on cache les fiches sans image
   });
   const [count, setCount] = useState(0);
+  const [matchCount, setMatchCount] = useState(0);
+  const [visibleLimit, setVisibleLimit] = useState(PAGE_SIZE);
 
   const filterFn = useMemo(() => {
     const needle = state.q.trim().toLowerCase();
@@ -25,10 +31,12 @@ export function CodexFilters({ taxonGroups }: { taxonGroups: { id: string; label
       const periodId = el.dataset.period ?? '';
       const diet = el.dataset.diet ?? '';
       const group = el.dataset.group ?? '';
+      const hasImage = el.dataset.hasImage === 'true';
       const haystack = (el.dataset.haystack ?? '').toLowerCase();
       if (state.period !== 'all' && periodId !== state.period) return false;
       if (state.diet !== 'all' && diet !== state.diet) return false;
       if (state.group !== 'all' && group !== state.group) return false;
+      if (state.withImageOnly && !hasImage) return false;
       if (needle && !haystack.includes(needle)) return false;
       return true;
     };
@@ -36,14 +44,33 @@ export function CodexFilters({ taxonGroups }: { taxonGroups: { id: string; label
 
   useEffect(() => {
     const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-species-card]'));
-    let visible = 0;
+    let matching = 0;
+    let shown = 0;
     for (const c of cards) {
       const ok = filterFn(c);
-      c.style.display = ok ? '' : 'none';
-      if (ok) visible++;
+      if (!ok) {
+        c.style.display = 'none';
+        continue;
+      }
+      matching++;
+      if (shown < visibleLimit) {
+        c.style.display = '';
+        shown++;
+      } else {
+        c.style.display = 'none';
+      }
     }
-    setCount(visible);
-  }, [filterFn]);
+    setCount(shown);
+    setMatchCount(matching);
+  }, [filterFn, visibleLimit]);
+
+  // Reset la limite quand le filtre change (sinon "voir plus" deviendrait
+  // bizarre si on filtre puis on charge plus).
+  useEffect(() => {
+    setVisibleLimit(PAGE_SIZE);
+  }, [state.q, state.period, state.diet, state.group, state.withImageOnly]);
+
+  const canLoadMore = count < matchCount;
 
   return (
     <div className="codex-filters">
@@ -56,7 +83,17 @@ export function CodexFilters({ taxonGroups }: { taxonGroups: { id: string; label
           className="filter-search"
           aria-label="Recherche par nom"
         />
-        <span className="filter-count">{count} espèces</span>
+        <label className="toggle-image">
+          <input
+            type="checkbox"
+            checked={state.withImageOnly}
+            onChange={(e) => setState((s) => ({ ...s, withImageOnly: e.target.checked }))}
+          />
+          <span>Avec image</span>
+        </label>
+        <span className="filter-count">
+          {count}<span className="of-total"> / {matchCount}</span>
+        </span>
       </div>
 
       <div className="filter-row">
@@ -105,6 +142,16 @@ export function CodexFilters({ taxonGroups }: { taxonGroups: { id: string; label
         </fieldset>
       </div>
 
+      {canLoadMore && (
+        <button
+          type="button"
+          className="load-more"
+          onClick={() => setVisibleLimit((l) => l + PAGE_SIZE)}
+        >
+          Voir plus ({Math.min(PAGE_SIZE, matchCount - count)} de plus, {matchCount - count} restantes)
+        </button>
+      )}
+
       <style>{`
         .codex-filters {
           background: rgba(26, 18, 10, 0.55);
@@ -115,6 +162,47 @@ export function CodexFilters({ taxonGroups }: { taxonGroups: { id: string; label
           flex-direction: column;
           gap: 1rem;
           margin-bottom: 2rem;
+        }
+        .toggle-image {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.4rem;
+          padding: 0.4rem 0.8rem;
+          background: rgba(13, 10, 6, 0.5);
+          border: 1px solid rgba(212, 165, 94, 0.25);
+          border-radius: 4px;
+          color: var(--color-evato-bone-muted);
+          cursor: pointer;
+          font-size: 0.85rem;
+          transition: border-color 200ms, color 200ms;
+        }
+        .toggle-image:hover { color: var(--color-evato-bone); border-color: var(--color-evato-amber); }
+        .toggle-image input { accent-color: var(--color-evato-amber); }
+        .of-total {
+          color: var(--color-evato-bone-muted);
+          font-size: 0.7rem;
+          margin-left: 0.25rem;
+        }
+        .load-more {
+          margin: 1.5rem auto 0;
+          padding: 0.7rem 1.6rem;
+          background: rgba(13, 10, 6, 0.78);
+          border: 2px solid var(--color-evato-amber);
+          border-radius: 4px;
+          color: var(--color-evato-amber);
+          font-family: var(--font-display);
+          font-size: 0.78rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          font-weight: 700;
+          cursor: pointer;
+          transition: transform 200ms, box-shadow 200ms, color 200ms;
+          align-self: center;
+        }
+        .load-more:hover {
+          transform: translateY(-2px);
+          color: var(--color-evato-amber-bright);
+          box-shadow: 0 0 0 1px var(--color-evato-amber-bright), 0 0 28px rgba(255, 200, 121, 0.5);
         }
         .filter-row {
           display: flex;
