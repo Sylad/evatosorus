@@ -1,7 +1,7 @@
 # Evatosorus — Codex Mésozoïque
 
 [![Vibed with Claude Code](https://img.shields.io/badge/vibed_with-Claude_Code-d4a55e?style=flat-square)](https://claude.com/claude-code)
-[![Mockups by ChatGPT](https://img.shields.io/badge/visuals-ChatGPT-c75131?style=flat-square)](https://chatgpt.com)
+[![Visuals by openart.ai](https://img.shields.io/badge/visuals-openart.ai-c75131?style=flat-square)](https://openart.ai)
 [![Astro](https://img.shields.io/badge/built_with-Astro_6-5e8f6e?style=flat-square)](https://astro.build)
 [![Cloudflare Pages](https://img.shields.io/badge/deploys_to-Cloudflare_Pages-d4a55e?style=flat-square)](https://pages.cloudflare.com)
 
@@ -17,7 +17,7 @@
 Trois ères, trois climats, trois géographies. Une atmosphère ambre/sable/terre
 qui change toutes les 25 secondes sur la landing. Un codex filtrable de
 1500 fiches. Une carte interactive du paléo-monde. Une page À propos qui
-assume la collab humain × Claude Code × ChatGPT.
+assume la collab humain × Claude Code × openart.ai.
 
 ## Stack
 
@@ -105,10 +105,9 @@ output directory `frontend/dist`. C'est tout.
 
 ## Crédits
 
-Vibé à plusieurs :
+Vibé à trois :
 - **Sylvain** (humain) — direction artistique, choix éditoriaux, code review
-- **Claude Code** (Anthropic, Opus 4.7 1M context) — code Astro/React/CSS, blurbs vulgarisés
-- **ChatGPT** — recherches visuelles, idées de palettes, brainstorming des sections
+- **Claude Code** (Anthropic, Opus 4.7 1M context) — code Astro/React/CSS, blurbs vulgarisés des fiches espèce
 - **[openart.ai](https://openart.ai)** — image hero du T-Rex et les trois vidéos d'animation (landing / films / about)
 
 Toutes les fiches espèce sont CC-BY (texte) ; les images viennent de Wikimedia
