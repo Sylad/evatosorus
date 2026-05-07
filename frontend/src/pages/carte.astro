@@ -1,5 +1,6 @@
 ---
 import CodexLayout from '../layouts/CodexLayout.astro';
+import PageHero from '../components/PageHero.astro';
 import { PaleoMap } from '../components/PaleoMap';
 import { SPECIES } from '../data/species';
 
@@ -30,9 +31,9 @@ const periodCounts = {
   description="Où ont vécu les dinosaures ? Tous les sites fossiles cartographiés sur le monde actuel."
   active="carte"
 >
+  <PageHero videoSrc="/hero-trex-7.mp4" eyebrow="carte paléo-monde" title="Où ont vécu les dinosaures ?" />
+
   <header class="map-header">
-    <p class="codex-eyebrow">carte paléo-monde</p>
-    <h1>Où ont vécu les dinosaures ?</h1>
     <p class="codex-lede">
       Pendant le Mésozoïque, la Pangée s'est fragmentée puis a dérivé jusqu'à
       la configuration actuelle. La carte montre où les fossiles ont été

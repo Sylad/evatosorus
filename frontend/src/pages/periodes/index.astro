@@ -1,5 +1,6 @@
 ---
 import CodexLayout from '../../layouts/CodexLayout.astro';
+import PageHero from '../../components/PageHero.astro';
 import { PERIODS } from '../../data/periods';
 import { getSpeciesByPeriod } from '../../data/species';
 ---
@@ -8,9 +9,9 @@ import { getSpeciesByPeriod } from '../../data/species';
   description="186 millions d'années, trois ères. Trias, Jurassique, Crétacé."
   active="periodes"
 >
+  <PageHero videoSrc="/hero-trex-9.mp4" eyebrow="voyage temporel" title="252 → 66 millions d'années" />
+
   <header class="period-header">
-    <p class="codex-eyebrow">voyage temporel</p>
-    <h1>252 → 66 millions d'années</h1>
     <p class="codex-lede">
       Le Mésozoïque s'étend sur 186 millions d'années. Trois ères, trois climats,
       trois géographies — d'un supercontinent brûlant peuplé de petits

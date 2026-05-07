@@ -1,5 +1,6 @@
 ---
 import CodexLayout from '../layouts/CodexLayout.astro';
+import PageHero from '../components/PageHero.astro';
 import SpeciesCard from '../components/SpeciesCard.astro';
 import { CodexFilters } from '../components/CodexFilters';
 import { SPECIES, SPECIES_INDEX, TAXON_GROUP_LABELS } from '../data/species';
@@ -26,9 +27,9 @@ const sorted = [...SPECIES].sort((a, b) => {
   description={`${SPECIES_INDEX.count} espèces du Mésozoïque, filtrables par période, régime et groupe taxonomique.`}
   active="codex"
 >
+  <PageHero videoSrc="/hero-trex-6.mp4" eyebrow="le codex" title="Toutes les espèces du Mésozoïque" />
+
   <header class="codex-header">
-    <p class="codex-eyebrow">le codex</p>
-    <h1>Toutes les espèces du Mésozoïque</h1>
     <p class="codex-lede">
       {SPECIES_INDEX.count} fiches consultables. Filtre par période, régime ou
       groupe taxonomique pour zoomer sur le tronçon de l'arbre du vivant qui

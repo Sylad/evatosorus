@@ -1,6 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 
-const VIDEOS = ['/hero-trex-1.mp4', '/hero-trex-2.mp4', '/hero-trex-3.mp4'];
+// 4 vidéos pour la landing — ambiances variées (jungle, orage, volcanique,
+// crépuscule). Loop total 100s. Les vidéos 2/3 sont réservées aux pages
+// /films et /about, et 6/7/9 aux bandeaux de pages internes.
+const VIDEOS = [
+  '/hero-trex-1.mp4',
+  '/hero-trex-4.mp4',
+  '/hero-trex-5.mp4',
+  '/hero-trex-8.mp4',
+];
 const PHASE_MS = 25_000;
 const FADE_MS = 2500;
 
