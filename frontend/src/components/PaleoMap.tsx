@@ -24,63 +24,101 @@ declare global {
   interface Window { L: any; }
 }
 
+// HTML escape helper to safely inject user/data strings into popup HTML.
+const escHtml = (s: string) =>
+  s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
 export function PaleoMap({ markers }: { markers: Marker[] }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!ref.current || !window.L) return;
-    const L = window.L;
+    if (!ref.current) return;
+    let mounted = true;
+    let map: any = null;
 
-    const map = L.map(ref.current, {
-      center: [10, 10],
-      zoom: 2,
-      worldCopyJump: true,
-      scrollWheelZoom: true,
-    });
+    const init = () => {
+      if (!mounted || !ref.current || !window.L) return false;
+      const L = window.L;
 
-    // Dark base layer matching the Mésozoïque mood. CARTO Dark No Labels
-    // is free (subject to usage limits) and renders nicely against amber.
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
-      attribution: '© OpenStreetMap, © CARTO',
-      maxZoom: 8,
-    }).addTo(map);
+      map = L.map(ref.current, {
+        center: [10, 10],
+        zoom: 2,
+        worldCopyJump: true,
+        scrollWheelZoom: true,
+      });
 
-    const grouped = new Map<string, Marker[]>();
-    for (const m of markers) {
-      const k = `${m.lat.toFixed(1)},${m.lng.toFixed(1)}`;
-      if (!grouped.has(k)) grouped.set(k, []);
-      grouped.get(k)!.push(m);
-    }
-
-    for (const [, group] of grouped) {
-      const first = group[0];
-      const color = PERIOD_COLOR[first.periodId];
-      const marker = L.circleMarker([first.lat, first.lng], {
-        radius: 6 + Math.min(group.length, 8),
-        color,
-        weight: 2,
-        fillColor: color,
-        fillOpacity: 0.55,
+      // Dark base layer matching the Mésozoïque mood. CARTO Dark No Labels
+      // is free (subject to usage limits) and renders nicely against amber.
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap, © CARTO',
+        maxZoom: 8,
       }).addTo(map);
 
-      const popupContent = `
-        <div class="evato-popup">
-          <div class="evato-popup-loc">${first.country}${group.length > 1 ? ` · ${group.length} espèces` : ''}</div>
-          ${group.slice(0, 5).map((g) => `
-            <a class="evato-popup-link" href="/especes/${g.speciesId}/">
-              ${g.imageUrl ? `<img src="${g.imageUrl}" alt="" />` : '<span class="popup-fallback">𓆗</span>'}
-              <span>
-                <strong>${g.commonName ?? g.name}</strong>
-                <em>${g.name}</em>
-              </span>
-            </a>
-          `).join('')}
-          ${group.length > 5 ? `<div class="evato-popup-more">+ ${group.length - 5} autres</div>` : ''}
-        </div>`;
-      marker.bindPopup(popupContent, { maxWidth: 280 });
+      const grouped = new Map<string, Marker[]>();
+      for (const m of markers) {
+        const k = `${m.lat.toFixed(1)},${m.lng.toFixed(1)}`;
+        if (!grouped.has(k)) grouped.set(k, []);
+        grouped.get(k)!.push(m);
+      }
+
+      for (const [, group] of grouped) {
+        const first = group[0];
+        const color = PERIOD_COLOR[first.periodId];
+        const marker = L.circleMarker([first.lat, first.lng], {
+          radius: 6 + Math.min(group.length, 8),
+          color,
+          weight: 2,
+          fillColor: color,
+          fillOpacity: 0.55,
+        }).addTo(map);
+
+        const popupContent = `
+          <div class="evato-popup">
+            <div class="evato-popup-loc">${escHtml(first.country)}${group.length > 1 ? ` · ${group.length} espèces` : ''}</div>
+            ${group.slice(0, 5).map((g) => `
+              <a class="evato-popup-link" href="/especes/${encodeURIComponent(g.speciesId)}/">
+                ${g.imageUrl ? `<img src="${escHtml(g.imageUrl)}" alt="" />` : '<span class="popup-fallback">𓆗</span>'}
+                <span>
+                  <strong>${escHtml(g.commonName ?? g.name)}</strong>
+                  <em>${escHtml(g.name)}</em>
+                </span>
+              </a>
+            `).join('')}
+            ${group.length > 5 ? `<div class="evato-popup-more">+ ${group.length - 5} autres</div>` : ''}
+          </div>`;
+        marker.bindPopup(popupContent, { maxWidth: 280 });
+      }
+
+      return true;
+    };
+
+    if (init()) {
+      return () => {
+        mounted = false;
+        map?.remove();
+      };
     }
 
-    return () => { map.remove(); };
+    // Leaflet UMD pas encore prêt — on poll toutes les 50ms (max 5s)
+    // jusqu'à ce que window.L soit dispo.
+    const interval = setInterval(() => {
+      if (init()) clearInterval(interval);
+    }, 50);
+    const timeout = setTimeout(() => {
+      clearInterval(interval);
+      if (!map) console.error('PaleoMap: Leaflet failed to load (window.L undefined after 5s)');
+    }, 5000);
+
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+      clearTimeout(timeout);
+      map?.remove();
+    };
   }, [markers]);
 
   return (
