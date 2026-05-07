@@ -114,6 +114,44 @@ Cloudflare Workers + KV.
 - **Coords lat/lng 0,0** : PBDB encode parfois "coord inconnue" comme
   null mais rarement comme (0, 0). Le script filtre les null only.
 
+## Optimisation MP4
+
+Les hero MP4 (`/public/hero-trex-N.mp4`) viennent d'openart.ai en source
+~20 Mbps 1660×1244. Ré-encodés via `scripts/optimize-mp4.sh` :
+
+```bash
+# Scan tous les MP4 > 5 MB dans frontend/public/, ré-encode CRF 26 + 1280px max
+./scripts/optimize-mp4.sh
+
+# Force re-encode même les < 5 MB (par ex. pour bumper la qualité)
+./scripts/optimize-mp4.sh --force --crf 22
+
+# Un seul fichier
+./scripts/optimize-mp4.sh frontend/public/hero-trex-1.mp4
+```
+
+Pipeline ffmpeg :
+
+```bash
+ffmpeg -i input.mp4 -c:v libx264 -crf 26 -preset slow \
+  -vf 'scale=min(1280,iw):-2' \
+  -an -movflags +faststart -pix_fmt yuv420p \
+  output.mp4
+```
+
+Effet typique : 20 MB → 2 MB (-90 %) sans perte visuelle perceptible
+sur un hero loop avec voile gradient par-dessus.
+
+Le script cherche ffmpeg dans cet ordre :
+1. `$FFMPEG` env var
+2. `ffmpeg` sur le PATH (Linux/macOS install standard)
+3. `/mnt/e/ffmpeg-master-latest-win64-gpl-shared/bin/ffmpeg.exe`
+   (WSL → ffmpeg Windows fonctionne très bien depuis Linux)
+
+Idempotent : skip silencieux les fichiers < 5 MB (déjà optimisés). Backup
+des originaux dans `/tmp/mp4-bak-<timestamp>/` avant remplacement, à
+nettoyer manuellement après validation.
+
 ## Stack précise
 
 - Astro 6.2 · React 19.2 · Tailwind 4.2 · Leaflet 1.9
