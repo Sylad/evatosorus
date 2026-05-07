@@ -38,11 +38,8 @@ import { DustField } from '../components/cinema/DustField';
       <a href="/carte/" class="cta cta-rust">Carte paléo-monde</a>
       <a href="/films/" class="cta cta-bone">Films</a>
       <a href="/videos/" class="cta cta-bone">Vidéos YouTube</a>
-          <a href="/about/"
-             class="px-5 py-2.5 rounded text-evato-bone-muted hover:text-evato-bone transition-colors backdrop-blur-sm bg-evato-bg/30 font-display tracking-widest text-sm">
-            À propos
-          </a>
-        </div>
+      <a href="/about/" class="cta cta-ghost">À propos</a>
+            </div>
       </div>
     </div>
   </main>
@@ -88,60 +85,71 @@ import { DustField } from '../components/cinema/DustField';
 
 <style>
   /*
-    CTAs landing : design plus opaque + saturé pour ressortir sur la vidéo
-    de fond. Background dark presque-opaque, border 2px, glow contrasté
-    sur la couleur d'accent, font-weight 600 pour la lisibilité.
+    CTAs landing : fonds gradient saturés au lieu de juste border + texte coloré.
+    Le bouton DOMINE le foreground, pas le contraire. Hover passe à un gradient
+    plus lumineux + glow épais. Border 2px, font 800, lettres très espacées.
   */
   .cta {
-    padding: 0.75rem 1.4rem;
-    border-radius: 6px;
+    padding: 0.85rem 1.6rem;
+    border-radius: 4px;
     border: 2px solid;
     font-family: var(--font-display);
-    font-size: 0.82rem;
-    letter-spacing: 0.18em;
+    font-size: 0.85rem;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     text-decoration: none;
-    background: rgba(13, 10, 6, 0.72);
-    backdrop-filter: blur(8px);
-    transition: transform 200ms ease, box-shadow 220ms ease, background 220ms ease, color 200ms ease;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
-    font-weight: 600;
+    transition: transform 220ms ease, box-shadow 240ms ease, filter 240ms ease;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+    font-weight: 800;
+    color: #1a0e02;
+    box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.18);
   }
   .cta:hover {
-    transform: translateY(-2px);
-    background: rgba(13, 10, 6, 0.88);
+    transform: translateY(-3px);
+    filter: brightness(1.18) saturate(1.1);
+    box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   }
   .cta-amber {
-    border-color: var(--color-evato-amber);
-    color: var(--color-evato-amber-bright);
+    background: linear-gradient(135deg, #ffd28b 0%, #d4a55e 60%, #a87b3c 100%);
+    border-color: #ffe2a8;
   }
   .cta-amber:hover {
-    box-shadow: 0 0 0 1px var(--color-evato-amber-bright), 0 0 28px rgba(255, 200, 121, 0.55);
-    color: #ffe2a8;
+    box-shadow: 0 12px 28px -8px #ffc879cc, inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
   .cta-jade {
-    border-color: #7fb892;
-    color: #a3d6b3;
+    background: linear-gradient(135deg, #a3d6b3 0%, #5e8f6e 60%, #3e6a4d 100%);
+    border-color: #c8e8d2;
   }
   .cta-jade:hover {
-    box-shadow: 0 0 0 1px #a3d6b3, 0 0 24px rgba(127, 184, 146, 0.5);
-    color: #c8e8d2;
+    box-shadow: 0 12px 28px -8px #7fb892cc, inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
   .cta-rust {
-    border-color: #e36e4a;
-    color: #ff8c66;
+    background: linear-gradient(135deg, #ff8c66 0%, #c75131 60%, #8c3220 100%);
+    border-color: #ffaa86;
+    color: #fff5e8;
   }
   .cta-rust:hover {
-    box-shadow: 0 0 0 1px #ff8c66, 0 0 26px rgba(199, 81, 49, 0.55);
-    color: #ffaa86;
+    box-shadow: 0 12px 28px -8px #c75131dd, inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
   .cta-bone {
-    border-color: #d4c8b3;
-    color: #ebd9c5;
+    background: linear-gradient(135deg, #ebd9c5 0%, #b8a78f 60%, #8c7d68 100%);
+    border-color: #fff5e2;
   }
   .cta-bone:hover {
-    box-shadow: 0 0 0 1px #ebd9c5, 0 0 22px rgba(232, 230, 221, 0.4);
+    box-shadow: 0 12px 28px -8px #ebd9c5cc, inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+  .cta-ghost {
+    background: rgba(13, 10, 6, 0.55);
+    border-color: rgba(212, 165, 94, 0.45);
+    color: #ebd9c5;
+    box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+  }
+  .cta-ghost:hover {
+    background: rgba(13, 10, 6, 0.78);
+    border-color: var(--color-evato-amber-bright);
     color: #fff5e2;
+    box-shadow: 0 0 0 1px var(--color-evato-amber-bright), 0 8px 20px -6px rgba(0, 0, 0, 0.7);
   }
 
   /*
