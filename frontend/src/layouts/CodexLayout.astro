@@ -30,8 +30,28 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
   <div class="codex-bg-veil" aria-hidden="true"></div>
   <div class="amber-ambient" aria-hidden="true"></div>
 
+  <!--
+    Burger mobile : visible <lg, fixed top-right, glow ambre.
+    Toggle data-drawer-open sur <html> que la sidebar et l'overlay observent.
+  -->
+  <button
+    id="evato-burger"
+    type="button"
+    class="evato-burger"
+    aria-label="Ouvrir la navigation"
+    aria-controls="evato-sidebar"
+    aria-expanded="false"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+      <path class="evato-burger__line evato-burger__line--top" d="M3 6h18" />
+      <path class="evato-burger__line evato-burger__line--mid" d="M3 12h18" />
+      <path class="evato-burger__line evato-burger__line--bot" d="M3 18h18" />
+    </svg>
+  </button>
+  <div id="evato-drawer-overlay" class="evato-drawer-overlay" aria-hidden="true"></div>
+
   <div class="codex-shell">
-    <aside class="codex-sidebar">
+    <aside id="evato-sidebar" class="codex-sidebar" aria-label="Navigation du codex">
       <a href="/" class="codex-brand">
         <div class="brand-skull"><EvatoSkull size={180} /></div>
         <span class="brand-name">Evatosorus</span>
@@ -59,6 +79,74 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
       <slot />
     </main>
   </div>
+
+  <script is:inline>
+    // Mobile drawer : burger toggles data-drawer-open on <html>.
+    // Close on : Escape, overlay tap, internal nav link tap, viewport >= lg (1024).
+    (() => {
+      if (typeof window === 'undefined') return;
+      const html = document.documentElement;
+      const burger = document.getElementById('evato-burger');
+      const overlay = document.getElementById('evato-drawer-overlay');
+      const sidebar = document.getElementById('evato-sidebar');
+      if (!burger || !overlay || !sidebar) return;
+
+      let savedScrollY = 0;
+      const lockScroll = () => {
+        savedScrollY = window.scrollY;
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${savedScrollY}px`;
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+        document.body.style.width = '100%';
+      };
+      const unlockScroll = () => {
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.width = '';
+        window.scrollTo(0, savedScrollY);
+      };
+
+      const setOpen = (open) => {
+        if (open) {
+          html.setAttribute('data-drawer-open', 'true');
+          burger.setAttribute('aria-expanded', 'true');
+          burger.setAttribute('aria-label', 'Fermer la navigation');
+          lockScroll();
+        } else {
+          html.removeAttribute('data-drawer-open');
+          burger.setAttribute('aria-expanded', 'false');
+          burger.setAttribute('aria-label', 'Ouvrir la navigation');
+          unlockScroll();
+        }
+      };
+
+      burger.addEventListener('click', () => {
+        setOpen(html.getAttribute('data-drawer-open') !== 'true');
+      });
+      overlay.addEventListener('click', () => setOpen(false));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && html.getAttribute('data-drawer-open') === 'true') {
+          setOpen(false);
+        }
+      });
+      sidebar.addEventListener('click', (e) => {
+        const target = e.target instanceof Element ? e.target.closest('a') : null;
+        if (target && sidebar.contains(target)) {
+          setOpen(false);
+        }
+      });
+      const mql = window.matchMedia('(min-width: 1024px)');
+      const onChange = () => {
+        if (mql.matches && html.getAttribute('data-drawer-open') === 'true') {
+          setOpen(false);
+        }
+      };
+      mql.addEventListener?.('change', onChange);
+    })();
+  </script>
 
   <style>
     /* Background atmosphère pleinement visible : opacity 0.78, blur 1.5px,
@@ -97,31 +185,54 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
       position: relative;
       z-index: 10;
       display: grid;
-      grid-template-columns: 280px 1fr;
+      grid-template-columns: 1fr;
       min-height: 100vh;
     }
-    @media (max-width: 900px) {
-      .codex-shell { grid-template-columns: 1fr; }
+    @media (min-width: 1024px) {
+      .codex-shell { grid-template-columns: 280px 1fr; }
     }
+    /*
+      Mobile (<1024) : la sidebar devient un drawer fixed slide-in depuis
+      la gauche, contrôlé par data-drawer-open sur <html>.
+      Desktop (>=1024) : sidebar sticky 280px comme avant.
+    */
     .codex-sidebar {
-      position: sticky;
+      position: fixed;
       top: 0;
-      align-self: start;
+      left: 0;
+      z-index: 50;
+      width: min(85vw, 320px);
+      height: 100vh;
       max-height: 100vh;
+      overflow-y: auto;
       padding: 2rem 1.5rem;
-      border-right: 1px solid rgba(212, 165, 94, 0.18);
-      backdrop-filter: blur(6px);
-      background: rgba(13, 10, 6, 0.45);
+      border-right: 1px solid rgba(212, 165, 94, 0.22);
+      backdrop-filter: blur(8px);
+      background: rgba(13, 10, 6, 0.94);
       display: flex;
       flex-direction: column;
       gap: 2rem;
+      transform: translateX(-100%);
+      transition: transform 250ms ease-out;
+      box-shadow: 6px 0 28px -10px rgba(0, 0, 0, 0.7);
     }
-    @media (max-width: 900px) {
+    :global(html[data-drawer-open="true"]) .codex-sidebar {
+      transform: translateX(0);
+    }
+    @media (min-width: 1024px) {
       .codex-sidebar {
-        position: relative;
-        max-height: none;
-        border-right: 0;
-        border-bottom: 1px solid rgba(212, 165, 94, 0.18);
+        position: sticky;
+        top: 0;
+        left: auto;
+        align-self: start;
+        width: auto;
+        height: auto;
+        max-height: 100vh;
+        background: rgba(13, 10, 6, 0.45);
+        backdrop-filter: blur(6px);
+        transform: none;
+        transition: none;
+        box-shadow: none;
       }
     }
     .codex-brand {
@@ -185,6 +296,80 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
     .codex-main {
       padding: 2.5rem clamp(1.25rem, 3vw, 3rem) 4rem;
       max-width: 1280px;
+    }
+    /* Sur mobile, laisse la place au burger fixed top-right (3rem). */
+    @media (max-width: 1023px) {
+      .codex-main {
+        padding-top: 4.25rem;
+      }
+    }
+
+    /*
+      Burger button — fixed top-right, glow ambre Evato.
+      Visible <lg seulement.
+    */
+    .evato-burger {
+      position: fixed;
+      top: 0.85rem;
+      right: 0.85rem;
+      z-index: 60;
+      width: 2.75rem;
+      height: 2.75rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border-radius: 8px;
+      border: 1px solid rgba(212, 165, 94, 0.45);
+      background: rgba(13, 10, 6, 0.78);
+      color: var(--color-evato-amber-bright, #ffc879);
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      box-shadow:
+        0 0 18px -6px rgba(255, 200, 121, 0.55),
+        inset 0 0 0 1px rgba(212, 165, 94, 0.18);
+      transition: box-shadow 200ms ease, transform 150ms ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .evato-burger:active { transform: scale(0.96); }
+    .evato-burger svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    .evato-burger__line {
+      transition: transform 250ms ease, opacity 200ms ease;
+      transform-origin: center;
+    }
+    :global(html[data-drawer-open="true"]) .evato-burger__line--top {
+      transform: translateY(6px) rotate(45deg);
+    }
+    :global(html[data-drawer-open="true"]) .evato-burger__line--mid {
+      opacity: 0;
+    }
+    :global(html[data-drawer-open="true"]) .evato-burger__line--bot {
+      transform: translateY(-6px) rotate(-45deg);
+    }
+    @media (min-width: 1024px) {
+      .evato-burger { display: none; }
+    }
+
+    /* Overlay sombre cliquable sous le drawer mobile. */
+    .evato-drawer-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      background: rgba(8, 6, 3, 0.65);
+      backdrop-filter: blur(2px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 250ms ease;
+    }
+    :global(html[data-drawer-open="true"]) .evato-drawer-overlay {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    @media (min-width: 1024px) {
+      .evato-drawer-overlay { display: none; }
     }
   </style>
 </BaseLayout>
