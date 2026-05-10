@@ -43,6 +43,10 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
     const init = () => {
       if (!mounted || !ref.current || !window.L) return false;
       const L = window.L;
+      // Wait for the markercluster plugin to attach as well — it patches L
+      // with markerClusterGroup. Without this we'd render before clustering
+      // is ready and fall back to plain layer (still works, but ugly).
+      if (typeof L.markerClusterGroup !== 'function') return false;
 
       map = L.map(ref.current, {
         center: [10, 10],
@@ -58,6 +62,10 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
         maxZoom: 8,
       }).addTo(map);
 
+      // Regroupe les marqueurs co-localisés sur la même demi-degré pour éviter
+      // d'empiler plusieurs popups au même endroit. Les vrais clusters de
+      // proximité sont gérés par leaflet.markercluster (chargé via CDN) qui
+      // dégroupe automatiquement quand on zoome.
       const grouped = new Map<string, Marker[]>();
       for (const m of markers) {
         const k = `${m.lat.toFixed(1)},${m.lng.toFixed(1)}`;
@@ -65,16 +73,56 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
         grouped.get(k)!.push(m);
       }
 
+      // markerClusterGroup est ajouté par le plugin leaflet.markercluster
+      // (CDN dans carte.astro). Si absent (CDN failed), fallback sur layer
+      // standard pour ne pas casser la carte.
+      const cluster: any = typeof L.markerClusterGroup === 'function'
+        ? L.markerClusterGroup({
+            chunkedLoading: true,
+            maxClusterRadius: 50,
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false,
+            iconCreateFunction: (c: any) => {
+              // Calcule la couleur dominante du cluster (période la plus
+              // représentée parmi ses enfants) pour cohérence visuelle.
+              const counts: Record<string, number> = { trias: 0, jurassique: 0, cretace: 0 };
+              for (const child of c.getAllChildMarkers()) {
+                const pid = child.options.evatoPeriod as keyof typeof counts;
+                if (pid) counts[pid] = (counts[pid] ?? 0) + 1;
+              }
+              let dom: keyof typeof counts = 'cretace';
+              let max = -1;
+              (Object.keys(counts) as (keyof typeof counts)[]).forEach((k) => {
+                if (counts[k] > max) { max = counts[k]; dom = k; }
+              });
+              const color = PERIOD_COLOR[dom];
+              const total = c.getChildCount();
+              return L.divIcon({
+                html: `<div class="evato-cluster" style="--c:${color};"><span>${total}</span></div>`,
+                className: 'evato-cluster-wrap',
+                iconSize: [40, 40],
+              });
+            },
+          })
+        : L.layerGroup();
+
       for (const [, group] of grouped) {
         const first = group[0];
         const color = PERIOD_COLOR[first.periodId];
-        const marker = L.circleMarker([first.lat, first.lng], {
-          radius: 6 + Math.min(group.length, 8),
-          color,
-          weight: 2,
-          fillColor: color,
-          fillOpacity: 0.55,
-        }).addTo(map);
+        const size = group.length > 1 ? 30 : 24;
+        const icon = L.divIcon({
+          html: `<div class="evato-pin" style="--c:${color}; --size:${size}px;">
+            ${group.length > 1 ? `<span class="evato-pin-count">${group.length}</span>` : '<span class="evato-pin-dot"></span>'}
+          </div>`,
+          className: 'evato-pin-wrap',
+          iconSize: [size, size],
+          iconAnchor: [size / 2, size / 2],
+        });
+        const marker = L.marker([first.lat, first.lng], {
+          icon,
+          // Custom prop forwarded so iconCreateFunction can pick the dominant period.
+          evatoPeriod: first.periodId,
+        } as any);
 
         const popupContent = `
           <div class="evato-popup">
@@ -91,7 +139,9 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
             ${group.length > 5 ? `<div class="evato-popup-more">+ ${group.length - 5} autres</div>` : ''}
           </div>`;
         marker.bindPopup(popupContent, { maxWidth: 280 });
+        cluster.addLayer(marker);
       }
+      map.addLayer(cluster);
 
       return true;
     };
@@ -196,6 +246,70 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
           font-size: 0.65rem;
         }
         :global(.leaflet-control-attribution a) { color: var(--color-evato-amber) !important; }
+
+        /* ── Pins divIcon colorés par période ──────────────────────── */
+        :global(.evato-pin-wrap) { background: transparent !important; border: 0 !important; }
+        :global(.evato-pin) {
+          width: var(--size);
+          height: var(--size);
+          border-radius: 50%;
+          background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--c) 92%, white 8%), var(--c) 75%);
+          border: 2px solid color-mix(in srgb, var(--c) 50%, #0d0a06);
+          box-shadow:
+            0 0 0 2px rgba(13, 10, 6, 0.85),
+            0 0 12px color-mix(in srgb, var(--c) 60%, transparent);
+          display: grid;
+          place-items: center;
+          color: #0d0a06;
+          font-family: 'Cinzel', serif;
+          font-size: 0.7rem;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          transition: transform 180ms ease, box-shadow 180ms ease;
+        }
+        :global(.evato-pin:hover) {
+          transform: scale(1.18);
+          box-shadow:
+            0 0 0 2px rgba(13, 10, 6, 0.85),
+            0 0 22px color-mix(in srgb, var(--c) 80%, transparent);
+        }
+        :global(.evato-pin-count) {
+          color: rgba(13, 10, 6, 0.92);
+          font-weight: 800;
+        }
+        :global(.evato-pin-dot) {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: rgba(13, 10, 6, 0.85);
+        }
+
+        /* ── Clusters (leaflet.markercluster) ──────────────────────── */
+        :global(.evato-cluster-wrap) { background: transparent !important; border: 0 !important; }
+        :global(.evato-cluster) {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background:
+            radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--c) 95%, white 5%), var(--c) 70%);
+          border: 2px solid color-mix(in srgb, var(--c) 60%, #0d0a06);
+          box-shadow:
+            0 0 0 3px rgba(13, 10, 6, 0.55),
+            0 0 18px color-mix(in srgb, var(--c) 65%, transparent);
+          display: grid;
+          place-items: center;
+          color: rgba(13, 10, 6, 0.92);
+          font-family: 'Cinzel', serif;
+          font-weight: 800;
+          font-size: 0.85rem;
+          letter-spacing: 0.04em;
+          transition: transform 180ms ease;
+        }
+        :global(.evato-cluster:hover) { transform: scale(1.08); }
+        /* Override par défaut du plugin (.marker-cluster-small / -medium / -large
+           qui appliquent un fond bleu standard). */
+        :global(.marker-cluster) { background: transparent !important; }
+        :global(.marker-cluster div) { background: transparent !important; }
       `}</style>
     </>
   );
