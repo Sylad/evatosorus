@@ -1,9 +1,9 @@
 ---
 import CodexLayout from '../layouts/CodexLayout.astro';
 import PageHero from '../components/PageHero.astro';
-import SpeciesCard from '../components/SpeciesCard.astro';
-import { CodexFilters } from '../components/CodexFilters';
-import { SPECIES, SPECIES_INDEX, TAXON_GROUP_LABELS } from '../data/species';
+import { CodexBrowser } from '../components/CodexBrowser';
+import { SPECIES, SPECIES_INDEX, TAXON_GROUP_LABELS, DIET_LABELS, DIET_ICONS } from '../data/species';
+import '../components/codex-browser.css';
 
 const taxonGroups = Array.from(new Set(SPECIES.map((s) => s.taxonGroup)))
   .map((id) => ({ id, label: TAXON_GROUP_LABELS[id] ?? id }))
@@ -21,6 +21,24 @@ const sorted = [...SPECIES].sort((a, b) => {
   if (!aHasImg && bHasImg) return 1;
   return a.name.localeCompare(b.name);
 });
+
+// Trim les champs serialisés au island React : pour les cards on n'a besoin
+// que de ce que le composant Card utilise. Évite d'inliner des champs lourds
+// (locations[], blurb, credits, paleobiodbId) qui ne servent qu'à la fiche
+// détail. Réduit ~60% du JSON sérialisé dans le HTML.
+const trimmed = sorted.map((s) => ({
+  id: s.id,
+  name: s.name,
+  commonName: s.commonName,
+  taxonGroup: s.taxonGroup,
+  diet: s.diet,
+  periodId: s.periodId,
+  lengthM: s.lengthM,
+  weightKg: s.weightKg,
+  iconic: s.iconic,
+  imageUrl: s.imageUrl,
+  lifeRestorationUrl: s.lifeRestorationUrl,
+}));
 ---
 <CodexLayout
   title="Codex — Evatosorus"
@@ -37,50 +55,32 @@ const sorted = [...SPECIES].sort((a, b) => {
     </p>
   </header>
 
-  <CodexFilters client:idle taxonGroups={taxonGroups} />
+  <CodexBrowser
+    client:only="react"
+    species={trimmed}
+    taxonGroups={taxonGroups}
+    taxonGroupLabels={TAXON_GROUP_LABELS}
+    dietLabels={DIET_LABELS}
+    dietIcons={DIET_ICONS}
+  />
 
-  <section class="species-grid">
-    {sorted.map((s) => (
-      <div
-        data-species-card
-        data-period={s.periodId}
-        data-diet={s.diet}
-        data-group={s.taxonGroup}
-        data-has-image={(s.lifeRestorationUrl || s.imageUrl) ? 'true' : 'false'}
-        data-haystack={`${s.name} ${s.commonName ?? ''} ${TAXON_GROUP_LABELS[s.taxonGroup] ?? ''}`}
-      >
-        <SpeciesCard species={s} />
-      </div>
-    ))}
-  </section>
+  <noscript>
+    <p style="color: var(--color-evato-bone-muted); font-style: italic; padding: 1rem; border: 1px solid rgba(212, 165, 94, 0.18); border-radius: 6px; margin-top: 1rem;">
+      Le navigateur du codex (filtres + virtualization de 1500 espèces)
+      nécessite JavaScript activé. Si tu préfères l'index statique, va voir
+      <a href="/periodes/" style="color: var(--color-evato-amber);">les périodes</a> qui listent les espèces sans JS.
+    </p>
+  </noscript>
 
   <style>
     .codex-header {
       margin-bottom: 2rem;
-    }
-    .codex-eyebrow {
-      font-family: var(--font-display);
-      font-size: 0.72rem;
-      letter-spacing: 0.32em;
-      color: var(--color-evato-amber);
-      text-transform: uppercase;
-      margin: 0 0 0.4rem;
-    }
-    .codex-header h1 {
-      font-size: 2.2rem;
-      color: var(--color-evato-bone);
-      margin: 0 0 0.5rem;
     }
     .codex-lede {
       max-width: 60ch;
       color: var(--color-evato-bone-muted);
       font-size: 1.05rem;
       line-height: 1.6;
-    }
-    .species-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.4rem;
     }
   </style>
 </CodexLayout>
