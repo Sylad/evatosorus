@@ -34,7 +34,7 @@ const videos = getSpeciesVideos(s.id);
     </header>
 
     <div class="detail-grid">
-      <div class="detail-image">
+      <div class="detail-image" data-lightbox>
         {/* Image principale = paleo-art "en chair" si dispo, sinon le squelette/fossile. */}
         {(s.lifeRestorationUrl || s.imageUrl) ? (
           <img

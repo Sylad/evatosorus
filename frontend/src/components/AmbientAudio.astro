@@ -1,0 +1,148 @@
+---
+/*
+  Audio ambiance opt-in — ambiance jurassique (vent + reptiles lointains).
+
+  Comportement :
+  - Muted par défaut au premier visit (opt-in strict, pas d'autoplay agressif).
+  - Bouton speaker discret en bas à droite : tap = unmute + play.
+  - localStorage 'evato-ambient-on' = 'true' → relance auto au prochain visit.
+  - Si le browser refuse autoplay, on attend la première interaction utilisateur.
+  - Préload "none" pour ne pas plomber le LCP.
+
+  TODO sourcer un freesound CC0 :
+   - critères : ambiance vent + cris reptiles / oiseaux préhistoriques, loopable,
+     < 1.5 MB, CC0. Style "BBC Walking with Dinosaurs au lever du jour".
+   - Sylvain choisira et remplacera /audio/evato-ambient.mp3.
+*/
+---
+
+<audio
+  id="evato-ambient"
+  src="/audio/evato-ambient.mp3"
+  loop
+  preload="none"
+  muted
+  aria-hidden="true"
+></audio>
+
+<button
+  id="evato-ambient-toggle"
+  type="button"
+  class="evato-ambient-toggle"
+  aria-label="Activer l'ambiance sonore mésozoïque"
+  aria-pressed="false"
+>
+  <svg class="icon-on" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M11 5L6 9H2v6h4l5 4V5z" />
+    <path d="M15.54 8.46a5 5 0 010 7.07" />
+    <path d="M19.07 4.93a10 10 0 010 14.14" />
+  </svg>
+  <svg class="icon-off" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M11 5L6 9H2v6h4l5 4V5z" />
+    <path d="M22 9l-6 6M16 9l6 6" />
+  </svg>
+</button>
+
+<script is:inline>
+  (() => {
+    if (typeof window === 'undefined') return;
+    const audio = document.getElementById('evato-ambient');
+    const btn = document.getElementById('evato-ambient-toggle');
+    if (!audio || !btn) return;
+    const KEY = 'evato-ambient-on';
+
+    const setUI = (on) => {
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.setAttribute('aria-label', on ? 'Couper l’ambiance sonore' : 'Activer l’ambiance sonore mésozoïque');
+      btn.classList.toggle('is-on', on);
+    };
+
+    const enable = async () => {
+      audio.muted = false;
+      audio.volume = 0.35;
+      try {
+        await audio.play();
+        setUI(true);
+        localStorage.setItem(KEY, 'true');
+      } catch (err) {
+        setUI(false);
+        const retry = async () => {
+          window.removeEventListener('pointerdown', retry);
+          window.removeEventListener('keydown', retry);
+          try { await audio.play(); setUI(true); localStorage.setItem(KEY, 'true'); } catch (_) {}
+        };
+        window.addEventListener('pointerdown', retry, { once: true });
+        window.addEventListener('keydown', retry, { once: true });
+      }
+    };
+    const disable = () => {
+      audio.pause();
+      audio.muted = true;
+      setUI(false);
+      localStorage.setItem(KEY, 'false');
+    };
+
+    btn.addEventListener('click', () => {
+      const on = btn.getAttribute('aria-pressed') === 'true';
+      if (on) disable(); else enable();
+    });
+
+    if (localStorage.getItem(KEY) === 'true') {
+      enable();
+    } else {
+      setUI(false);
+    }
+  })();
+</script>
+
+<style>
+  .evato-ambient-toggle {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 70;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(212, 165, 94, 0.32);
+    background: rgba(13, 10, 6, 0.65);
+    color: rgba(212, 165, 94, 0.62);
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    box-shadow:
+      0 0 14px -6px rgba(255, 200, 121, 0.35),
+      inset 0 0 0 1px rgba(212, 165, 94, 0.10);
+    transition: color 200ms ease, border-color 200ms ease, box-shadow 200ms ease, transform 150ms ease;
+    -webkit-tap-highlight-color: transparent;
+    opacity: 0.78;
+  }
+  .evato-ambient-toggle:hover {
+    opacity: 1;
+    color: #ffc879;
+    border-color: rgba(212, 165, 94, 0.6);
+    box-shadow: 0 0 22px -4px rgba(255, 200, 121, 0.55);
+  }
+  .evato-ambient-toggle:active { transform: scale(0.95); }
+  .evato-ambient-toggle.is-on {
+    color: #ffc879;
+    opacity: 1;
+    border-color: rgba(212, 165, 94, 0.7);
+    box-shadow: 0 0 26px -4px rgba(255, 200, 121, 0.65);
+  }
+  .evato-ambient-toggle svg {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+  .evato-ambient-toggle .icon-on { display: none; }
+  .evato-ambient-toggle .icon-off { display: block; }
+  .evato-ambient-toggle.is-on .icon-on { display: block; }
+  .evato-ambient-toggle.is-on .icon-off { display: none; }
+
+  @media (max-width: 480px) {
+    .evato-ambient-toggle { bottom: 0.85rem; right: 0.85rem; }
+  }
+</style>

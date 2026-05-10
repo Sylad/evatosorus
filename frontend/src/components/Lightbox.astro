@@ -1,0 +1,182 @@
+---
+/*
+  Lightbox plein écran — vanilla, ~80 lignes JS, zero dep.
+
+  Usage : tout `<img>` à l'intérieur d'un wrapper `[data-lightbox]` (ou portant
+  directement l'attribut `data-lightbox`) déclenche l'overlay au clic.
+  Fermeture via Esc, clic en dehors, ou bouton ✕.
+
+  À inclure une fois dans BaseLayout.astro pour couvrir toutes les pages.
+*/
+---
+
+<dialog id="evato-lightbox" class="evato-lightbox" aria-label="Image en plein écran">
+  <button type="button" class="evato-lightbox__close" aria-label="Fermer">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <path d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  </button>
+  <figure class="evato-lightbox__figure">
+    <img class="evato-lightbox__img" alt="" />
+    <figcaption class="evato-lightbox__caption"></figcaption>
+  </figure>
+</dialog>
+
+<script is:inline>
+  (() => {
+    if (typeof window === 'undefined') return;
+    const dialog = document.getElementById('evato-lightbox');
+    if (!dialog) return;
+    const img = dialog.querySelector('.evato-lightbox__img');
+    const cap = dialog.querySelector('.evato-lightbox__caption');
+    const closeBtn = dialog.querySelector('.evato-lightbox__close');
+    if (!img || !cap || !closeBtn) return;
+
+    const matchTarget = (el) => {
+      if (!(el instanceof Element)) return null;
+      // Ignore burger / sidebar / brand skull to keep nav usable.
+      if (el.closest('#evato-burger, .evato-burger')) return null;
+      if (el.closest('#evato-sidebar, aside.codex-sidebar')) return null;
+      if (el.tagName === 'IMG' && el.closest('[data-lightbox]')) return el;
+      if (el.tagName === 'IMG' && el.hasAttribute('data-lightbox')) return el;
+      return null;
+    };
+
+    const open = (src, alt) => {
+      img.setAttribute('src', src);
+      img.setAttribute('alt', alt || '');
+      cap.textContent = alt || '';
+      cap.style.display = alt ? '' : 'none';
+      if (typeof dialog.showModal === 'function' && !dialog.open) {
+        try { dialog.showModal(); } catch (_) { dialog.setAttribute('open', ''); }
+      } else {
+        dialog.setAttribute('open', '');
+      }
+      document.documentElement.classList.add('evato-lightbox-open');
+    };
+    const close = () => {
+      if (typeof dialog.close === 'function' && dialog.open) {
+        try { dialog.close(); } catch (_) { dialog.removeAttribute('open'); }
+      } else {
+        dialog.removeAttribute('open');
+      }
+      img.removeAttribute('src');
+      document.documentElement.classList.remove('evato-lightbox-open');
+    };
+
+    document.addEventListener('click', (e) => {
+      const target = matchTarget(e.target);
+      if (!target) return;
+      const src = target.currentSrc || target.src;
+      if (!src) return;
+      e.preventDefault();
+      open(src, target.alt || '');
+    });
+    closeBtn.addEventListener('click', (e) => { e.stopPropagation(); close(); });
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) close();
+    });
+    dialog.addEventListener('cancel', (e) => { e.preventDefault(); close(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && dialog.hasAttribute('open')) close();
+    });
+  })();
+</script>
+
+<style is:global>
+  html.evato-lightbox-open,
+  html.evato-lightbox-open body {
+    overflow: hidden;
+  }
+
+  .evato-lightbox {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    color: inherit;
+    max-width: 100vw;
+    max-height: 100vh;
+    width: 100vw;
+    height: 100vh;
+  }
+  .evato-lightbox::backdrop {
+    background: rgba(13, 10, 6, 0.93);
+    backdrop-filter: blur(4px);
+  }
+  .evato-lightbox:not([open]) { display: none; }
+  .evato-lightbox[open] {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    background: rgba(13, 10, 6, 0.93);
+  }
+  .evato-lightbox__figure {
+    margin: 0;
+    max-width: min(96vw, 1600px);
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    box-shadow: 0 0 60px -12px rgba(255, 200, 121, 0.35);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .evato-lightbox__img {
+    display: block;
+    max-width: 100%;
+    max-height: calc(92vh - 2.5rem);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    background: #0d0a06;
+  }
+  .evato-lightbox__caption {
+    font-family: var(--font-display, sans-serif);
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 235, 195, 0.78);
+    text-align: center;
+    padding: 0.6rem 1rem;
+    margin: 0;
+    background: rgba(13, 10, 6, 0.85);
+    width: 100%;
+    border-top: 1px solid rgba(212, 165, 94, 0.18);
+  }
+  .evato-lightbox__close {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 210;
+    width: 2.75rem;
+    height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(212, 165, 94, 0.55);
+    background: rgba(13, 10, 6, 0.85);
+    color: #ffc879;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 18px -6px rgba(255, 200, 121, 0.55);
+    transition: transform 150ms ease, box-shadow 200ms ease;
+  }
+  .evato-lightbox__close:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 28px -4px rgba(255, 200, 121, 0.75);
+  }
+  .evato-lightbox__close:active { transform: scale(0.95); }
+  .evato-lightbox__close svg { width: 1.5rem; height: 1.5rem; }
+
+  [data-lightbox] img,
+  img[data-lightbox] {
+    cursor: zoom-in;
+  }
+</style>

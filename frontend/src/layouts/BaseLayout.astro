@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import Lightbox from '../components/Lightbox.astro';
+import AmbientAudio from '../components/AmbientAudio.astro';
 
 interface Props {
   title?: string;
@@ -45,5 +47,7 @@ const ogImageAbs = new URL(ogImage, Astro.site ?? 'https://evatosorus.pages.dev'
   </head>
   <body class="bg-evato-bg text-evato-bone min-h-screen">
     <slot />
+    <Lightbox />
+    <AmbientAudio />
   </body>
 </html>
