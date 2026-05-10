@@ -1,0 +1,431 @@
+---
+// Frise horizontale interactive 252 → 66 Ma. Sans dépendance externe :
+// curseur draggable / clickable sur l'axe + tooltip "Ma actuel" + grille
+// iconique des espèces (.iconic) qui passent en surbrillance quand le
+// scrubber chevauche leur intervalle [earlyMa, lateMa].
+//
+// Design ressort à la doctrine "atmosphère temps-driven" : on respire
+// 186 millions d'années en glissant le doigt, l'écran réagit.
+//
+// Pas de GSAP : le rendu CSS smooth + transition + animations légères
+// suffisent et évitent +30 KB de bundle (chantier #2 backlog 2026-05-10).
+
+import { PERIODS } from '../data/periods';
+import { SPECIES } from '../data/species';
+
+// Une seule ligne d'iconiques, triées par Ma décroissant (du plus
+// ancien au plus récent — sens de lecture de la frise gauche→droite).
+const iconics = SPECIES.filter((s) => s.iconic && s.earlyMa && s.lateMa)
+  .map((s) => ({
+    id: s.id,
+    name: s.name,
+    common: s.commonName ?? s.name,
+    early: s.earlyMa!,
+    late: s.lateMa!,
+    period: s.periodId,
+    image: s.lifeRestorationUrl ?? s.imageUrl ?? null,
+  }))
+  .sort((a, b) => b.early - a.early);
+
+const TOTAL_MA_START = 252;
+const TOTAL_MA_END = 66;
+const SPAN = TOTAL_MA_START - TOTAL_MA_END;
+
+// Helper côté serveur pour positionner les périodes en %.
+const toLeft = (ma: number) => `${((TOTAL_MA_START - ma) / SPAN) * 100}%`;
+const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}%`;
+---
+<section class="meso-timeline" aria-label="Frise interactive Mésozoïque 252 à 66 millions d'années">
+  <div class="meso-timeline-header">
+    <h2 class="meso-timeline-title">Frise interactive — 252 → 66 Ma</h2>
+    <p class="meso-timeline-hint" data-default>Glisse le curseur pour voyager dans le Mésozoïque.</p>
+    <p class="meso-timeline-hint" data-cursor hidden></p>
+  </div>
+
+  <div class="meso-timeline-axis" data-meso-axis>
+    <!-- 3 zones colorées Trias / Jurassique / Crétacé. -->
+    {PERIODS.map((p) => (
+      <a
+        class="meso-band"
+        href={`/periodes/${p.id}/`}
+        style={`left:${toLeft(p.startMa)}; width:${toWidth(p.startMa, p.endMa)}; --accent:${p.accentColor};`}
+        data-period={p.id}
+      >
+        <span class="meso-band-label">{p.shortName}</span>
+        <span class="meso-band-range">{p.startMa} — {p.endMa} Ma</span>
+      </a>
+    ))}
+
+    <!-- Graduations majeures tous les 20 Ma. -->
+    <div class="meso-ticks">
+      {[240, 220, 200, 180, 160, 140, 120, 100, 80].map((ma) => (
+        <span class="meso-tick" style={`left:${toLeft(ma)};`}>
+          <span class="meso-tick-label">{ma}</span>
+        </span>
+      ))}
+    </div>
+
+    <!-- Curseur draggable. Initial à 145 Ma (frontière Jura/Crétacé). -->
+    <div class="meso-cursor" data-meso-cursor style={`left:${toLeft(145)};`} role="slider"
+         aria-valuemin="66" aria-valuemax="252" aria-valuenow="145" aria-label="Position temporelle en millions d'années"
+         tabindex="0">
+      <span class="meso-cursor-line"></span>
+      <span class="meso-cursor-handle">▼</span>
+      <span class="meso-cursor-readout" data-meso-readout>145 Ma</span>
+    </div>
+  </div>
+
+  <!-- Grille iconiques. Chaque card a une intersection [earlyMa, lateMa]. -->
+  <div class="meso-iconic-grid" data-meso-iconics>
+    {iconics.map((sp) => (
+      <a
+        class="meso-iconic tap-bloom"
+        href={`/especes/${sp.id}/`}
+        data-early={sp.early}
+        data-late={sp.late}
+        data-period={sp.period}
+      >
+        <span class="meso-iconic-img" style={`--accent:var(--color-evato-${sp.period === 'trias' ? 'rust' : sp.period === 'jurassique' ? 'jade' : 'amber'});`}>
+          {sp.image ? <img src={sp.image} alt={sp.common} loading="lazy" /> : <span class="meso-iconic-fallback">𓆗</span>}
+        </span>
+        <span class="meso-iconic-name">{sp.common}</span>
+        <span class="meso-iconic-range">{sp.early}—{sp.late} Ma</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<script is:inline define:vars={{ TOTAL_MA_START, TOTAL_MA_END, SPAN }}>
+  // Drag/click/keyboard scrubber sur .meso-timeline-axis.
+  // Met à jour data-meso-readout en Ma + applique .meso-iconic--lit
+  // sur les espèces dont [late, early] couvre la valeur courante.
+  (() => {
+    if (typeof window === 'undefined') return;
+    const axis = document.querySelector('[data-meso-axis]');
+    const cursor = document.querySelector('[data-meso-cursor]');
+    const readout = document.querySelector('[data-meso-readout]');
+    const hint = document.querySelector('.meso-timeline-hint[data-cursor]');
+    const hintDefault = document.querySelector('.meso-timeline-hint[data-default]');
+    const iconics = Array.from(document.querySelectorAll('.meso-iconic'));
+    if (!axis || !cursor || !readout) return;
+
+    let currentMa = 145;
+    let dragging = false;
+
+    const periodOfMa = (ma) => {
+      if (ma >= 201) return 'Trias';
+      if (ma >= 145) return 'Jurassique';
+      return 'Crétacé';
+    };
+
+    const setMa = (ma) => {
+      const clamped = Math.max(TOTAL_MA_END, Math.min(TOTAL_MA_START, Math.round(ma)));
+      currentMa = clamped;
+      const pct = ((TOTAL_MA_START - clamped) / SPAN) * 100;
+      cursor.style.left = pct + '%';
+      cursor.setAttribute('aria-valuenow', String(clamped));
+      readout.textContent = clamped + ' Ma';
+      if (hintDefault && hint) {
+        hintDefault.hidden = true;
+        hint.hidden = false;
+        hint.textContent = clamped + ' Ma — ' + periodOfMa(clamped);
+      }
+      // Highlight iconic species whose [late, early] interval contains currentMa.
+      for (const el of iconics) {
+        const early = Number(el.dataset.early);
+        const late = Number(el.dataset.late);
+        const lit = clamped <= early && clamped >= late;
+        el.classList.toggle('meso-iconic--lit', lit);
+      }
+    };
+
+    const maFromEvent = (clientX) => {
+      const r = axis.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(1, (clientX - r.left) / r.width));
+      return TOTAL_MA_START - pct * SPAN;
+    };
+
+    const onPointerMove = (e) => {
+      if (!dragging) return;
+      e.preventDefault();
+      setMa(maFromEvent(e.clientX));
+    };
+    const onPointerUp = () => {
+      dragging = false;
+      cursor.classList.remove('meso-cursor--grabbing');
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+    };
+
+    cursor.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      dragging = true;
+      cursor.classList.add('meso-cursor--grabbing');
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp);
+    });
+
+    // Click sur l'axe (hors d'une bande clickable) → jump à cette Ma.
+    axis.addEventListener('click', (e) => {
+      // Ignore click on the bands (they are <a> with href to /periodes/x/).
+      if (e.target.closest('.meso-band')) return;
+      if (e.target.closest('.meso-cursor')) return;
+      setMa(maFromEvent(e.clientX));
+    });
+
+    // Keyboard accessibility on the cursor.
+    cursor.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); setMa(currentMa + 1); }
+      else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); setMa(currentMa - 1); }
+      else if (e.key === 'PageUp')   { e.preventDefault(); setMa(currentMa + 10); }
+      else if (e.key === 'PageDown') { e.preventDefault(); setMa(currentMa - 10); }
+      else if (e.key === 'Home')     { e.preventDefault(); setMa(TOTAL_MA_START); }
+      else if (e.key === 'End')      { e.preventDefault(); setMa(TOTAL_MA_END); }
+    });
+
+    // Initial highlight pass.
+    setMa(currentMa);
+  })();
+</script>
+
+<style>
+  .meso-timeline {
+    margin: 0 0 3rem;
+    padding: 1.5rem 0 0;
+  }
+  .meso-timeline-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 1.6rem;
+  }
+  .meso-timeline-title {
+    font-size: 1.4rem;
+    margin: 0;
+    color: var(--color-evato-bone);
+    letter-spacing: 0.04em;
+  }
+  .meso-timeline-hint {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--color-evato-bone-muted);
+    font-style: italic;
+    min-height: 1.2em;
+  }
+  .meso-timeline-hint[data-cursor] {
+    color: var(--color-evato-amber-bright);
+    font-style: normal;
+    font-family: var(--font-display);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+  }
+
+  .meso-timeline-axis {
+    position: relative;
+    height: 110px;
+    background: linear-gradient(180deg, rgba(13, 10, 6, 0.4), rgba(13, 10, 6, 0.65));
+    border: 1px solid rgba(212, 165, 94, 0.18);
+    border-radius: 8px;
+    overflow: visible;
+    cursor: crosshair;
+    user-select: none;
+    touch-action: pan-y;
+  }
+
+  .meso-band {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    border-right: 1px dashed color-mix(in srgb, var(--accent) 35%, transparent);
+    transition: background 220ms ease;
+  }
+  .meso-band:last-of-type { border-right: 0; }
+  .meso-band:hover {
+    background: color-mix(in srgb, var(--accent) 28%, transparent);
+  }
+  .meso-band-label {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+  }
+  .meso-band-range {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    color: var(--color-evato-bone-muted);
+    margin-top: 0.2rem;
+  }
+  @media (max-width: 720px) {
+    .meso-band-label { font-size: 0.78rem; }
+    .meso-band-range { display: none; }
+  }
+
+  .meso-ticks {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 18px;
+    pointer-events: none;
+  }
+  .meso-tick {
+    position: absolute;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 8px;
+    background: rgba(212, 165, 94, 0.4);
+  }
+  .meso-tick-label {
+    position: absolute;
+    bottom: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-display);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    color: var(--color-evato-bone-muted);
+    white-space: nowrap;
+  }
+
+  .meso-cursor {
+    position: absolute;
+    top: -8px;
+    bottom: -8px;
+    width: 0;
+    transform: translateX(-50%);
+    z-index: 4;
+    cursor: grab;
+    touch-action: none;
+    transition: left 80ms ease-out;
+    outline: none;
+  }
+  .meso-cursor:focus-visible .meso-cursor-line {
+    box-shadow: 0 0 0 2px var(--color-evato-amber-bright), 0 0 18px rgba(255, 200, 121, 0.7);
+  }
+  .meso-cursor--grabbing { cursor: grabbing; transition: none; }
+  .meso-cursor-line {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    background: var(--color-evato-amber-bright);
+    box-shadow:
+      0 0 12px rgba(255, 200, 121, 0.7),
+      0 0 4px rgba(255, 200, 121, 0.9);
+    border-radius: 1px;
+  }
+  .meso-cursor-handle {
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--color-evato-amber-bright);
+    font-size: 1rem;
+    text-shadow: 0 0 8px rgba(255, 200, 121, 0.9);
+    pointer-events: none;
+  }
+  .meso-cursor-readout {
+    position: absolute;
+    top: -34px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.2rem 0.55rem;
+    background: rgba(13, 10, 6, 0.92);
+    border: 1px solid var(--color-evato-amber);
+    border-radius: 4px;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    color: var(--color-evato-amber-bright);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  /* ── Grille iconiques ──────────────────────────────────────────── */
+  .meso-iconic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.9rem;
+    margin-top: 2.4rem;
+  }
+  .meso-iconic {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.6rem;
+    background: rgba(26, 18, 10, 0.4);
+    border: 1px solid rgba(212, 165, 94, 0.15);
+    border-radius: 6px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, opacity 220ms ease;
+    opacity: 0.55;
+  }
+  .meso-iconic:hover {
+    transform: translateY(-2px);
+    border-color: rgba(212, 165, 94, 0.45);
+  }
+  .meso-iconic--lit {
+    opacity: 1;
+    border-color: var(--color-evato-amber);
+    box-shadow:
+      0 0 0 1px var(--color-evato-amber),
+      0 0 22px rgba(255, 200, 121, 0.3);
+  }
+  .meso-iconic--lit .meso-iconic-img {
+    filter: saturate(1.05) brightness(1);
+  }
+  .meso-iconic-img {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 4px;
+    background: linear-gradient(135deg, #1a120a, #0d0a06);
+    border: 1px solid color-mix(in srgb, var(--accent, #d4a55e) 25%, transparent);
+    display: grid;
+    place-items: center;
+    transition: filter 220ms ease;
+    filter: saturate(0.7) brightness(0.85);
+  }
+  .meso-iconic-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .meso-iconic-fallback {
+    color: rgba(212, 165, 94, 0.5);
+    font-size: 1.5rem;
+  }
+  .meso-iconic-name {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: var(--color-evato-bone);
+    line-height: 1.25;
+  }
+  .meso-iconic--lit .meso-iconic-name {
+    color: var(--color-evato-amber-bright);
+  }
+  .meso-iconic-range {
+    font-size: 0.68rem;
+    color: var(--color-evato-bone-muted);
+    font-family: var(--font-display);
+    letter-spacing: 0.12em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .meso-cursor { transition: none; }
+    .meso-iconic { transition: none; }
+  }
+</style>

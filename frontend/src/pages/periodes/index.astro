@@ -1,6 +1,7 @@
 ---
 import CodexLayout from '../../layouts/CodexLayout.astro';
 import PageHero from '../../components/PageHero.astro';
+import MesozoicTimeline from '../../components/MesozoicTimeline.astro';
 import { PERIODS } from '../../data/periods';
 import { getSpeciesByPeriod } from '../../data/species';
 ---
@@ -12,13 +13,16 @@ import { getSpeciesByPeriod } from '../../data/species';
   <PageHero videoSrc="/hero-trex-9.mp4" eyebrow="voyage temporel" title="252 → 66 millions d'années" />
 
   <header class="period-header">
-    <p class="codex-lede">
+    <p class="codex-lede" data-amber-split>
       Le Mésozoïque s'étend sur 186 millions d'années. Trois ères, trois climats,
       trois géographies — d'un supercontinent brûlant peuplé de petits
       bipèdes carnivores à un monde fragmenté terminé par un astéroïde.
     </p>
   </header>
 
+  <MesozoicTimeline />
+
+  <h2 class="period-grid-heading">Plonger dans une ère</h2>
   <div class="period-grid">
     {PERIODS.map((p) => {
       const count = getSpeciesByPeriod(p.id).length;
@@ -65,6 +69,16 @@ import { getSpeciesByPeriod } from '../../data/species';
       color: var(--color-evato-bone-muted);
       font-size: 1.05rem;
       line-height: 1.6;
+    }
+    .period-grid-heading {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-evato-amber);
+      margin: 0 0 1rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid rgba(212, 165, 94, 0.15);
     }
     .period-grid {
       display: grid;
