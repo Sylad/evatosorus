@@ -23,7 +23,7 @@ import { getSpeciesByPeriod } from '../../data/species';
     {PERIODS.map((p) => {
       const count = getSpeciesByPeriod(p.id).length;
       return (
-        <a href={`/periodes/${p.id}/`} class="period-card" style={`--accent:${p.accentColor}`}>
+        <a href={`/periodes/${p.id}/`} class="period-card tap-bloom" style={`--accent:${p.accentColor}`}>
           <div class="period-meta">
             <span class="period-num">{p.startMa} → {p.endMa} Ma</span>
             <span class="period-duration">{p.durationMa} Ma</span>

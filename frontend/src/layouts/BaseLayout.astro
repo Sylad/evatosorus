@@ -49,5 +49,117 @@ const ogImageAbs = new URL(ogImage, Astro.site ?? 'https://evatosorus.pages.dev'
     <slot />
     <Lightbox />
     <AmbientAudio />
+
+    <!--
+      Tap-friendly bioluminescence (chantier #5 — 2026-05-10).
+      Sur tactile, le hover .amber-word et .species-card / .period-card est
+      mort. On recrée l'effet en JS :
+        1. tap sur un .amber-word → toggle .amber-word--lit ~1.4s.
+        2. IntersectionObserver sur les paragraphes [data-amber-split] :
+           quand visibles ≥ 30%, allume aléatoirement 2-3 mots en pulse
+           "fireflies" (cycle ~4s puis off, repris quand on rerentre).
+        3. tap sur .tap-bloom (cards .species-card / .period-card) →
+           applique .tap-bloom--firing 1500ms puis follow le href.
+      Tous gated derrière `prefers-reduced-motion` côté CSS.
+    -->
+    <script is:inline>
+      (() => {
+        if (typeof window === 'undefined') return;
+        const isTouch = matchMedia('(hover: none) and (pointer: coarse)').matches;
+        const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // ── 1. Tap on .amber-word → momentary glow ───────────────────────
+        // Use pointerdown so it fires immediately (no 300ms tap-delay).
+        // Fallback to click for older browsers.
+        const litWords = new WeakSet();
+        const lightWord = (el) => {
+          if (!el || litWords.has(el)) return;
+          litWords.add(el);
+          el.classList.add('amber-word--lit');
+          setTimeout(() => {
+            el.classList.remove('amber-word--lit');
+            litWords.delete(el);
+          }, 1400);
+        };
+        document.addEventListener('pointerdown', (e) => {
+          const t = e.target;
+          if (t && t.classList && t.classList.contains('amber-word')) {
+            lightWord(t);
+          }
+        }, { passive: true });
+
+        // ── 2. IntersectionObserver fireflies on mobile ───────────────────
+        // Only kicks in on touch + non-reduced motion. Picks 2-3 random
+        // .amber-word per visible paragraph and pulses them in a stagger.
+        if (isTouch && !reduced && 'IntersectionObserver' in window) {
+          const fired = new WeakMap();
+          const fireflies = (p) => {
+            const last = fired.get(p) ?? 0;
+            const now = Date.now();
+            if (now - last < 6000) return; // throttle 6s
+            fired.set(p, now);
+            const words = Array.from(p.querySelectorAll('.amber-word'));
+            if (!words.length) return;
+            const n = Math.min(words.length, 2 + Math.floor(Math.random() * 2)); // 2-3
+            const picks = [];
+            const pool = [...words];
+            for (let i = 0; i < n; i++) {
+              const idx = Math.floor(Math.random() * pool.length);
+              picks.push(pool.splice(idx, 1)[0]);
+            }
+            picks.forEach((w, i) => {
+              setTimeout(() => {
+                w.classList.add('amber-word--pulse');
+                setTimeout(() => w.classList.remove('amber-word--pulse'), 3300);
+              }, i * 600 + Math.random() * 400);
+            });
+          };
+          const io = new IntersectionObserver((entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting && e.intersectionRatio >= 0.3) {
+                fireflies(e.target);
+              }
+            }
+          }, { threshold: [0.3] });
+          const observe = () => {
+            document.querySelectorAll('[data-amber-split]').forEach((p) => {
+              if (!p.dataset.amberObserved) {
+                io.observe(p);
+                p.dataset.amberObserved = '1';
+              }
+            });
+          };
+          // Re-scan after split runs (split adds spans inside p, not new p).
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', observe);
+          } else {
+            observe();
+          }
+          // Re-scan when species/period cards mount client:only React.
+          setTimeout(observe, 600);
+        }
+
+        // ── 3. Tap-bloom on .tap-bloom anchors ────────────────────────────
+        // Card-anchor tap → bloom 1500ms puis navigate. Sur desktop avec
+        // souris, on laisse le clic natif (pas d'override).
+        if (isTouch) {
+          document.addEventListener('click', (e) => {
+            const a = e.target && e.target.closest && e.target.closest('a.tap-bloom');
+            if (!a) return;
+            // Skip if modifier keys, middle-click, target=_blank, or already firing.
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+            if (a.target && a.target !== '' && a.target !== '_self') return;
+            if (a.dataset.bloomFiring === '1') return;
+            const href = a.getAttribute('href');
+            if (!href || href.startsWith('#')) return;
+            e.preventDefault();
+            a.dataset.bloomFiring = '1';
+            a.classList.add('tap-bloom--firing');
+            const delay = reduced ? 0 : 850; // shorter than the spec's 1500ms — feels more reactive in practice
+            setTimeout(() => { window.location.href = href; }, delay);
+          }, true);
+        }
+      })();
+    </script>
   </body>
 </html>

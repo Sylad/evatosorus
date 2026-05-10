@@ -15,7 +15,7 @@ const groupSilhouette = `/silhouettes/group-${s.taxonGroup}.png`;
 const primaryImage = s.lifeRestorationUrl ?? s.imageUrl;
 const isSilhouette = !primaryImage;
 ---
-<a href={`/especes/${s.id}/`} class="species-card group">
+<a href={`/especes/${s.id}/`} class="species-card tap-bloom group">
   <div class="card-image">
     {primaryImage ? (
       <img src={primaryImage} alt={s.commonName ?? s.name} loading="lazy" />
