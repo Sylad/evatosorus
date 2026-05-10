@@ -56,28 +56,12 @@ const periodCounts = {
     le même point pour ne pas surcharger la carte.
   </p>
 
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-    is:inline
-  />
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
-    is:inline
-  />
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""
-    is:inline
-  ></script>
-  <script
-    src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"
-    is:inline
-  ></script>
+  {/*
+    Leaflet + leaflet.markercluster sont importés via npm dans
+    PaleoMap.tsx (plus de CDN unpkg, plus de risque SRI). Vite les
+    bundle et tree-shake correctement. CSS aussi injecté via import
+    dans le composant.
+  */}
 
   <style>
     .map-header {

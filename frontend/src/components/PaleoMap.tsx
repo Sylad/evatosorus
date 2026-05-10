@@ -1,4 +1,9 @@
 import { useEffect, useRef } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet.markercluster';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 type Marker = {
   speciesId: string;
@@ -17,13 +22,6 @@ const PERIOD_COLOR: Record<Marker['periodId'], string> = {
   cretace: '#d4a55e',
 };
 
-// We render via the global L from Leaflet's UMD bundle (loaded via <link>
-// + <script> in the page). Avoids react-leaflet hydration headaches and
-// keeps the component small.
-declare global {
-  interface Window { L: any; }
-}
-
 // HTML escape helper to safely inject user/data strings into popup HTML.
 const escHtml = (s: string) =>
   s
@@ -38,135 +36,103 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
   useEffect(() => {
     if (!ref.current) return;
     let mounted = true;
-    let map: any = null;
+    let map: L.Map | null = null;
+    if (!mounted) return;
 
-    const init = () => {
-      if (!mounted || !ref.current || !window.L) return false;
-      const L = window.L;
-      // Wait for the markercluster plugin to attach as well — it patches L
-      // with markerClusterGroup. Without this we'd render before clustering
-      // is ready and fall back to plain layer (still works, but ugly).
-      if (typeof L.markerClusterGroup !== 'function') return false;
+    map = L.map(ref.current, {
+      center: [10, 10],
+      zoom: 2,
+      worldCopyJump: true,
+      scrollWheelZoom: true,
+    });
 
-      map = L.map(ref.current, {
-        center: [10, 10],
-        zoom: 2,
-        worldCopyJump: true,
-        scrollWheelZoom: true,
-      });
+    // Dark base layer matching the Mésozoïque mood. CARTO Dark No Labels
+    // is free (subject to usage limits) and renders nicely against amber.
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap, © CARTO',
+      maxZoom: 8,
+    }).addTo(map);
 
-      // Dark base layer matching the Mésozoïque mood. CARTO Dark No Labels
-      // is free (subject to usage limits) and renders nicely against amber.
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
-        attribution: '© OpenStreetMap, © CARTO',
-        maxZoom: 8,
-      }).addTo(map);
-
-      // Regroupe les marqueurs co-localisés sur la même demi-degré pour éviter
-      // d'empiler plusieurs popups au même endroit. Les vrais clusters de
-      // proximité sont gérés par leaflet.markercluster (chargé via CDN) qui
-      // dégroupe automatiquement quand on zoome.
-      const grouped = new Map<string, Marker[]>();
-      for (const m of markers) {
-        const k = `${m.lat.toFixed(1)},${m.lng.toFixed(1)}`;
-        if (!grouped.has(k)) grouped.set(k, []);
-        grouped.get(k)!.push(m);
-      }
-
-      // markerClusterGroup est ajouté par le plugin leaflet.markercluster
-      // (CDN dans carte.astro). Si absent (CDN failed), fallback sur layer
-      // standard pour ne pas casser la carte.
-      const cluster: any = typeof L.markerClusterGroup === 'function'
-        ? L.markerClusterGroup({
-            chunkedLoading: true,
-            maxClusterRadius: 50,
-            spiderfyOnMaxZoom: true,
-            showCoverageOnHover: false,
-            iconCreateFunction: (c: any) => {
-              // Calcule la couleur dominante du cluster (période la plus
-              // représentée parmi ses enfants) pour cohérence visuelle.
-              const counts: Record<string, number> = { trias: 0, jurassique: 0, cretace: 0 };
-              for (const child of c.getAllChildMarkers()) {
-                const pid = child.options.evatoPeriod as keyof typeof counts;
-                if (pid) counts[pid] = (counts[pid] ?? 0) + 1;
-              }
-              let dom: keyof typeof counts = 'cretace';
-              let max = -1;
-              (Object.keys(counts) as (keyof typeof counts)[]).forEach((k) => {
-                if (counts[k] > max) { max = counts[k]; dom = k; }
-              });
-              const color = PERIOD_COLOR[dom];
-              const total = c.getChildCount();
-              return L.divIcon({
-                html: `<div class="evato-cluster" style="--c:${color};"><span>${total}</span></div>`,
-                className: 'evato-cluster-wrap',
-                iconSize: [40, 40],
-              });
-            },
-          })
-        : L.layerGroup();
-
-      for (const [, group] of grouped) {
-        const first = group[0];
-        const color = PERIOD_COLOR[first.periodId];
-        const size = group.length > 1 ? 30 : 24;
-        const icon = L.divIcon({
-          html: `<div class="evato-pin" style="--c:${color}; --size:${size}px;">
-            ${group.length > 1 ? `<span class="evato-pin-count">${group.length}</span>` : '<span class="evato-pin-dot"></span>'}
-          </div>`,
-          className: 'evato-pin-wrap',
-          iconSize: [size, size],
-          iconAnchor: [size / 2, size / 2],
-        });
-        const marker = L.marker([first.lat, first.lng], {
-          icon,
-          // Custom prop forwarded so iconCreateFunction can pick the dominant period.
-          evatoPeriod: first.periodId,
-        } as any);
-
-        const popupContent = `
-          <div class="evato-popup">
-            <div class="evato-popup-loc">${escHtml(first.country)}${group.length > 1 ? ` · ${group.length} espèces` : ''}</div>
-            ${group.slice(0, 5).map((g) => `
-              <a class="evato-popup-link" href="/especes/${encodeURIComponent(g.speciesId)}/">
-                ${g.imageUrl ? `<img src="${escHtml(g.imageUrl)}" alt="" />` : '<span class="popup-fallback">𓆗</span>'}
-                <span>
-                  <strong>${escHtml(g.commonName ?? g.name)}</strong>
-                  <em>${escHtml(g.name)}</em>
-                </span>
-              </a>
-            `).join('')}
-            ${group.length > 5 ? `<div class="evato-popup-more">+ ${group.length - 5} autres</div>` : ''}
-          </div>`;
-        marker.bindPopup(popupContent, { maxWidth: 280 });
-        cluster.addLayer(marker);
-      }
-      map.addLayer(cluster);
-
-      return true;
-    };
-
-    if (init()) {
-      return () => {
-        mounted = false;
-        map?.remove();
-      };
+    // Regroupe les marqueurs co-localisés sur la même demi-degré pour éviter
+    // d'empiler plusieurs popups au même endroit. Les vrais clusters de
+    // proximité sont gérés par leaflet.markercluster (npm) qui dégroupe
+    // automatiquement quand on zoome.
+    const grouped = new Map<string, Marker[]>();
+    for (const m of markers) {
+      const k = `${m.lat.toFixed(1)},${m.lng.toFixed(1)}`;
+      if (!grouped.has(k)) grouped.set(k, []);
+      grouped.get(k)!.push(m);
     }
 
-    // Leaflet UMD pas encore prêt — on poll toutes les 50ms (max 5s)
-    // jusqu'à ce que window.L soit dispo.
-    const interval = setInterval(() => {
-      if (init()) clearInterval(interval);
-    }, 50);
-    const timeout = setTimeout(() => {
-      clearInterval(interval);
-      if (!map) console.error('PaleoMap: Leaflet failed to load (window.L undefined after 5s)');
-    }, 5000);
+    // markerClusterGroup est ajouté par le plugin leaflet.markercluster
+    // (importé via npm — plus de risque CDN/SRI).
+    const cluster = L.markerClusterGroup({
+      chunkedLoading: true,
+      maxClusterRadius: 50,
+      spiderfyOnMaxZoom: true,
+      showCoverageOnHover: false,
+      iconCreateFunction: (c) => {
+        // Calcule la couleur dominante du cluster (période la plus
+        // représentée parmi ses enfants) pour cohérence visuelle.
+        const counts: Record<string, number> = { trias: 0, jurassique: 0, cretace: 0 };
+        for (const child of c.getAllChildMarkers()) {
+          const pid = (child.options as L.MarkerOptions & { evatoPeriod?: keyof typeof counts }).evatoPeriod;
+          if (pid) counts[pid] = (counts[pid] ?? 0) + 1;
+        }
+        let dom: keyof typeof counts = 'cretace';
+        let max = -1;
+        (Object.keys(counts) as (keyof typeof counts)[]).forEach((k) => {
+          if (counts[k] > max) { max = counts[k]; dom = k; }
+        });
+        const color = PERIOD_COLOR[dom];
+        const total = c.getChildCount();
+        return L.divIcon({
+          html: `<div class="evato-cluster" style="--c:${color};"><span>${total}</span></div>`,
+          className: 'evato-cluster-wrap',
+          iconSize: [40, 40],
+        });
+      },
+    });
+
+    for (const [, group] of grouped) {
+      const first = group[0];
+      const color = PERIOD_COLOR[first.periodId];
+      const size = group.length > 1 ? 30 : 24;
+      const icon = L.divIcon({
+        html: `<div class="evato-pin" style="--c:${color}; --size:${size}px;">
+          ${group.length > 1 ? `<span class="evato-pin-count">${group.length}</span>` : '<span class="evato-pin-dot"></span>'}
+        </div>`,
+        className: 'evato-pin-wrap',
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2],
+      });
+      const marker = L.marker([first.lat, first.lng], {
+        icon,
+        // Custom prop forwarded so iconCreateFunction can pick the dominant period.
+        evatoPeriod: first.periodId,
+      } as L.MarkerOptions & { evatoPeriod: string });
+
+      const popupContent = `
+        <div class="evato-popup">
+          <div class="evato-popup-loc">${escHtml(first.country)}${group.length > 1 ? ` · ${group.length} espèces` : ''}</div>
+          ${group.slice(0, 5).map((g) => `
+            <a class="evato-popup-link" href="/especes/${encodeURIComponent(g.speciesId)}/">
+              ${g.imageUrl ? `<img src="${escHtml(g.imageUrl)}" alt="" />` : '<span class="popup-fallback">𓆗</span>'}
+              <span>
+                <strong>${escHtml(g.commonName ?? g.name)}</strong>
+                <em>${escHtml(g.name)}</em>
+              </span>
+            </a>
+          `).join('')}
+          ${group.length > 5 ? `<div class="evato-popup-more">+ ${group.length - 5} autres</div>` : ''}
+        </div>`;
+      marker.bindPopup(popupContent, { maxWidth: 280 });
+      cluster.addLayer(marker);
+    }
+    map.addLayer(cluster);
 
     return () => {
       mounted = false;
-      clearInterval(interval);
-      clearTimeout(timeout);
       map?.remove();
     };
   }, [markers]);
