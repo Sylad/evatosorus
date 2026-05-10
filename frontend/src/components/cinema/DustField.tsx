@@ -22,6 +22,13 @@ export function DustField() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    // Respecte prefers-reduced-motion : on ne lance pas la boucle RAF
+    // (économise CPU/GPU/batterie pour les users qui demandent moins
+    // d'animations, et c'est gratuit côté UX — particles cosmétiques).
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) return;
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -36,8 +43,13 @@ export function DustField() {
     };
     window.addEventListener('resize', onResize);
 
+    // Pause la boucle quand l'onglet est en arrière-plan (visibilitychange).
+    // Sans ça : 90 particles × radial gradient par frame = ~5% CPU + drain
+    // batterie en arrière-plan, alors que personne ne regarde.
     let raf = 0;
+    let running = !document.hidden;
     const tick = () => {
+      if (!running) return;
       ctx.clearRect(0, 0, width, height);
       for (const m of motes) {
         m.y += m.vy;
@@ -57,10 +69,19 @@ export function DustField() {
       }
       raf = requestAnimationFrame(tick);
     };
+    const onVisibility = () => {
+      const wasRunning = running;
+      running = !document.hidden;
+      if (running && !wasRunning) {
+        raf = requestAnimationFrame(tick);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibility);
     raf = requestAnimationFrame(tick);
 
     return () => {
       window.removeEventListener('resize', onResize);
+      document.removeEventListener('visibilitychange', onVisibility);
       cancelAnimationFrame(raf);
     };
   }, []);

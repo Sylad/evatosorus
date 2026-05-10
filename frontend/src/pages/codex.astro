@@ -37,7 +37,7 @@ const sorted = [...SPECIES].sort((a, b) => {
     </p>
   </header>
 
-  <CodexFilters client:load taxonGroups={taxonGroups} />
+  <CodexFilters client:idle taxonGroups={taxonGroups} />
 
   <section class="species-grid">
     {sorted.map((s) => (

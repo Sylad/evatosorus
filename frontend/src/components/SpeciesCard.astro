@@ -18,10 +18,24 @@ const isSilhouette = !primaryImage;
 <a href={`/especes/${s.id}/`} class="species-card tap-bloom group">
   <div class="card-image">
     {primaryImage ? (
-      <img src={primaryImage} alt={s.commonName ?? s.name} loading="lazy" />
+      <img
+        src={primaryImage}
+        alt={`${s.commonName ?? s.name} — ${TAXON_GROUP_LABELS[s.taxonGroup] ?? s.taxonGroup}${s.lengthM ? `, ~${s.lengthM} m` : ''}`}
+        loading="lazy"
+        decoding="async"
+        width="416"
+        height="260"
+      />
     ) : (
       <div class="card-image-silhouette">
-        <img src={groupSilhouette} alt={`Silhouette ${TAXON_GROUP_LABELS[s.taxonGroup] ?? s.taxonGroup}`} loading="lazy" />
+        <img
+          src={groupSilhouette}
+          alt={`Silhouette ${TAXON_GROUP_LABELS[s.taxonGroup] ?? s.taxonGroup} (illustration non disponible)`}
+          loading="lazy"
+          decoding="async"
+          width="200"
+          height="200"
+        />
       </div>
     )}
     <span class="card-period" style={`--p:${periodColor}`}>{periodLabel}</span>
