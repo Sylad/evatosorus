@@ -17,3 +17,4 @@ frontend/public/**/*.gif
 # Windows Zone.Identifier ADS leak from WSL/copy from Windows.
 *:Zone.Identifier
 *.Identifier
+.token-savior-cache.json
