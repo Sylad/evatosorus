@@ -1,0 +1,346 @@
+---
+import CodexLayout from '../layouts/CodexLayout.astro';
+import { SPECIES, getSpeciesVideos, TAXON_GROUP_LABELS, DIET_LABELS } from '../data/species';
+
+const showcaseIds = [
+  'tyrannosaurus-rex',
+  'triceratops-horridus',
+  'velociraptor-mongoliensis',
+  'brachiosaurus-altithorax',
+  'stegosaurus-stenops',
+  'spinosaurus-aegyptiacus',
+  'ankylosaurus-magniventris',
+  'parasaurolophus-walkeri',
+  'allosaurus-fragilis',
+  'diplodocus-carnegii',
+] as const;
+
+const featuredSpecies = showcaseIds
+  .map((id) => SPECIES.find((species) => species.id === id))
+  .filter(Boolean)
+  .map((species) => ({
+    ...species!,
+    videos: getSpeciesVideos(species!.id),
+  }));
+---
+
+<CodexLayout
+  title="Espèces vitrines — Evatosorus"
+  description="Les dinosaures et créatures préhistoriques les plus iconiques d'Evatosorus, avec scènes de vie et animations."
+  active="vitrines"
+>
+  <section class="vitrine-hero" aria-labelledby="vitrine-title">
+    <video autoplay loop muted playsinline preload="auto" poster="/species-life/tyrannosaurus-rex.jpg">
+      <source src="/tyrannosaurus-rex-1.mp4" type="video/mp4" />
+      <img src="/species-life/tyrannosaurus-rex.jpg" alt="" />
+    </video>
+    <div class="vitrine-hero-overlay">
+      <p class="page-kicker">espèces vitrines</p>
+      <h1 id="vitrine-title">Le musée vivant commence ici.</h1>
+      <p>
+        Les créatures les plus connues ouvrent la visite : une scène animée,
+        une fiche claire, et juste assez de science pour nourrir la curiosité
+        sans casser l'émerveillement.
+      </p>
+      <div class="hero-actions">
+        <a href="#vitrines" class="hero-button hero-button-primary">Voir les espèces</a>
+        <a href="/codex/" class="hero-button">Explorer les 1511 fiches</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="vitrines" class="vitrine-grid" aria-label="Espèces animées">
+    {featuredSpecies.map((species, index) => (
+      <a class="vitrine-card tap-bloom" href={`/especes/${species.id}/`}>
+        <div class="vitrine-media">
+          {species.videos[0] ? (
+            <video
+              src={species.videos[index % species.videos.length]}
+              poster={species.lifeRestorationUrl ?? species.imageUrl}
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+            />
+          ) : (
+            <img
+              src={species.lifeRestorationUrl ?? species.imageUrl}
+              alt={species.commonName ?? species.name}
+              loading="lazy"
+              decoding="async"
+            />
+          )}
+          <span class="period-chip">
+            {species.periodId === 'trias' ? 'Trias' : species.periodId === 'jurassique' ? 'Jurassique' : 'Crétacé'}
+          </span>
+        </div>
+        <div class="vitrine-body">
+          <div class="vitrine-meta">
+            <span>{TAXON_GROUP_LABELS[species.taxonGroup] ?? species.taxonGroup}</span>
+            <span>{DIET_LABELS[species.diet] ?? species.diet}</span>
+          </div>
+          <h2>{species.commonName ?? species.name}</h2>
+          <p class="sci">{species.name}</p>
+          {species.blurb && <p class="blurb">{species.blurb}</p>}
+          <p class="open-card">Ouvrir la fiche</p>
+        </div>
+      </a>
+    ))}
+  </section>
+
+  <section class="codex-bridge">
+    <p class="page-kicker">et après ?</p>
+    <h2>Quand Eva veut aller plus loin, le codex complet prend le relais.</h2>
+    <p>
+      Les vitrines donnent envie. Le codex permet ensuite de chercher, filtrer,
+      comparer, et tomber sur des espèces moins célèbres mais parfois tout aussi
+      étranges.
+    </p>
+    <a href="/codex/" class="hero-button hero-button-primary">Explorer le codex complet</a>
+  </section>
+
+  <style>
+    .vitrine-hero {
+      position: relative;
+      min-height: min(76svh, 740px);
+      overflow: hidden;
+      border: 1px solid rgba(212, 165, 94, 0.3);
+      border-radius: 8px;
+      background: #0d0a06;
+      box-shadow: 0 22px 44px -18px rgba(0, 0, 0, 0.78);
+    }
+    .vitrine-hero video,
+    .vitrine-hero img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(1.05) contrast(1.05) brightness(0.8);
+    }
+    .vitrine-hero-overlay {
+      position: relative;
+      z-index: 1;
+      min-height: inherit;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: clamp(1.4rem, 5vw, 4rem);
+      background:
+        linear-gradient(90deg, rgba(13, 10, 6, 0.9) 0%, rgba(13, 10, 6, 0.62) 42%, rgba(13, 10, 6, 0.1) 100%),
+        linear-gradient(0deg, rgba(13, 10, 6, 0.9) 0%, rgba(13, 10, 6, 0.12) 55%);
+    }
+    .page-kicker {
+      margin: 0 0 0.75rem;
+      color: var(--color-evato-amber-bright);
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+    }
+    .vitrine-hero h1 {
+      max-width: 12ch;
+      margin: 0;
+      color: #fff5e2;
+      font-size: clamp(2.6rem, 7vw, 5.8rem);
+      line-height: 0.96;
+      letter-spacing: 0.02em;
+      text-shadow: 0 3px 18px rgba(0, 0, 0, 0.86);
+    }
+    .vitrine-hero p:not(.page-kicker) {
+      max-width: 38rem;
+      margin: 1.2rem 0 0;
+      color: var(--color-evato-bone);
+      font-size: clamp(1.03rem, 2vw, 1.28rem);
+      line-height: 1.55;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.6rem;
+    }
+    .hero-button {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.65rem;
+      padding: 0.6rem 1rem;
+      border: 1px solid rgba(235, 217, 197, 0.45);
+      border-radius: 4px;
+      background: rgba(13, 10, 6, 0.48);
+      color: #fff5e2;
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+    .hero-button:hover {
+      transform: translateY(-2px);
+      background: rgba(13, 10, 6, 0.68);
+      border-color: var(--color-evato-amber-bright);
+      box-shadow: 0 0 24px rgba(255, 200, 121, 0.36);
+    }
+    .hero-button-primary {
+      border-color: var(--color-evato-amber-bright);
+      color: var(--color-evato-amber-bright);
+    }
+
+    .vitrine-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    .vitrine-card {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.82fr) minmax(0, 1fr);
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid rgba(212, 165, 94, 0.22);
+      border-radius: 8px;
+      background: rgba(26, 18, 10, 0.68);
+      color: inherit;
+      text-decoration: none;
+      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+    }
+    .vitrine-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 200, 121, 0.72);
+      box-shadow: 0 24px 48px -28px rgba(255, 200, 121, 0.7);
+    }
+    .vitrine-media {
+      position: relative;
+      min-height: 280px;
+      background: #140e08;
+      overflow: hidden;
+    }
+    .vitrine-media video,
+    .vitrine-media img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      filter: saturate(0.95) contrast(1.03) brightness(0.9);
+      transition: transform 5s ease, filter 220ms ease;
+    }
+    .vitrine-card:hover .vitrine-media video,
+    .vitrine-card:hover .vitrine-media img {
+      transform: scale(1.05);
+      filter: saturate(1.08) contrast(1.05) brightness(1);
+    }
+    .period-chip {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      padding: 0.22rem 0.58rem;
+      border: 1px solid rgba(255, 200, 121, 0.65);
+      border-radius: 999px;
+      background: rgba(13, 10, 6, 0.78);
+      color: var(--color-evato-amber-bright);
+      font-family: var(--font-display);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .vitrine-body {
+      padding: 1.05rem 1.15rem 1.2rem;
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+    }
+    .vitrine-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.42rem;
+      margin-bottom: 0.55rem;
+    }
+    .vitrine-meta span {
+      padding: 0.16rem 0.45rem;
+      border: 1px solid rgba(94, 143, 110, 0.5);
+      border-radius: 999px;
+      color: #9bc9a6;
+      font-family: var(--font-display);
+      font-size: 0.56rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .vitrine-body h2 {
+      margin: 0;
+      color: var(--color-evato-amber-bright);
+      font-size: clamp(1.15rem, 2vw, 1.65rem);
+      line-height: 1.08;
+      letter-spacing: 0.03em;
+    }
+    .sci {
+      margin: 0.25rem 0 0;
+      color: var(--color-evato-bone-muted);
+      font-size: 0.92rem;
+      font-style: italic;
+    }
+    .blurb {
+      margin: 0.85rem 0 0;
+      color: var(--color-evato-bone);
+      font-size: 0.96rem;
+      line-height: 1.5;
+    }
+    .open-card {
+      margin: auto 0 0;
+      padding-top: 1rem;
+      color: var(--color-evato-amber);
+      font-family: var(--font-display);
+      font-size: 0.66rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .codex-bridge {
+      margin-top: 1.5rem;
+      padding: clamp(1.5rem, 4vw, 2.6rem);
+      border: 1px solid rgba(212, 165, 94, 0.24);
+      border-radius: 8px;
+      background:
+        radial-gradient(ellipse at 16% 20%, rgba(212, 165, 94, 0.12), transparent 48%),
+        rgba(26, 18, 10, 0.58);
+    }
+    .codex-bridge h2 {
+      max-width: 16ch;
+      margin: 0;
+      color: #fff5e2;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.05;
+    }
+    .codex-bridge p:not(.page-kicker) {
+      max-width: 56rem;
+      margin: 0.9rem 0 1.2rem;
+      color: var(--color-evato-bone-muted);
+      font-size: 1.08rem;
+      line-height: 1.58;
+    }
+
+    @media (max-width: 1180px) {
+      .vitrine-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 720px) {
+      .vitrine-hero {
+        min-height: 70svh;
+      }
+      .vitrine-hero-overlay {
+        background:
+          linear-gradient(0deg, rgba(13, 10, 6, 0.92) 0%, rgba(13, 10, 6, 0.45) 70%, rgba(13, 10, 6, 0.18) 100%);
+      }
+      .vitrine-card {
+        grid-template-columns: 1fr;
+      }
+      .vitrine-media {
+        min-height: auto;
+        aspect-ratio: 16 / 10;
+      }
+    }
+  </style>
+</CodexLayout>
