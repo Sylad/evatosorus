@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "import:paleobiodb": "node ../scripts/import-paleobiodb.mjs"
+    "import:paleobiodb": "node ../scripts/import-paleobiodb.mjs",
+    "ollama:species": "node ../scripts/propose-species-ollama.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.4",

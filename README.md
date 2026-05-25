@@ -93,6 +93,17 @@ Le script écrit `frontend/src/data/generated/species.generated.json` qui est
 mergé au runtime avec le seed manuel. Si le fichier n'existe pas, le site
 fonctionne avec les 24 espèces stars du seed — c'est volontaire.
 
+### Propositions Ollama
+
+Pour demander une proposition de blurb sans écraser `species.seed.ts` :
+
+```bash
+cd frontend
+OLLAMA_BASE_URL=http://localhost:11434 npm run ollama:species -- --species=tyrannosaurus-rex
+```
+
+Le JSON généré va dans `../tmp/` et doit être relu/mergé manuellement.
+
 ## Build & déploiement
 
 ```bash
