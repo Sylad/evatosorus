@@ -31,6 +31,10 @@ assume la collab humain × Claude Code × openart.ai.
 
 - **PBDB** — [Paleobiology Database](https://paleobiodb.org), CC0 / CC-BY
   (taxonomie, occurrences fossiles, datations stratigraphiques)
+- **Wikidata + Wikipedia** — enrichissement auto des fiches (nom commun,
+  classification, régime, description). Les blurbs sont reformulés en ton
+  documentaire par **llama 3.1 en local** (aucun appel à un service tiers).
+  1400+ fiches enrichies, 0 ChatGPT — voir `scripts/enrich-species.mjs`.
 - **Wikimedia Commons** — paleo-art domaine public ou CC-BY-SA
 - **ICS 2024** — International Chronostratigraphic Chart pour les bornes Ma
 - **OpenStreetMap + CARTO** — fond de carte
@@ -92,6 +96,23 @@ node ../scripts/import-paleobiodb.mjs --limit 3000
 Le script écrit `frontend/src/data/generated/species.generated.json` qui est
 mergé au runtime avec le seed manuel. Si le fichier n'existe pas, le site
 fonctionne avec les 24 espèces stars du seed — c'est volontaire.
+
+### Enrichir les fiches vides (Wikidata + Wikipedia + Ollama local)
+
+Remplit nom commun, classification, régime (heuristique clade), blurb documentaire
+et image Wikimedia (téléchargée + créditée) pour les fiches PaleoBioDB sans contenu :
+
+```bash
+cd frontend
+npm run enrich:species                 # toutes les fiches non-seed (batch resumable)
+node ../scripts/enrich-species.mjs --limit 10            # échantillon
+node ../scripts/enrich-species.mjs --ids abelisaurus-comahuensis
+```
+
+- **Offline** : tourne en local, écrit le JSON + `public/species/*.jpg` committés. Le build Cloudflare ne fait aucun appel réseau.
+- **Resumable** : cache par espèce dans `scripts/.cache/enrich/` (gitignored). Relancer reprend où ça s'est arrêté.
+- **Préservant** : ne remplit que les champs vides/placeholder, ne touche jamais le seed curé.
+- Prérequis : Ollama avec `llama3.1:8b` (override `OLLAMA_BASE_URL` / `OLLAMA_MODEL`). Run de réf. : 1422/1479 enrichies, 976 images, 0 erreur.
 
 ### Propositions Ollama
 
