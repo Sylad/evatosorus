@@ -18,3 +18,4 @@ frontend/public/**/*.gif
 *:Zone.Identifier
 *.Identifier
 .token-savior-cache.json
+scripts/.cache/
