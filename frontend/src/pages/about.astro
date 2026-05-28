@@ -47,8 +47,11 @@ import { SPECIES_INDEX } from '../data/species';
         Stack : <strong>Astro 6</strong> + <strong>Tailwind 4</strong> +
         <strong>React 19</strong> pour les composants interactifs (filtres,
         carte). Tout est généré statiquement et déployé sur
-        <strong>Cloudflare Pages</strong>. Pas de backend, pas de base de
-        données — les fiches sont compilées au build depuis
+        <strong>Cloudflare Pages</strong>, avec le domaine public
+        <a href="https://evatosorus.sladoire.dev" target="_blank" rel="noopener">evatosorus.sladoire.dev</a>
+        et l'URL Pages
+        <a href="https://evatosorus.pages.dev" target="_blank" rel="noopener">evatosorus.pages.dev</a>.
+        Pas de backend, pas de base de données — les fiches sont compilées au build depuis
         <a href="https://paleobiodb.org" target="_blank" rel="noopener">PaleoBioDB</a>
         (taxonomie, occurrences, datations) et
         <a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a>
@@ -70,7 +73,7 @@ import { SPECIES_INDEX } from '../data/species';
         <li><strong>Sylvain</strong> — direction artistique, choix éditoriaux, validation finale.</li>
         <li><strong>Claude Code</strong> (Anthropic, claude-opus-4-7) — l'écriture du code Astro/React/CSS, l'import PaleoBioDB, les blurbs vulgarisés des fiches espèce.</li>
         <li><strong>Codex</strong> (OpenAI) — l'itération de refonte récente : page Espèces vitrines, navigation, review de build et ajustements de structure.</li>
-        <li><strong><a href="https://openart.ai" target="_blank" rel="noopener">openart.ai</a></strong> — l'image hero du T-Rex iridescent et les trois animations vidéo qui tournent en boucle sur la landing, la page Films et la page À propos.</li>
+        <li><strong><a href="https://openart.ai" target="_blank" rel="noopener">openart.ai</a></strong> — l'image hero du T-Rex iridescent, les animations d'ambiance, et les scènes de vie animées des espèces vitrines.</li>
       </ul>
       <p>
         L'humain a piloté, Claude Code et Codex ont aidé à construire et affiner,
@@ -103,9 +106,10 @@ import { SPECIES_INDEX } from '../data/species';
           fallback sur les espèces sans paleo-art Wikipedia (auteurs crédités quand CC-BY).
         </li>
         <li>
-          <strong>Hero T-Rex + 3 animations vidéo</strong> —
+          <strong>Hero T-Rex + animations vidéo</strong> —
           générées sur <a href="https://openart.ai" target="_blank" rel="noopener">openart.ai</a>
-          à partir de prompts curés (jungle, orage, volcan, empreinte ocre).
+          à partir de prompts curés (jungle, orage, volcan, empreinte ocre,
+          scènes de vie des espèces vitrines).
         </li>
         <li>
           <strong>Échelle stratigraphique</strong> —
