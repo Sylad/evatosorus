@@ -72,10 +72,12 @@ export const DIET_ICONS: Record<string, string> = {
 };
 
 // Espèces pour lesquelles on a 1-2 vidéos paleo-art en boucle dans /public/.
-// Le slug ici est le préfixe de fichier (ex: 'tyrannosaurus-rex' → /tyrannosaurus-rex-1.mp4
-// + /tyrannosaurus-rex-2.mp4). On fait le matching contre l'id Species par
+// Le slug ici est le préfixe de fichier (ex: 'tyrannosaurus-rex' →
+// /tyrannosaurus-rex-openart-20260528-1.mp4). On fait le matching contre l'id Species par
 // préfixe pour rester robuste aux suffixes type 'tyrannosaurus-rex' vs
 // 'tyrannosaurus-rex-12345' éventuellement importé du PaleoBioDB.
+const SHOWCASE_MEDIA_VERSION = 'openart-20260528';
+
 const SPECIES_WITH_VIDEOS = [
   'allosaurus',
   'ankylosaurus',
@@ -97,5 +99,5 @@ const SPECIES_WITH_VIDEOS = [
 export function getSpeciesVideos(speciesId: string): string[] {
   const slug = SPECIES_WITH_VIDEOS.find((s) => speciesId.startsWith(s));
   if (!slug) return [];
-  return [`/${slug}-1.mp4`, `/${slug}-2.mp4`];
+  return [`/${slug}-${SHOWCASE_MEDIA_VERSION}-1.mp4`, `/${slug}-${SHOWCASE_MEDIA_VERSION}-2.mp4`];
 }

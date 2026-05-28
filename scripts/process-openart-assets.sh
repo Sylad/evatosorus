@@ -12,8 +12,8 @@
 #     triceratops-1.mp4|mov|webm
 #
 # Output convention:
-#   frontend/public/species-life/<species-id>.jpg
-#   frontend/public/<video-prefix>-<slot>.mp4
+#   frontend/public/species-life/<species-id>-openart-20260528.jpg
+#   frontend/public/<video-prefix>-openart-20260528-<slot>.mp4
 #
 # Requires ffmpeg. Backs up replaced public assets under workspace tmp/.
 
@@ -28,6 +28,7 @@ CRF=27
 IMAGE_WIDTH=1920
 VIDEO_WIDTH=1280
 FPS=24
+MEDIA_VERSION="openart-20260528"
 
 usage() {
   cat <<EOF
@@ -44,8 +45,8 @@ Input convention:
     triceratops-1.mp4|mov|webm
 
 Output convention:
-  frontend/public/species-life/<species-id>.jpg
-  frontend/public/<video-prefix>-<slot>.mp4
+  frontend/public/species-life/<species-id>-${MEDIA_VERSION}.jpg
+  frontend/public/<video-prefix>-${MEDIA_VERSION}-<slot>.mp4
 
 Options:
   --input <dir>       Source exports directory (default: $DEFAULT_IN)
@@ -54,6 +55,7 @@ Options:
   --image-width <px>  Max image width (default: $IMAGE_WIDTH)
   --video-width <px>  Max video width (default: $VIDEO_WIDTH)
   --fps <n>           Output video FPS (default: $FPS)
+  --version <slug>    Public asset version suffix (default: $MEDIA_VERSION)
   -h, --help          Show this help
 EOF
 }
@@ -66,6 +68,7 @@ while [[ $# -gt 0 ]]; do
     --image-width) IMAGE_WIDTH="$2"; shift 2;;
     --video-width) VIDEO_WIDTH="$2"; shift 2;;
     --fps) FPS="$2"; shift 2;;
+    --version) MEDIA_VERSION="$2"; shift 2;;
     -h|--help) usage; exit 0;;
     *) echo "Unknown argument: $1" >&2; usage; exit 2;;
   esac
@@ -229,6 +232,7 @@ optimize_video() {
 
 echo "Input: $IN_DIR"
 echo "ffmpeg: $FFMPEG"
+echo "Version: $MEDIA_VERSION"
 [[ "$DRY_RUN" -eq 0 ]] && echo "Backup: $BACKUP"
 echo
 
@@ -236,7 +240,7 @@ imported=0
 
 for id in "${SPECIES_IDS[@]}"; do
   if src="$(find_first_any_base 4 jpg jpeg png webp "$id" "${SCIENTIFIC_NAMES[$id]}" 2>/dev/null)"; then
-    optimize_image "$src" "$PUB/species-life/${id}.jpg"
+    optimize_image "$src" "$PUB/species-life/${id}-${MEDIA_VERSION}.jpg"
     imported=$((imported + 1))
   fi
 done
@@ -245,7 +249,7 @@ for prefix in "${VIDEO_PREFIXES[@]}"; do
   species_id="${VIDEO_SPECIES_IDS[$prefix]}"
   for slot in 1 2; do
     if src="$(find_first_any_base 4 mp4 mov webm m4v "${prefix}-${slot}" "${species_id}-${slot}" "${SCIENTIFIC_NAMES[$species_id]}-${slot}" "${SCIENTIFIC_NAMES[$species_id]}" 2>/dev/null)"; then
-      optimize_video "$src" "$PUB/${prefix}-${slot}.mp4"
+      optimize_video "$src" "$PUB/${prefix}-${MEDIA_VERSION}-${slot}.mp4"
       imported=$((imported + 1))
     fi
   done
