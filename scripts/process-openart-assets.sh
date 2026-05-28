@@ -13,7 +13,7 @@
 #
 # Output convention:
 #   frontend/public/species-life/<species-id>-openart-20260528.jpg
-#   frontend/public/<video-prefix>-openart-20260528-<slot>.mp4
+#   frontend/public/<video-prefix>-openart-20260528b-<slot>.mp4
 #
 # Requires ffmpeg. Backs up replaced public assets under workspace tmp/.
 # After a successful real import, recognized source exports are removed from tmp.
@@ -29,7 +29,7 @@ CRF=27
 IMAGE_WIDTH=1920
 VIDEO_WIDTH=1280
 FPS=24
-MEDIA_VERSION="openart-20260528"
+MEDIA_VERSION="openart-20260528b"
 
 usage() {
   cat <<EOF

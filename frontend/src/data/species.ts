@@ -73,10 +73,10 @@ export const DIET_ICONS: Record<string, string> = {
 
 // Espèces pour lesquelles on a 1-2 vidéos paleo-art en boucle dans /public/.
 // Le slug ici est le préfixe de fichier (ex: 'tyrannosaurus-rex' →
-// /tyrannosaurus-rex-openart-20260528-1.mp4). On fait le matching contre l'id Species par
+// /tyrannosaurus-rex-openart-20260528b-1.mp4). On fait le matching contre l'id Species par
 // préfixe pour rester robuste aux suffixes type 'tyrannosaurus-rex' vs
 // 'tyrannosaurus-rex-12345' éventuellement importé du PaleoBioDB.
-const SHOWCASE_MEDIA_VERSION = 'openart-20260528';
+const SHOWCASE_MEDIA_VERSION = 'openart-20260528b';
 
 const SPECIES_WITH_VIDEOS = [
   'allosaurus',
