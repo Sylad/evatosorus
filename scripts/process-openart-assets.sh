@@ -16,6 +16,7 @@
 #   frontend/public/<video-prefix>-openart-20260528-<slot>.mp4
 #
 # Requires ffmpeg. Backs up replaced public assets under workspace tmp/.
+# After a successful real import, recognized source exports are removed from tmp.
 
 set -euo pipefail
 
@@ -277,10 +278,21 @@ echo "Version: $MEDIA_VERSION"
 echo
 
 imported=0
+imported_sources=()
+
+remember_source() {
+  local src="$1"
+  local existing
+  for existing in "${imported_sources[@]}"; do
+    [[ "$existing" == "$src" ]] && return 0
+  done
+  imported_sources+=("$src")
+}
 
 for id in "${SPECIES_IDS[@]}"; do
   if src="$(find_first_any_base 4 jpg jpeg png webp "$id" "${SCIENTIFIC_NAMES[$id]}" 2>/dev/null)"; then
     optimize_image "$src" "$PUB/species-life/${id}-${MEDIA_VERSION}.jpg"
+    [[ "$DRY_RUN" -eq 0 ]] && remember_source "$src"
     imported=$((imported + 1))
   fi
 done
@@ -290,10 +302,26 @@ for prefix in "${VIDEO_PREFIXES[@]}"; do
   for slot in 1 2; do
     if src="$(find_first_any_base 4 mp4 mov webm m4v "${prefix}-${slot}" "${species_id}-${slot}" "${SCIENTIFIC_NAMES[$species_id]}-${slot}" "${SCIENTIFIC_NAMES[$species_id]}" 2>/dev/null)"; then
       optimize_video "$src" "$PUB/${prefix}-${MEDIA_VERSION}-${slot}.mp4"
+      [[ "$DRY_RUN" -eq 0 ]] && remember_source "$src"
       imported=$((imported + 1))
     fi
   done
 done
+
+cleanup_imported_sources() {
+  [[ "$DRY_RUN" -eq 0 ]] || return 0
+  [[ "${#imported_sources[@]}" -gt 0 ]] || return 0
+
+  local src cleaned=0
+  for src in "${imported_sources[@]}"; do
+    rm -f -- "$src" "$src:Zone.Identifier"
+    cleaned=$((cleaned + 1))
+  done
+
+  find "$IN_DIR" -mindepth 1 -maxdepth 2 -type f -name '*:Zone.Identifier' -delete
+  find "$IN_DIR" -mindepth 1 -maxdepth 2 -type d -empty -delete
+  echo "Nettoyage input: $cleaned export(s) source supprime(s)."
+}
 
 echo
 if [[ "$imported" -eq 0 ]]; then
@@ -301,6 +329,7 @@ if [[ "$imported" -eq 0 ]]; then
 else
   echo "OK: $imported asset(s) traite(s)."
   [[ "$DRY_RUN" -eq 0 ]] && echo "Backups: $BACKUP"
+  cleanup_imported_sources
 fi
 
 exit 0
