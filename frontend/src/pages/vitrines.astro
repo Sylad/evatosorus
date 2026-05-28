@@ -32,6 +32,59 @@ const featuredSpecies = showcaseIds
     ...species!,
     videos: getSpeciesVideos(species!.id),
   }));
+
+const getShowcase = (id: (typeof showcaseIds)[number]) => featuredSpecies.find((species) => species.id === id);
+
+const visitPaths = [
+  {
+    title: 'Prédateurs',
+    text: 'Mâchoires, griffes, silhouettes basses : suivre les chasseurs qui structuraient les écosystèmes.',
+    species: [
+      'tyrannosaurus-rex',
+      'allosaurus-fragilis',
+      'carnotaurus-sastrei',
+      'giganotosaurus-carolinii',
+      'deinonychus-antirrhopus',
+    ],
+  },
+  {
+    title: 'Géants herbivores',
+    text: 'Troupeaux, cuirasses, cous immenses : le Mésozoïque vu du côté des colosses végétariens.',
+    species: [
+      'triceratops-horridus',
+      'brachiosaurus-altithorax',
+      'diplodocus-carnegii',
+      'iguanodon-bernissartensis',
+      'argentinosaurus-huinculensis',
+    ],
+  },
+  {
+    title: 'Mer et ciel',
+    text: 'Tous ne sont pas des dinosaures, mais ils racontent les mêmes mondes disparus : océans, falaises, lagunes.',
+    species: [
+      'spinosaurus-aegyptiacus',
+      'mosasaurus-hoffmanni',
+      'pteranodon-longiceps',
+      'archaeopteryx-lithographica',
+    ],
+  },
+  {
+    title: 'Étrangetés',
+    text: 'Plaques, massues, crêtes sonores et griffes impossibles : les formes que l’évolution a osé tenter.',
+    species: [
+      'stegosaurus-stenops',
+      'ankylosaurus-magniventris',
+      'parasaurolophus-walkeri',
+      'pachycephalosaurus-wyomingensis',
+      'therizinosaurus-cheloniformis',
+    ],
+  },
+].map((path) => ({
+  ...path,
+  species: path.species
+    .map((speciesId) => getShowcase(speciesId as (typeof showcaseIds)[number]))
+    .filter((species): species is NonNullable<typeof species> => Boolean(species)),
+}));
 ---
 
 <CodexLayout
@@ -56,6 +109,32 @@ const featuredSpecies = showcaseIds
         <a href="#vitrines" class="hero-button hero-button-primary">Voir les espèces</a>
         <a href="/codex/" class="hero-button">Explorer les 1511 fiches</a>
       </div>
+    </div>
+  </section>
+
+  <section class="visit-paths" aria-labelledby="visit-paths-title">
+    <div class="visit-paths-head">
+      <div>
+        <p class="page-kicker">parcours de visite</p>
+        <h2 id="visit-paths-title">Quatre portes d’entrée dans le musée vivant.</h2>
+      </div>
+      <p>
+        Les vitrines peuvent se parcourir comme une galerie : par prédateurs,
+        par géants, par milieux, ou par bizarreries évolutives.
+      </p>
+    </div>
+    <div class="path-grid">
+      {visitPaths.map((path) => (
+        <article class="path-card">
+          <h3>{path.title}</h3>
+          <p>{path.text}</p>
+          <div class="path-links">
+            {path.species.map((species) => (
+              <a href={`/especes/${species.id}/`}>{species.commonName ?? species.name}</a>
+            ))}
+          </div>
+        </article>
+      ))}
     </div>
   </section>
 
@@ -199,6 +278,82 @@ const featuredSpecies = showcaseIds
       color: var(--color-evato-amber-bright);
     }
 
+    .visit-paths {
+      margin-top: 1.25rem;
+      padding: clamp(1.2rem, 3vw, 2rem);
+      border: 1px solid rgba(212, 165, 94, 0.22);
+      border-radius: 8px;
+      background:
+        radial-gradient(ellipse at 85% 0%, rgba(94, 143, 110, 0.12), transparent 42%),
+        linear-gradient(135deg, rgba(26, 18, 10, 0.82), rgba(13, 10, 6, 0.76));
+    }
+    .visit-paths-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.72fr) minmax(18rem, 1fr);
+      gap: 1rem;
+      align-items: end;
+      margin-bottom: 1rem;
+    }
+    .visit-paths-head h2 {
+      max-width: 18ch;
+      margin: 0;
+      color: #fff5e2;
+      font-size: clamp(1.55rem, 3vw, 2.45rem);
+      line-height: 1.06;
+    }
+    .visit-paths-head p:not(.page-kicker) {
+      margin: 0;
+      color: var(--color-evato-bone-muted);
+      font-size: 1rem;
+      line-height: 1.55;
+    }
+    .path-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+    .path-card {
+      min-width: 0;
+      padding: 1rem;
+      border: 1px solid rgba(212, 165, 94, 0.18);
+      border-radius: 6px;
+      background: rgba(13, 10, 6, 0.48);
+    }
+    .path-card h3 {
+      margin: 0;
+      color: var(--color-evato-amber-bright);
+      font-size: 1.08rem;
+    }
+    .path-card p {
+      margin: 0.55rem 0 0;
+      color: var(--color-evato-bone-muted);
+      font-size: 0.92rem;
+      line-height: 1.48;
+    }
+    .path-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.42rem;
+      margin-top: 0.9rem;
+    }
+    .path-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 1.85rem;
+      padding: 0.24rem 0.52rem;
+      border: 1px solid rgba(212, 165, 94, 0.24);
+      border-radius: 999px;
+      color: var(--color-evato-bone);
+      font-size: 0.78rem;
+      text-decoration: none;
+      transition: border-color 180ms ease, color 180ms ease, background 180ms ease;
+    }
+    .path-links a:hover {
+      border-color: var(--color-evato-amber-bright);
+      background: rgba(212, 165, 94, 0.1);
+      color: var(--color-evato-amber-bright);
+    }
+
     .vitrine-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -335,6 +490,9 @@ const featuredSpecies = showcaseIds
       .vitrine-grid {
         grid-template-columns: 1fr;
       }
+      .path-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
     @media (max-width: 720px) {
       .vitrine-hero {
@@ -345,6 +503,10 @@ const featuredSpecies = showcaseIds
           linear-gradient(0deg, rgba(13, 10, 6, 0.92) 0%, rgba(13, 10, 6, 0.45) 70%, rgba(13, 10, 6, 0.18) 100%);
       }
       .vitrine-card {
+        grid-template-columns: 1fr;
+      }
+      .visit-paths-head,
+      .path-grid {
         grid-template-columns: 1fr;
       }
       .vitrine-media {

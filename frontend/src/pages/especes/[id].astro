@@ -16,6 +16,46 @@ const otherSameGroup = SPECIES
   .filter((x) => x.taxonGroup === s.taxonGroup && x.id !== s.id)
   .slice(0, 6);
 const videos = getSpeciesVideos(s.id);
+const activeMa = s.earlyMa && s.lateMa ? Math.abs(s.earlyMa - s.lateMa) : undefined;
+const massTonnes = s.weightKg ? s.weightKg / 1000 : undefined;
+const scaleNote = s.lengthM && s.lengthM >= 25
+  ? 'Une silhouette de la longueur d’un petit immeuble couché.'
+  : s.lengthM && s.lengthM >= 10
+    ? 'Un animal de grande taille, à imaginer comme une masse vivante occupant toute une rue.'
+    : s.lengthM && s.lengthM <= 1
+      ? 'Un format miniature à l’échelle du Mésozoïque, plus proche d’un animal discret que d’un monstre de cinéma.'
+      : s.lengthM
+        ? 'Une présence à hauteur d’animal sauvage, lisible à l’échelle humaine.'
+        : undefined;
+const worldNote = s.taxonGroup === 'marine-reptile'
+  ? 'Son monde n’était pas une plaine de dinosaures, mais les mers chaudes du Mésozoïque.'
+  : s.taxonGroup === 'pterosaur'
+    ? 'Il occupait le ciel et les falaises, au-dessus des mêmes paysages que les dinosaures.'
+    : s.diet === 'piscivore'
+      ? 'Son histoire se lit près de l’eau : rivières, lagunes ou mers intérieures.'
+      : s.diet === 'herbivore'
+        ? 'Son quotidien se jouait dans les plantes, les pistes de troupeaux et les refuges contre les prédateurs.'
+        : s.diet === 'carnivore'
+          ? 'Son rôle était celui d’un prédateur, mais aussi d’un régulateur d’écosystème.'
+          : 'Son mode de vie reste une fenêtre ouverte sur un monde très incomplet.';
+const fieldNotes = [
+  activeMa && {
+    label: 'Fenêtre fossile',
+    value: `${activeMa.toLocaleString('fr-FR', { maximumFractionDigits: 1 })} million${activeMa > 1 ? 's' : ''} d’années entre les repères connus.`,
+  },
+  massTonnes && {
+    label: 'Masse vivante',
+    value: `${massTonnes.toLocaleString('fr-FR', { maximumFractionDigits: 1 })} tonne${massTonnes > 1 ? 's' : ''} environ, d’après les estimations retenues ici.`,
+  },
+  scaleNote && {
+    label: 'Échelle',
+    value: scaleNote,
+  },
+  worldNote && {
+    label: 'Monde probable',
+    value: worldNote,
+  },
+].filter((note): note is { label: string; value: string } => Boolean(note));
 ---
 <CodexLayout
   title={`${s.commonName ?? s.name} — Evatosorus`}
@@ -84,6 +124,21 @@ const videos = getSpeciesVideos(s.id);
     {s.blurb && (
       <section class="detail-blurb" data-amber-split>
         <p>{s.blurb}</p>
+      </section>
+    )}
+
+    {fieldNotes.length > 0 && (
+      <section class="field-notes">
+        <p class="section-kicker">repères de terrain</p>
+        <h2>Lire la créature en quelques indices.</h2>
+        <div class="field-note-grid">
+          {fieldNotes.map((note) => (
+            <article>
+              <h3>{note.label}</h3>
+              <p>{note.value}</p>
+            </article>
+          ))}
+        </div>
       </section>
     )}
 
@@ -298,6 +353,52 @@ const videos = getSpeciesVideos(s.id);
       border-bottom: 1px solid rgba(212, 165, 94, 0.18);
       margin-bottom: 1.5rem;
     }
+    .field-notes {
+      margin-bottom: 1.8rem;
+      padding: 1.2rem;
+      border: 1px solid rgba(212, 165, 94, 0.18);
+      border-radius: 6px;
+      background:
+        radial-gradient(ellipse at 8% 0%, rgba(212, 165, 94, 0.11), transparent 42%),
+        rgba(26, 18, 10, 0.48);
+    }
+    .section-kicker {
+      margin: 0 0 0.45rem;
+      color: var(--color-evato-amber);
+      font-family: var(--font-display);
+      font-size: 0.66rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+    }
+    .field-notes h2 {
+      margin: 0 0 1rem;
+      color: #fff5e2;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.08;
+    }
+    .field-note-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+    .field-note-grid article {
+      min-width: 0;
+      padding: 0.9rem;
+      border: 1px solid rgba(212, 165, 94, 0.15);
+      border-radius: 4px;
+      background: rgba(13, 10, 6, 0.38);
+    }
+    .field-note-grid h3 {
+      margin: 0;
+      color: var(--color-evato-amber-bright);
+      font-size: 0.9rem;
+    }
+    .field-note-grid p {
+      margin: 0.5rem 0 0;
+      color: var(--color-evato-bone-muted);
+      font-size: 0.92rem;
+      line-height: 1.48;
+    }
     .external {
       color: var(--color-evato-bone-muted);
       font-size: 0.95rem;
@@ -381,5 +482,16 @@ const videos = getSpeciesVideos(s.id);
       color: var(--color-evato-bone-muted);
     }
     .related-card:hover .related-name { color: var(--color-evato-bone); }
+
+    @media (max-width: 980px) {
+      .field-note-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 620px) {
+      .field-note-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </CodexLayout>
