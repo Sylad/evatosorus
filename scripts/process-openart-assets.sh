@@ -103,6 +103,16 @@ SPECIES_IDS=(
   parasaurolophus-walkeri
   allosaurus-fragilis
   diplodocus-carnegii
+  iguanodon-bernissartensis
+  carnotaurus-sastrei
+  giganotosaurus-carolinii
+  deinonychus-antirrhopus
+  pachycephalosaurus-wyomingensis
+  therizinosaurus-cheloniformis
+  argentinosaurus-huinculensis
+  mosasaurus-hoffmanni
+  pteranodon-longiceps
+  archaeopteryx-lithographica
 )
 
 VIDEO_PREFIXES=(
@@ -116,6 +126,16 @@ VIDEO_PREFIXES=(
   parasaurolophus
   allosaurus
   diplodocus
+  iguanodon
+  carnotaurus
+  giganotosaurus
+  deinonychus
+  pachycephalosaurus
+  therizinosaurus
+  argentinosaurus
+  mosasaurus
+  pteranodon
+  archaeopteryx
 )
 
 declare -A SCIENTIFIC_NAMES=(
@@ -129,6 +149,16 @@ declare -A SCIENTIFIC_NAMES=(
   [parasaurolophus-walkeri]="Parasaurolophus walkeri"
   [allosaurus-fragilis]="Allosaurus fragilis"
   [diplodocus-carnegii]="Diplodocus carnegii"
+  [iguanodon-bernissartensis]="Iguanodon bernissartensis"
+  [carnotaurus-sastrei]="Carnotaurus sastrei"
+  [giganotosaurus-carolinii]="Giganotosaurus carolinii"
+  [deinonychus-antirrhopus]="Deinonychus antirrhopus"
+  [pachycephalosaurus-wyomingensis]="Pachycephalosaurus wyomingensis"
+  [therizinosaurus-cheloniformis]="Therizinosaurus cheloniformis"
+  [argentinosaurus-huinculensis]="Argentinosaurus huinculensis"
+  [mosasaurus-hoffmanni]="Mosasaurus hoffmanni"
+  [pteranodon-longiceps]="Pteranodon longiceps"
+  [archaeopteryx-lithographica]="Archaeopteryx lithographica"
 )
 
 declare -A VIDEO_SPECIES_IDS=(
@@ -142,6 +172,16 @@ declare -A VIDEO_SPECIES_IDS=(
   [parasaurolophus]="parasaurolophus-walkeri"
   [allosaurus]="allosaurus-fragilis"
   [diplodocus]="diplodocus-carnegii"
+  [iguanodon]="iguanodon-bernissartensis"
+  [carnotaurus]="carnotaurus-sastrei"
+  [giganotosaurus]="giganotosaurus-carolinii"
+  [deinonychus]="deinonychus-antirrhopus"
+  [pachycephalosaurus]="pachycephalosaurus-wyomingensis"
+  [therizinosaurus]="therizinosaurus-cheloniformis"
+  [argentinosaurus]="argentinosaurus-huinculensis"
+  [mosasaurus]="mosasaurus-hoffmanni"
+  [pteranodon]="pteranodon-longiceps"
+  [archaeopteryx]="archaeopteryx-lithographica"
 )
 
 find_first() {
