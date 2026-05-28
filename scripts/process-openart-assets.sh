@@ -299,13 +299,33 @@ done
 
 for prefix in "${VIDEO_PREFIXES[@]}"; do
   species_id="${VIDEO_SPECIES_IDS[$prefix]}"
+  imported_slot_1=0
+  imported_slot_2=0
   for slot in 1 2; do
-    if src="$(find_first_any_base 4 mp4 mov webm m4v "${prefix}-${slot}" "${species_id}-${slot}" "${SCIENTIFIC_NAMES[$species_id]}-${slot}" "${SCIENTIFIC_NAMES[$species_id]}" 2>/dev/null)"; then
+    if src="$(find_first_any_base 4 mp4 mov webm m4v "${prefix}-${slot}" "${species_id}-${slot}" "${SCIENTIFIC_NAMES[$species_id]}-${slot}" 2>/dev/null)"; then
       optimize_video "$src" "$PUB/${prefix}-${MEDIA_VERSION}-${slot}.mp4"
       [[ "$DRY_RUN" -eq 0 ]] && remember_source "$src"
       imported=$((imported + 1))
+      if [[ "$slot" -eq 1 ]]; then
+        imported_slot_1=1
+      else
+        imported_slot_2=1
+      fi
     fi
   done
+  if src="$(find_first_any_base 4 mp4 mov webm m4v "$prefix" "$species_id" "${SCIENTIFIC_NAMES[$species_id]}" 2>/dev/null)"; then
+    target_slot=1
+    if [[ -f "$PUB/${prefix}-${MEDIA_VERSION}-1.mp4" || "$imported_slot_1" -eq 1 ]]; then
+      target_slot=2
+    fi
+    if [[ "$target_slot" -eq 2 && "$imported_slot_2" -eq 1 ]]; then
+      echo "video skip: $(basename "$src") deja couvert par un export -2 explicite"
+    else
+      optimize_video "$src" "$PUB/${prefix}-${MEDIA_VERSION}-${target_slot}.mp4"
+      [[ "$DRY_RUN" -eq 0 ]] && remember_source "$src"
+      imported=$((imported + 1))
+    fi
+  fi
 done
 
 cleanup_imported_sources() {
