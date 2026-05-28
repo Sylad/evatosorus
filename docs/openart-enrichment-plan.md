@@ -46,6 +46,18 @@ Pour chaque espece :
 - Une liste des pages a enrichir en premier.
 - Une verification performance apres integration.
 
+Prompt pack pret a utiliser :
+
+```text
+docs/openart-showcase-prompts.md
+```
+
+Exports OpenArt a deposer ici avant integration :
+
+```text
+/home/sylvain_ladoire/projects/developpeur/tmp/openart-evatosorus/
+```
+
 ## Role des outils
 
 - Sylvain : direction artistique, choix finaux, validation.
