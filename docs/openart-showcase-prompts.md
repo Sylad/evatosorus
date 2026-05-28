@@ -223,10 +223,43 @@ Deposer les exports dans :
 
 Puis Codex peut :
 
-- convertir/compresser les images en JPG/WebP optimises ;
+- convertir/compresser les images en JPG optimises ;
 - renommer selon la convention ;
 - remplacer les fichiers `species-life`;
 - remplacer ou ajouter les MP4 vitrine ;
 - verifier le poids des assets ;
 - lancer `npm run build` dans `frontend/`;
 - deployer Cloudflare Pages apres validation.
+
+## Import et compression locale
+
+Quand les exports sont dans le dossier temporaire, lancer depuis la racine du repo :
+
+```bash
+./scripts/process-openart-assets.sh --dry-run
+./scripts/process-openart-assets.sh
+```
+
+Le script :
+
+- cherche les images `species-id.jpg|png|webp` ;
+- cherche les videos `video-prefix-1.mp4|mov|webm` et `video-prefix-2.mp4|mov|webm` ;
+- convertit les images en JPG max 1920 px ;
+- compresse les videos en MP4 H.264, max 1280 px, 24 FPS, sans audio, `faststart` ;
+- remplace les assets publics ;
+- sauvegarde les anciens fichiers dans `tmp/openart-evatosorus-backup-<date>/`.
+
+Reglages utiles :
+
+```bash
+./scripts/process-openart-assets.sh --crf 24      # meilleure qualite, plus lourd
+./scripts/process-openart-assets.sh --crf 29      # plus compresse
+./scripts/process-openart-assets.sh --video-width 960
+./scripts/process-openart-assets.sh --input /chemin/vers/exports
+```
+
+Pour recompresser uniquement les MP4 publics existants :
+
+```bash
+./scripts/optimize-mp4.sh --force --crf 27
+```

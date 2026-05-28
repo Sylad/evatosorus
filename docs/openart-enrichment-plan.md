@@ -58,6 +58,13 @@ Exports OpenArt a deposer ici avant integration :
 /home/sylvain_ladoire/projects/developpeur/tmp/openart-evatosorus/
 ```
 
+Script d'import/compression :
+
+```bash
+./scripts/process-openart-assets.sh --dry-run
+./scripts/process-openart-assets.sh
+```
+
 ## Role des outils
 
 - Sylvain : direction artistique, choix finaux, validation.

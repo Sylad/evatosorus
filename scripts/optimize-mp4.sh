@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Re-encode tous les MP4 > 5 MB dans frontend/public/ pour le web :
-# H.264 CRF 26 + downscale 1280px max + strip audio + faststart.
+# H.264 CRF 26 + downscale 1280px max + 24 FPS + strip audio + faststart.
 #
 # Usage :
 #   ./scripts/optimize-mp4.sh                # scan public/, ré-encode > 5 MB
@@ -99,7 +99,7 @@ for src in "${FILES[@]}"; do
   tmp="${src}.tmp.mp4"
   "$FFMPEG" -y -i "$src" \
     -c:v libx264 -crf "$CRF" -preset slow \
-    -vf "scale='min(1280,iw)':-2" \
+    -vf "fps=24,scale='min(1280,iw)':-2" \
     -an -movflags +faststart -pix_fmt yuv420p \
     "$tmp" 2>/dev/null
 
