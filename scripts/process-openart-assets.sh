@@ -4,9 +4,11 @@
 # Input convention:
 #   /home/sylvain_ladoire/projects/developpeur/tmp/openart-evatosorus/
 #     tyrannosaurus-rex.jpg|png|webp
+#     Tyrannosaurus rex.jpg|png|webp
 #     triceratops-horridus.jpg|png|webp
 #     tyrannosaurus-rex-1.mp4|mov|webm
 #     tyrannosaurus-rex-2.mp4|mov|webm
+#     Tyrannosaurus rex.mp4|mov|webm
 #     triceratops-1.mp4|mov|webm
 #
 # Output convention:
@@ -34,9 +36,11 @@ Import OpenArt exports into Evatosorus after local optimization.
 Input convention:
   $DEFAULT_IN/
     tyrannosaurus-rex.jpg|png|webp
+    Tyrannosaurus rex.jpg|png|webp
     triceratops-horridus.jpg|png|webp
     tyrannosaurus-rex-1.mp4|mov|webm
     tyrannosaurus-rex-2.mp4|mov|webm
+    Tyrannosaurus rex.mp4|mov|webm
     triceratops-1.mp4|mov|webm
 
 Output convention:
@@ -111,6 +115,32 @@ VIDEO_PREFIXES=(
   diplodocus
 )
 
+declare -A SCIENTIFIC_NAMES=(
+  [tyrannosaurus-rex]="Tyrannosaurus rex"
+  [triceratops-horridus]="Triceratops horridus"
+  [velociraptor-mongoliensis]="Velociraptor mongoliensis"
+  [brachiosaurus-altithorax]="Brachiosaurus altithorax"
+  [stegosaurus-stenops]="Stegosaurus stenops"
+  [spinosaurus-aegyptiacus]="Spinosaurus aegyptiacus"
+  [ankylosaurus-magniventris]="Ankylosaurus magniventris"
+  [parasaurolophus-walkeri]="Parasaurolophus walkeri"
+  [allosaurus-fragilis]="Allosaurus fragilis"
+  [diplodocus-carnegii]="Diplodocus carnegii"
+)
+
+declare -A VIDEO_SPECIES_IDS=(
+  [tyrannosaurus-rex]="tyrannosaurus-rex"
+  [triceratops]="triceratops-horridus"
+  [velociraptor]="velociraptor-mongoliensis"
+  [brachiosaurus]="brachiosaurus-altithorax"
+  [stegosaurus]="stegosaurus-stenops"
+  [spinosaurus]="spinosaurus-aegyptiacus"
+  [ankylosaurus]="ankylosaurus-magniventris"
+  [parasaurolophus]="parasaurolophus-walkeri"
+  [allosaurus]="allosaurus-fragilis"
+  [diplodocus]="diplodocus-carnegii"
+)
+
 find_first() {
   local base="$1"; shift
   local ext path
@@ -122,6 +152,24 @@ find_first() {
       "$IN_DIR/videos/${base}.${ext}"; do
       [[ -f "$path" ]] && { printf '%s\n' "$path"; return 0; }
     done
+  done
+  return 1
+}
+
+find_first_any_base() {
+  local ext_count="$1"; shift
+  local exts=()
+  local i
+  for ((i = 0; i < ext_count; i++)); do
+    exts+=("$1")
+    shift
+  done
+  local base src
+  for base in "$@"; do
+    if src="$(find_first "$base" "${exts[@]}" 2>/dev/null)"; then
+      printf '%s\n' "$src"
+      return 0
+    fi
   done
   return 1
 }
@@ -187,15 +235,16 @@ echo
 imported=0
 
 for id in "${SPECIES_IDS[@]}"; do
-  if src="$(find_first "$id" jpg jpeg png webp 2>/dev/null)"; then
+  if src="$(find_first_any_base 4 jpg jpeg png webp "$id" "${SCIENTIFIC_NAMES[$id]}" 2>/dev/null)"; then
     optimize_image "$src" "$PUB/species-life/${id}.jpg"
     imported=$((imported + 1))
   fi
 done
 
 for prefix in "${VIDEO_PREFIXES[@]}"; do
+  species_id="${VIDEO_SPECIES_IDS[$prefix]}"
   for slot in 1 2; do
-    if src="$(find_first "${prefix}-${slot}" mp4 mov webm m4v 2>/dev/null)"; then
+    if src="$(find_first_any_base 4 mp4 mov webm m4v "${prefix}-${slot}" "${species_id}-${slot}" "${SCIENTIFIC_NAMES[$species_id]}-${slot}" "${SCIENTIFIC_NAMES[$species_id]}" 2>/dev/null)"; then
       optimize_video "$src" "$PUB/${prefix}-${slot}.mp4"
       imported=$((imported + 1))
     fi
