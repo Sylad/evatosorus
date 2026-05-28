@@ -11,7 +11,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "import:paleobiodb": "node ../scripts/import-paleobiodb.mjs",
-    "ollama:species": "node ../scripts/propose-species-ollama.mjs"
+    "ollama:species": "node ../scripts/propose-species-ollama.mjs",
+    "enrich:species": "node ../scripts/enrich-species.mjs",
+    "test:scripts": "node --test ../scripts/*.test.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.4",
