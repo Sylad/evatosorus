@@ -1,0 +1,295 @@
+---
+import CodexLayout from '../layouts/CodexLayout.astro';
+---
+
+<CodexLayout
+  title="Comprendre les dinosaures — Evatosorus"
+  description="Quelques repères simples pour lire les dinosaures, les fossiles et les mondes du Mésozoïque."
+  active="comprendre"
+>
+  <article class="learn-page">
+    <header class="learn-hero">
+      <div class="learn-hero-copy">
+        <p class="page-kicker">comprendre</p>
+        <h1>Les dinosaures ne sont pas juste de gros lézards.</h1>
+        <p>
+          Ils forment une histoire immense : des animaux terrestres, des oiseaux
+          survivants, des cousins volants, des reptiles marins, des fossiles
+          incomplets, et une science qui change encore.
+        </p>
+      </div>
+      <img src="/species-life/tyrannosaurus-rex-openart-20260528.jpg" alt="Tyrannosaurus rex dans une forêt du Crétacé" />
+    </header>
+
+    <section class="truth-strip" aria-label="Repères rapides">
+      <article>
+        <strong>1</strong>
+        <span>Les dinosaures ne sont pas des lézards : ce sont des archosaures, proches des crocodiles et des oiseaux.</span>
+      </article>
+      <article>
+        <strong>2</strong>
+        <span>Les oiseaux sont les dinosaures survivants. Le Mésozoïque n’a donc pas totalement disparu.</span>
+      </article>
+      <article>
+        <strong>3</strong>
+        <span>Mosasaurus et Pteranodon vivaient avec eux, mais ne sont pas des dinosaures.</span>
+      </article>
+    </section>
+
+    <section class="learn-grid">
+      <article class="learn-card wide">
+        <img src="/species-life/velociraptor-mongoliensis-openart-20260528.jpg" alt="Velociraptor dans un paysage sableux" />
+        <div>
+          <p class="page-kicker">fiction vs science</p>
+          <h2>Le cinéma a changé leur image, parfois trop.</h2>
+          <p>
+            Le Velociraptor réel était bien plus petit que sa version de cinéma,
+            probablement emplumé, et moins “monstre de couloir” que prédateur
+            nerveux. La fiction donne envie de regarder ; la science apprend à
+            regarder autrement.
+          </p>
+        </div>
+      </article>
+
+      <article class="learn-card">
+        <img src="/species-life/archaeopteryx-lithographica-openart-20260528.jpg" alt="Archaeopteryx dans une forêt jurassique" />
+        <h2>Les plumes ne servent pas qu’à voler.</h2>
+        <p>
+          Chez beaucoup de théropodes, elles ont pu servir à isoler, séduire,
+          intimider ou protéger. Le vol est une branche de cette histoire, pas
+          son point de départ obligatoire.
+        </p>
+      </article>
+
+      <article class="learn-card">
+        <img src="/species-life/mosasaurus-hoffmanni-openart-20260528.jpg" alt="Mosasaurus dans une mer du Crétacé" />
+        <h2>“Dinosaure marin” est presque toujours faux.</h2>
+        <p>
+          Les grands reptiles marins du Mésozoïque appartenaient à d’autres
+          lignées. Ils partageaient l’époque, pas la famille.
+        </p>
+      </article>
+
+      <article class="learn-card">
+        <img src="/species-life/triceratops-horridus-openart-20260528.jpg" alt="Triceratops dans une plaine du Crétacé" />
+        <h2>Les fossiles ne donnent pas tout.</h2>
+        <p>
+          Un squelette raconte une architecture, rarement toute une vie. Couleur,
+          sons, comportements sociaux : beaucoup se reconstruit par indices,
+          comparaisons et prudence.
+        </p>
+      </article>
+
+      <article class="learn-card">
+        <img src="/species-life/spinosaurus-aegyptiacus-openart-20260528.jpg" alt="Spinosaurus près de l’eau" />
+        <h2>La science change, et c’est normal.</h2>
+        <p>
+          Spinosaurus en est le meilleur exemple : posture, nage, queue, voile,
+          régime. Une fiche sérieuse peut évoluer, parce que de nouveaux fossiles
+          changent la lecture.
+        </p>
+      </article>
+    </section>
+
+    <section class="timeline-note">
+      <p class="page-kicker">252 → 66 millions d’années</p>
+      <h2>Trias, Jurassique, Crétacé : trois mondes, pas un décor unique.</h2>
+      <p>
+        Le Mésozoïque dure environ 186 millions d’années. Le monde de
+        Plateosaurus n’est pas celui de Diplodocus, et encore moins celui de
+        T. rex. Entre eux, les continents bougent, les climats changent, les
+        océans s’ouvrent, des lignées disparaissent et d’autres prennent toute
+        la place.
+      </p>
+      <a href="/periodes/" class="learn-link">Explorer le voyage temporel</a>
+    </section>
+  </article>
+
+  <style>
+    .learn-page {
+      display: grid;
+      gap: 1.1rem;
+    }
+    .page-kicker {
+      margin: 0 0 0.65rem;
+      color: var(--color-evato-amber-bright);
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+    }
+    .learn-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(20rem, 1fr);
+      min-height: 430px;
+      overflow: hidden;
+      border: 1px solid rgba(212, 165, 94, 0.28);
+      border-radius: 8px;
+      background: rgba(13, 10, 6, 0.72);
+      box-shadow: 0 22px 44px -22px rgba(0, 0, 0, 0.82);
+    }
+    .learn-hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      padding: clamp(1.4rem, 4vw, 3rem);
+    }
+    .learn-hero h1 {
+      margin: 0;
+      max-width: 12ch;
+      color: #fff5e2;
+      font-size: clamp(2.4rem, 6vw, 5rem);
+      line-height: 0.98;
+    }
+    .learn-hero p:not(.page-kicker) {
+      max-width: 42rem;
+      margin: 1rem 0 0;
+      color: var(--color-evato-bone);
+      font-size: clamp(1.05rem, 2vw, 1.24rem);
+      line-height: 1.55;
+    }
+    .learn-hero img {
+      width: 100%;
+      height: 100%;
+      min-height: 430px;
+      object-fit: cover;
+      filter: saturate(1.02) contrast(1.04) brightness(0.9);
+    }
+    .truth-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+    .truth-strip article,
+    .learn-card,
+    .timeline-note {
+      border: 1px solid rgba(212, 165, 94, 0.2);
+      border-radius: 8px;
+      background: rgba(26, 18, 10, 0.64);
+    }
+    .truth-strip article {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.75rem;
+      align-items: start;
+      padding: 1rem;
+    }
+    .truth-strip strong {
+      color: var(--color-evato-amber-bright);
+      font-family: var(--font-display);
+      font-size: 1.7rem;
+      line-height: 1;
+    }
+    .truth-strip span {
+      color: var(--color-evato-bone-muted);
+      line-height: 1.5;
+    }
+    .learn-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+    .learn-card {
+      overflow: hidden;
+    }
+    .learn-card.wide {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.9fr);
+    }
+    .learn-card img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.96) contrast(1.03) brightness(0.92);
+    }
+    .learn-card.wide img {
+      height: 100%;
+      min-height: 310px;
+      aspect-ratio: auto;
+    }
+    .learn-card div,
+    .learn-card:not(.wide) {
+      padding-bottom: 1rem;
+    }
+    .learn-card.wide div,
+    .learn-card h2,
+    .learn-card p {
+      padding-inline: 1rem;
+    }
+    .learn-card.wide div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-block: 1.2rem;
+    }
+    .learn-card h2 {
+      margin: 0.9rem 0 0;
+      color: var(--color-evato-amber-bright);
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      line-height: 1.08;
+    }
+    .learn-card.wide h2 {
+      margin-top: 0;
+    }
+    .learn-card p {
+      margin: 0.75rem 0 0;
+      color: var(--color-evato-bone-muted);
+      font-size: 1rem;
+      line-height: 1.58;
+    }
+    .timeline-note {
+      padding: clamp(1.2rem, 3vw, 2rem);
+      background:
+        radial-gradient(ellipse at 90% 0%, rgba(94, 143, 110, 0.13), transparent 46%),
+        rgba(26, 18, 10, 0.66);
+    }
+    .timeline-note h2 {
+      max-width: 19ch;
+      margin: 0;
+      color: #fff5e2;
+      font-size: clamp(1.7rem, 4vw, 3rem);
+      line-height: 1.05;
+    }
+    .timeline-note p:not(.page-kicker) {
+      max-width: 60rem;
+      margin: 1rem 0 1.2rem;
+      color: var(--color-evato-bone-muted);
+      font-size: 1.05rem;
+      line-height: 1.62;
+    }
+    .learn-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.5rem;
+      padding: 0.55rem 0.9rem;
+      border: 1px solid var(--color-evato-amber-bright);
+      border-radius: 4px;
+      color: var(--color-evato-amber-bright);
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+    .learn-link:hover {
+      background: rgba(212, 165, 94, 0.1);
+    }
+    @media (max-width: 900px) {
+      .learn-hero,
+      .learn-card.wide,
+      .truth-strip,
+      .learn-grid {
+        grid-template-columns: 1fr;
+      }
+      .learn-hero img {
+        order: -1;
+        min-height: 280px;
+      }
+      .learn-card.wide img {
+        min-height: 240px;
+      }
+    }
+  </style>
+</CodexLayout>

@@ -5,7 +5,7 @@ import EvatoSkull from '../components/EvatoSkull.astro';
 interface Props {
   title?: string;
   description?: string;
-  active?: 'vitrines' | 'codex' | 'periodes' | 'carte' | 'films' | 'videos' | 'about' | 'home';
+  active?: 'vitrines' | 'codex' | 'comprendre' | 'periodes' | 'carte' | 'films' | 'videos' | 'about' | 'home';
 }
 
 const { title, description, active = 'home' } = Astro.props;
@@ -14,6 +14,7 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
   { id: 'home',     label: 'Accueil',         href: '/' },
   { id: 'vitrines', label: 'Espèces vitrines', href: '/vitrines/' },
   { id: 'codex',    label: 'Codex',           href: '/codex/' },
+  { id: 'comprendre', label: 'Comprendre',    href: '/comprendre/' },
   { id: 'periodes', label: 'Voyage temporel', href: '/periodes/' },
   { id: 'carte',    label: 'Carte paléo',     href: '/carte/' },
   { id: 'films',    label: 'Films',           href: '/films/' },

@@ -56,6 +56,170 @@ const fieldNotes = [
     value: worldNote,
   },
 ].filter((note): note is { label: string; value: string } => Boolean(note));
+const showcaseInsights: Record<string, { label: string; title: string; text: string }[]> = {
+  'tyrannosaurus-rex': [
+    {
+      label: 'fiction vs science',
+      title: 'Pas seulement un monstre de cinéma',
+      text: 'T. rex était un prédateur capable, mais aussi un animal opportuniste : comme les grands carnivores actuels, il pouvait chasser, voler une carcasse ou profiter d’un animal déjà affaibli.',
+    },
+    {
+      label: 'pourquoi il est célèbre',
+      title: 'L’icône absolue',
+      text: 'Sa taille, son crâne massif et son nom spectaculaire en ont fait le dinosaure le plus reconnaissable du monde, bien au-delà des musées.',
+    },
+  ],
+  'triceratops-horridus': [
+    {
+      label: 'à ne pas réduire',
+      title: 'Plus qu’un rival de T. rex',
+      text: 'Ses cornes et sa collerette servaient probablement autant aux parades, aux signaux sociaux et aux affrontements entre individus qu’à la défense contre les prédateurs.',
+    },
+  ],
+  'velociraptor-mongoliensis': [
+    {
+      label: 'fiction vs science',
+      title: 'Beaucoup plus petit que dans Jurassic Park',
+      text: 'Le vrai Velociraptor avait plutôt la taille d’un grand dindon, avec des plumes. Les “raptors” géants du cinéma ressemblent davantage à Deinonychus ou Utahraptor.',
+    },
+  ],
+  'brachiosaurus-altithorax': [
+    {
+      label: 'échelle',
+      title: 'Une girafe du Jurassique, mais en version colosse',
+      text: 'Ses membres antérieurs plus longs que les postérieurs lui donnaient une posture très haute, utile pour atteindre une végétation inaccessible à beaucoup d’autres herbivores.',
+    },
+  ],
+  'stegosaurus-stenops': [
+    {
+      label: 'mystère',
+      title: 'Des plaques pas faites pour mordre',
+      text: 'Les grandes plaques dorsales étaient probablement liées à l’affichage visuel, à la reconnaissance ou à la régulation thermique, plus qu’à une armure purement défensive.',
+    },
+  ],
+  'spinosaurus-aegyptiacus': [
+    {
+      label: 'science mouvante',
+      title: 'Un dinosaure en débat permanent',
+      text: 'Spinosaurus est l’un des dinosaures les plus réinterprétés : voile dorsale, queue nageuse, posture, mode de chasse. Sa silhouette raconte aussi l’évolution des connaissances.',
+    },
+  ],
+  'ankylosaurus-magniventris': [
+    {
+      label: 'défense',
+      title: 'Un blindé vivant',
+      text: 'Ses plaques osseuses et sa massue caudale en faisaient un herbivore difficile à attaquer. Sa stratégie n’était pas la vitesse, mais la résistance.',
+    },
+  ],
+  'parasaurolophus-walkeri': [
+    {
+      label: 'son',
+      title: 'Une crête qui pouvait résonner',
+      text: 'Sa longue crête creuse a pu servir de caisse de résonance, produisant des sons graves utiles pour communiquer à distance dans les troupeaux.',
+    },
+  ],
+  'allosaurus-fragilis': [
+    {
+      label: 'avant T. rex',
+      title: 'Le grand prédateur du Jurassique',
+      text: 'Allosaurus a dominé bien avant T. rex. Sa tête plus légère et ses bras plus utiles lui donnaient une silhouette de chasseur très différente.',
+    },
+  ],
+  'diplodocus-carnegii': [
+    {
+      label: 'anatomie',
+      title: 'Une longueur presque irréelle',
+      text: 'Diplodocus devait beaucoup de sa taille à un cou et une queue immenses. Son corps, lui, restait relativement léger pour un sauropode.',
+    },
+  ],
+  'iguanodon-bernissartensis': [
+    {
+      label: 'histoire des sciences',
+      title: 'L’un des premiers dinosaures nommés',
+      text: 'Iguanodon fait partie des dinosaures fondateurs de la paléontologie. Son fameux “pouce” a longtemps été mal interprété comme une corne sur le nez.',
+    },
+  ],
+  'carnotaurus-sastrei': [
+    {
+      label: 'silhouette',
+      title: 'Le taureau carnivore',
+      text: 'Ses petites cornes et ses bras extrêmement réduits lui donnent une silhouette immédiatement reconnaissable, très différente des grands théropodes nord-américains.',
+    },
+  ],
+  'giganotosaurus-carolinii': [
+    {
+      label: 'comparaison',
+      title: 'Pas “un T. rex plus grand”, autre chose',
+      text: 'Giganotosaurus appartenait à une autre lignée de grands carnivores. Son crâne long et ses dents tranchantes évoquent une stratégie de morsures profondes plutôt que d’écrasement.',
+    },
+  ],
+  'deinonychus-antirrhopus': [
+    {
+      label: 'impact scientifique',
+      title: 'Le raptor qui a changé l’image des dinosaures',
+      text: 'Deinonychus a aidé à imposer l’idée de dinosaures actifs, agiles et proches des oiseaux, loin de l’ancienne image d’animaux lourds et lents.',
+    },
+  ],
+  'pachycephalosaurus-wyomingensis': [
+    {
+      label: 'hypothèse',
+      title: 'Le crâne-dôme reste discuté',
+      text: 'Son crâne épaissi évoque des combats tête contre tête, mais les paléontologues discutent encore la façon exacte dont il s’en servait.',
+    },
+  ],
+  'therizinosaurus-cheloniformis': [
+    {
+      label: 'étrangeté',
+      title: 'Des griffes absurdes pour un régime paisible',
+      text: 'Malgré ses griffes géantes, Therizinosaurus était probablement herbivore ou omnivore. Son apparence rappelle que l’évolution ne cherche pas à faire simple.',
+    },
+  ],
+  'argentinosaurus-huinculensis': [
+    {
+      label: 'limite des estimations',
+      title: 'Le géant qu’on mesure avec prudence',
+      text: 'Argentinosaurus est connu par des fossiles incomplets. Les estimations de taille varient, mais il reste parmi les plus grands animaux terrestres envisagés.',
+    },
+  ],
+  'mosasaurus-hoffmanni': [
+    {
+      label: 'à ne pas confondre',
+      title: 'Un reptile marin, pas un dinosaure',
+      text: 'Mosasaurus vivait dans les mers du Crétacé. Il partage l’époque des dinosaures, mais n’appartient pas à leur groupe.',
+    },
+  ],
+  'pteranodon-longiceps': [
+    {
+      label: 'à ne pas confondre',
+      title: 'Un ptérosaure, pas un dinosaure volant',
+      text: 'Pteranodon appartient aux reptiles volants. Les dinosaures volants, au sens strict, ce sont les oiseaux.',
+    },
+  ],
+  'archaeopteryx-lithographica': [
+    {
+      label: 'transition',
+      title: 'Une fenêtre vers l’origine des oiseaux',
+      text: 'Archaeopteryx mélange plumes, ailes, dents, griffes et longue queue osseuse. Il montre que l’histoire des oiseaux commence au cœur des dinosaures théropodes.',
+    },
+  ],
+};
+const generalInsight = s.taxonGroup === 'pterosaur'
+  ? {
+      label: 'classification',
+      title: 'Pas un dinosaure, mais un voisin du même monde',
+      text: 'Les ptérosaures sont des reptiles volants distincts. Ils vivaient aux côtés des dinosaures, sans faire partie du même groupe.',
+    }
+  : s.taxonGroup === 'marine-reptile'
+    ? {
+        label: 'classification',
+        title: 'Pas un dinosaure marin',
+        text: 'Les dinosaures sont des animaux terrestres au sens strict. Les grands reptiles marins du Mésozoïque appartiennent à d’autres lignées.',
+      }
+    : undefined;
+const speciesInsights = [
+  ...(showcaseInsights[s.id] ?? []),
+  ...(generalInsight && !showcaseInsights[s.id]?.some((insight) => insight.label === 'classification') ? [generalInsight] : []),
+];
 ---
 <CodexLayout
   title={`${s.commonName ?? s.name} — Evatosorus`}
@@ -142,6 +306,22 @@ const fieldNotes = [
       </section>
     )}
 
+    {speciesInsights.length > 0 && (
+      <section class="insight-panel">
+        <p class="section-kicker">à savoir</p>
+        <h2>Le détail qui change le regard.</h2>
+        <div class="insight-grid">
+          {speciesInsights.map((insight) => (
+            <article>
+              <span>{insight.label}</span>
+              <h3>{insight.title}</h3>
+              <p>{insight.text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
+
     {videos.length > 0 && (
       <section class="detail-videos">
         <h2>Galerie vidéo</h2>
@@ -154,7 +334,7 @@ const fieldNotes = [
               muted
               loop
               playsinline
-            controls
+              controls
               preload="auto"
             />
           ))}
@@ -397,6 +577,52 @@ const fieldNotes = [
       color: var(--color-evato-bone-muted);
       font-size: 0.92rem;
       line-height: 1.48;
+    }
+    .insight-panel {
+      margin-bottom: 1.8rem;
+      padding: 1.2rem;
+      border: 1px solid rgba(94, 143, 110, 0.24);
+      border-radius: 6px;
+      background:
+        radial-gradient(ellipse at 92% 0%, rgba(94, 143, 110, 0.14), transparent 44%),
+        rgba(13, 10, 6, 0.5);
+    }
+    .insight-panel h2 {
+      margin: 0 0 1rem;
+      color: #fff5e2;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      line-height: 1.08;
+    }
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.75rem;
+    }
+    .insight-grid article {
+      min-width: 0;
+      padding: 1rem;
+      border: 1px solid rgba(94, 143, 110, 0.22);
+      border-radius: 4px;
+      background: rgba(13, 10, 6, 0.44);
+    }
+    .insight-grid span {
+      color: #9bc9a6;
+      font-family: var(--font-display);
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .insight-grid h3 {
+      margin: 0.45rem 0 0;
+      color: var(--color-evato-amber-bright);
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+    .insight-grid p {
+      margin: 0.55rem 0 0;
+      color: var(--color-evato-bone-muted);
+      font-size: 0.94rem;
+      line-height: 1.5;
     }
     .external {
       color: var(--color-evato-bone-muted);
