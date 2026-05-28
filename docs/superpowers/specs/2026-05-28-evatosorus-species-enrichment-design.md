@@ -63,7 +63,13 @@ Les 24 ids du seed sont **skippés** (seed wins au runtime, déjà curées — o
    - `P18` → API Commons `imageinfo` (url + `extmetadata`).
    - download de l'original → `sharp` resize largeur max **800px**, JPEG **q80** → `frontend/public/species/<id>.jpg`.
    - `imageUrl = /species/<id>.jpg`, `imageCredit = "<Artist> — <LicenseShortName> via Wikimedia Commons"` (depuis `extmetadata`). Commons n'héberge que du média libre → licence toujours présente ; si `extmetadata` manque la licence, **skip l'image** (sécurité juridique) et fallback silhouette.
-6. **diet** : Wikidata n'a pas de propriété diète fiable pour les taxons éteints. → **reste `unknown`** par défaut. (Option à trancher au plan : heuristique conservatrice par clade — théropodes carnivores, sauropodes/ornithischiens herbivores — ou laisser `unknown`. Par défaut : `unknown`, zéro inférence hasardeuse.)
+6. **diet** : Wikidata n'a pas de propriété diète fiable pour les taxons éteints. → **heuristique par clade** (validée 2026-05-28), appliquée à partir du `taxonGroup` dérivé à l'étape 2 :
+   - `theropod` → `carnivore` (exception connue : therizinosaures herbivores, mais marginale et non distinguée ici → acceptable)
+   - `sauropod`, `ornithopod`, `thyreophoran`, `ceratopsian`, `pachycephalosaur`, `other-ornithischian` → `herbivore`
+   - `pterosaur` → `unknown` (régimes variés : piscivores, insectivores, carnivores)
+   - `marine-reptile` → `unknown` (mosasaures carnivores mais ichtyosaures/plésiosaures piscivores : trop hétérogène)
+   - `other-saurischian`, `other` → `unknown`
+   - Ne s'applique JAMAIS sur une entrée qui a déjà une diète (seed). Rend le filtre diète du codex utilisable sans inventer pour les groupes ambigus.
 7. **epochs / lengthM / weightKg** : best-effort uniquement si une source structurée fiable existe ; sinon on laisse vide (pas d'invention). Hors scope prioritaire de cette passe.
 
 ### Robustesse
