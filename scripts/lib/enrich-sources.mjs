@@ -74,7 +74,10 @@ export function makeEntityGetter() {
     if (cache.has(qid)) return cache.get(qid);
     const data = await fetchJson(`https://www.wikidata.org/wiki/Special:EntityData/${qid}.json`);
     const ent = data?.entities?.[qid] ?? null;
-    cache.set(qid, ent);
+    // Ne mémoïser que les succès : un échec transitoire sur un ancêtre partagé
+    // (Dinosauria…) cassait la chaîne taxonomique de toutes les espèces
+    // suivantes du run. Review 2026-08-14.
+    if (ent) cache.set(qid, ent);
     await sleep(THROTTLE_MS);
     return ent;
   };

@@ -67,6 +67,9 @@ export function cleanBlurb(raw) {
     lines.shift();
   }
   let text = lines.join(' ').trim();
+  // Préambule inline (sortie llama sur UNE ligne : « Voici ... : <blurb> ») —
+  // la boucle ci-dessus exige lines.length > 1 et le laissait passer.
+  text = text.replace(/^(?:voici|voilà|bien sûr|d'accord)[^:]{0,80}:\s*/i, '');
   // Strip wrapping quotes (droites, courbes, guillemets français).
   text = text.replace(/^["«»“”‘’']+\s*/, '').replace(/\s*["«»“”‘’']+$/, '').trim();
   return text;

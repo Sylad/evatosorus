@@ -28,9 +28,19 @@ const IMG_DIR = path.resolve(__dirname, '../frontend/public/species');
 const CACHE_DIR = path.resolve(__dirname, '.cache/enrich');
 
 // --- args ---
-const argv = process.argv.slice(2);
-const limit = argv.includes('--limit') ? parseInt(argv[argv.indexOf('--limit') + 1], 10) : Infinity;
-const onlyIds = argv.includes('--ids') ? new Set(argv[argv.indexOf('--ids') + 1].split(',').map((s) => s.trim())) : null;
+// parseArgs : l'ancien parsing à la main acceptait `--limit` sans valeur
+// (parseInt(undefined)=NaN → « sans limite » au lieu d'une erreur) et
+// crashait sur `--ids` nu. Review 2026-08-14.
+import { parseArgs } from 'node:util';
+const { values: args } = parseArgs({
+  options: { limit: { type: 'string' }, ids: { type: 'string' } },
+});
+const limit = args.limit !== undefined ? Number.parseInt(args.limit, 10) : Infinity;
+if (Number.isNaN(limit) || limit < 0) {
+  console.error(`--limit invalide: ${args.limit}`);
+  process.exit(1);
+}
+const onlyIds = args.ids ? new Set(args.ids.split(',').map((s) => s.trim()).filter(Boolean)) : null;
 
 // --- cache ---
 const cachePath = (id) => path.join(CACHE_DIR, `${id}.json`);
@@ -79,7 +89,9 @@ async function computeEnrichment(s) {
   // blurb depuis le résumé Wikipedia (FR puis EN).
   let extract = null;
   if (wp) extract = await wikipediaSummary(wp.lang, wp.title);
-  if (!extract && wp?.lang !== 'en') extract = await wikipediaSummary('en', wp?.title ?? s.name);
+  // Fallback EN sur le nom scientifique : le titre FR (accents/vernaculaire)
+  // 404 souvent sur EN alors que le nom scientifique y existe.
+  if (!extract && wp?.lang !== 'en') extract = await wikipediaSummary('en', s.name);
   if (extract) {
     const blurb = await ollamaBlurb(extract);
     if (blurb) patch.blurb = blurb;
@@ -87,25 +99,33 @@ async function computeEnrichment(s) {
 
   // image : download si licence claire et fichier pas déjà présent.
   const outPath = path.join(IMG_DIR, `${s.id}.jpg`);
+  const relUrl = `/species/${s.id}.jpg`;
   if (imageFile) {
-    if (fs.existsSync(outPath)) {
-      patch.imageUrl = `/species/${s.id}.jpg`;
-    } else {
-      const info = await fetchCommonsImage(imageFile);
-      const credit = info ? buildImageCredit(info.extmetadata) : null;
-      if (info && credit) {
+    // Crédit + check licence TOUJOURS résolus : l'ancienne branche « fichier
+    // déjà sur disque » publiait l'image sans attribution (sécurité juridique
+    // contournée). Review 2026-08-14.
+    const info = await fetchCommonsImage(imageFile);
+    const credit = info ? buildImageCredit(info.extmetadata) : null;
+    if (info && credit) {
+      if (!fs.existsSync(outPath)) {
         try {
           await downloadAndResize(info.url, outPath);
-          patch.imageUrl = `/species/${s.id}.jpg`;
-          patch.imageCredit = credit.credit;
         } catch {
           stats.errors++;
         }
       }
+      if (fs.existsSync(outPath)) {
+        patch.imageUrl = relUrl;
+        patch.imageCredit = credit.credit;
+      }
     }
   }
 
-  writeCache(s.id, patch);
+  // Un patch VIDE n'est pas mis en cache : une panne réseau/Ollama figeait
+  // l'espèce « non enrichissable » pour toujours (le cache court-circuite tout
+  // retry). Une espèce réellement sans données re-tentera au prochain run —
+  // coût faible et assumé. Review 2026-08-14.
+  if (Object.keys(patch).length > 0) writeCache(s.id, patch);
   await sleep(THROTTLE_MS);
   return patch;
 }
@@ -131,7 +151,7 @@ for (const s of candidates) {
     if (patch.blurb) stats.blurbs++;
     if (before.g === 'other' && s.taxonGroup !== 'other') stats.groupsFixed++;
     if (before.d === 'unknown' && s.diet !== 'unknown') stats.dietsFixed++;
-    if (patch.blurb || patch.imageUrl || patch.commonName || (patch.taxonGroup && patch.taxonGroup !== 'other')) {
+    if (Object.keys(patch).length > 0) {
       stats.enriched++;
     } else {
       stats.skippedNoData++;
