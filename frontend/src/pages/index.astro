@@ -59,7 +59,7 @@ const totalSpecies = SPECIES.length.toLocaleString('fr-FR').replace(/\u202f/g, '
 
     <p class="landing-sub font-body" data-amber-split>
       « Avant nous, il y a eu eux. »<br/>
-      Trias, Jurassique, Crétacé. {totalSpecies} espèces, des paysages perdus
+      Trias, Jurassique, Crétacé. <span class="landing-num">{totalSpecies}</span> espèces, des paysages perdus
       et quelques géants remis en mouvement.
     </p>
 
@@ -329,6 +329,9 @@ const totalSpecies = SPECIES.length.toLocaleString('fr-FR').replace(/\u202f/g, '
   */
   .landing-tagline,
   .landing-sub {
+    /* L'espace de Crimson Text 600 italique ne fait que ~3 px : « Crétacé.
+       1 511 » se lisait comme un seul nombre. */
+    word-spacing: 0.12em;
     color: #ffffff !important;
     text-shadow:
       -1.5px -1.5px 0 rgba(0, 0, 0, 0.95),
@@ -342,6 +345,8 @@ const totalSpecies = SPECIES.length.toLocaleString('fr-FR').replace(/\u202f/g, '
   .landing-sub {
     color: #ffe2a8 !important;
   }
+  /* Séparateur de milliers : plus étroit que l'espace entre mots, mais visible. */
+  .landing-num { word-spacing: 0.06em; white-space: nowrap; }
 
   /*
     main::before retiré — c'était le coupable du foreground palichon
