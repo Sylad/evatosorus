@@ -93,16 +93,17 @@ const height = Math.round(size * 0.22);
   }
   /* Bureau : sous-titre dessiné dans le SVG (inchangé). Téléphone : texte
      HTML à taille fixe ≥ 12 px, capitales espacées (maquette 390 validée),
-     posé dans la bande du sous-titre SVG, qui est masqué. */
+     posé sous les vertèbres (à la place du sous-titre SVG, masqué). */
   .evato-logo-sub { display: none; }
   @media (max-width: 639px) {
+    .evato-logo { margin-bottom: 0.6rem; }
     .evato-logo-svg-sub { display: none; }
     .evato-logo-sub {
       display: block;
       position: absolute;
       left: 0;
       right: 0;
-      bottom: 0;
+      bottom: -0.6rem;
       font-family: var(--font-body);
       font-weight: 600;
       font-size: 0.75rem;
