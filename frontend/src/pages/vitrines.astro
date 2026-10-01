@@ -1,5 +1,6 @@
 ---
 import CodexLayout from '../layouts/CodexLayout.astro';
+import { formatCount } from '../lib/format-count.mjs';
 import { SPECIES, getSpeciesVideos, TAXON_GROUP_LABELS, DIET_LABELS } from '../data/species';
 
 const showcaseIds = [
@@ -107,7 +108,7 @@ const visitPaths = [
       </p>
       <div class="hero-actions">
         <a href="#vitrines" class="hero-button hero-button-primary">Voir les espèces</a>
-        <a href="/codex/" class="hero-button">Explorer les 1511 fiches</a>
+        <a href="/codex/" class="hero-button">Explorer les {formatCount(SPECIES.length)} fiches</a>
       </div>
     </div>
   </section>

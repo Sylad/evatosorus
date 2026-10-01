@@ -3,6 +3,7 @@ import CodexLayout from '../../layouts/CodexLayout.astro';
 import SpeciesCard from '../../components/SpeciesCard.astro';
 import { PERIODS, PERIODS_BY_ID } from '../../data/periods';
 import { getSpeciesByPeriod } from '../../data/species';
+import { formatCount } from '../../lib/format-count.mjs';
 
 export function getStaticPaths() {
   return PERIODS.map((p) => ({ params: { id: p.id } }));
@@ -59,7 +60,7 @@ const species = getSpeciesByPeriod(period.id).sort((a, b) => {
   </section>
 
   <section class="species-section">
-    <h2 class="species-heading">{species.length} espèces dans cette ère</h2>
+    <h2 class="species-heading">{formatCount(species.length)} espèces dans cette ère</h2>
     {species.length > 0 ? (
       <div class="species-grid">
         {species.map((s) => <SpeciesCard species={s} />)}

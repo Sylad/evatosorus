@@ -4,6 +4,7 @@ import PageHero from '../../components/PageHero.astro';
 import MesozoicTimeline from '../../components/MesozoicTimeline.astro';
 import { PERIODS } from '../../data/periods';
 import { getSpeciesByPeriod } from '../../data/species';
+import { formatCount } from '../../lib/format-count.mjs';
 ---
 <CodexLayout
   title="Voyage temporel — Evatosorus"
@@ -40,7 +41,7 @@ import { getSpeciesByPeriod } from '../../data/species';
             ))}
           </div>
           <div class="period-cta">
-            <span>{count} espèces dans le codex</span>
+            <span>{formatCount(count)} espèces dans le codex</span>
             <span class="arrow">→</span>
           </div>
         </a>

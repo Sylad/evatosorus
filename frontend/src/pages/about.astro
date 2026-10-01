@@ -1,6 +1,7 @@
 ---
 import CodexLayout from '../layouts/CodexLayout.astro';
 import { SPECIES_INDEX } from '../data/species';
+import { formatCount } from '../lib/format-count.mjs';
 ---
 <CodexLayout
   title="À propos — Evatosorus"
@@ -13,7 +14,7 @@ import { SPECIES_INDEX } from '../data/species';
       <h1>Evatosorus</h1>
       <p class="lede">
         Un codex visuel des dinosaures, du Mésozoïque tout entier — Trias,
-        Jurassique, Crétacé. {SPECIES_INDEX.count} espèces fichées, leurs paysages,
+        Jurassique, Crétacé. {formatCount(SPECIES_INDEX.count)} espèces fichées, leurs paysages,
         leurs continents perdus, leur disparition.
       </p>
     </header>

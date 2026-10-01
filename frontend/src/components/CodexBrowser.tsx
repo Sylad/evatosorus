@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
 import type { Species } from '../data/species.types';
+import { formatCount } from '../lib/format-count.mjs';
 
 // Subset minimum nécessaire pour afficher une card. Pour préserver les
 // optimisations bandwidth (codex.astro trim ~60% des champs avant de passer
@@ -126,7 +127,7 @@ export function CodexBrowser({
             aria-label="Recherche par nom"
           />
           <span className="filter-count">
-            {startNum}-{endNum}<span className="of-total"> sur {filtered.length}</span>
+            {formatCount(startNum)}-{formatCount(endNum)}<span className="of-total"> sur {formatCount(filtered.length)}</span>
           </span>
         </div>
 

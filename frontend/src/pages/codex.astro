@@ -4,6 +4,7 @@ import PageHero from '../components/PageHero.astro';
 import { CodexBrowser } from '../components/CodexBrowser';
 import { SPECIES, SPECIES_INDEX, TAXON_GROUP_LABELS, DIET_LABELS, DIET_ICONS } from '../data/species';
 import '../components/codex-browser.css';
+import { formatCount } from '../lib/format-count.mjs';
 
 const taxonGroups = Array.from(new Set(SPECIES.map((s) => s.taxonGroup)))
   .map((id) => ({ id, label: TAXON_GROUP_LABELS[id] ?? id }))
@@ -42,14 +43,14 @@ const trimmed = sorted.map((s) => ({
 ---
 <CodexLayout
   title="Codex — Evatosorus"
-  description={`${SPECIES_INDEX.count} espèces du Mésozoïque, filtrables par période, régime et groupe taxonomique.`}
+  description={`${formatCount(SPECIES_INDEX.count)} espèces du Mésozoïque, filtrables par période, régime et groupe taxonomique.`}
   active="codex"
 >
   <PageHero videoSrc="/hero-trex-6.mp4" eyebrow="le codex" title="Toutes les espèces du Mésozoïque" />
 
   <header class="codex-header">
     <p class="codex-lede">
-      {SPECIES_INDEX.count} fiches consultables. Filtre par période, régime ou
+      {formatCount(SPECIES_INDEX.count)} fiches consultables. Filtre par période, régime ou
       groupe taxonomique pour zoomer sur le tronçon de l'arbre du vivant qui
       t'intéresse — du minuscule Compsognathus jusqu'au titanesque Argentinosaure.
     </p>
