@@ -43,6 +43,7 @@ const height = Math.round(size * 0.22);
     </g>
 
     <text
+      class="evato-logo-svg-sub"
       x="300" y="120"
       text-anchor="middle"
       font-family="Crimson Text, serif"
@@ -53,10 +54,15 @@ const height = Math.round(size * 0.22);
       opacity="0.92"
     >codex mésozoïque</text>
   </svg>
+  <!-- Sous-titre lisible au téléphone : le texte SVG ci-dessus, mis à l'échelle
+       du logo, y tombait à 8 px (390) et 6,5 px (320). Masqué aux lecteurs
+       d'écran : le nom accessible du logo le contient déjà. -->
+  <span class="evato-logo-sub" aria-hidden="true">codex mésozoïque</span>
 </div>
 
 <style>
   .evato-logo {
+    position: relative;
     width: var(--logo-size);
     max-width: 100%;
     height: auto;
@@ -85,6 +91,30 @@ const height = Math.round(size * 0.22);
       drop-shadow(0 0 12px rgba(255, 200, 121, 0.55))
       drop-shadow(0 1px 2px rgba(0, 0, 0, 0.95)); }
   }
+  /* Bureau : sous-titre dessiné dans le SVG (inchangé). Téléphone : texte
+     HTML à taille fixe ≥ 12 px, capitales espacées (maquette 390 validée),
+     posé dans la bande du sous-titre SVG, qui est masqué. */
+  .evato-logo-sub { display: none; }
+  @media (max-width: 639px) {
+    .evato-logo-svg-sub { display: none; }
+    .evato-logo-sub {
+      display: block;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 0.75rem;
+      line-height: 1;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #fff5dc;
+      white-space: nowrap;
+      text-shadow: 0 0 3px rgba(0, 0, 0, 0.95), 0 1px 2px rgba(0, 0, 0, 0.95);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .evato-logo-svg { animation: none; }
   }
