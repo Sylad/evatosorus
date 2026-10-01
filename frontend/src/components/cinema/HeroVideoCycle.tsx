@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { isUserPaused, onMotionChange } from '../../lib/motion';
 
 // 5 vidéos pour la landing — ambiances variées (jungle, orage, volcanique,
 // crépuscule, T-Rex hero). Loop total 125s. Les vidéos 2/3 sont réservées aux
@@ -26,12 +27,22 @@ const reducedMotion = () =>
 // - la suivante est montée en preload="auto" PRELOAD_LEAD_MS avant son tour,
 //   pour que le fondu ne tombe pas sur une image en cours de chargement ;
 // - la précédente reste montée le temps du fondu (FADE_MS), puis est retirée ;
-// - en prefers-reduced-motion : l'image fixe seule, aucune vidéo demandée.
+// - en prefers-reduced-motion : l'image fixe seule, aucune vidéo demandée ;
+// - bouton Pause : la vidéo active se fige, le cycle s'arrête.
 // Avant : 5 <video> montées d'emblée (2 en preload auto, 3 en metadata qui
 // finissaient par tout télécharger) et un poster de 2,2 Mo, soit 11,5 Mo.
 export function HeroVideoCycle() {
   const [reduced] = useState(reducedMotion);
-  const running = !reduced;
+  // Bouton Pause (MotionToggle) : la vidéo active se fige sur son image, le
+  // cycle s'arrête. Pause mémorisée au chargement : image fixe, aucune vidéo
+  // demandée tant que le visiteur ne relance pas.
+  const [paused, setPaused] = useState(isUserPaused);
+  const [started, setStarted] = useState(() => !isUserPaused());
+  const running = !reduced && !paused;
+  useEffect(() => onMotionChange(setPaused), []);
+  useEffect(() => {
+    if (running) setStarted(true);
+  }, [running]);
   const [active, setActive] = useState(0);
   const [warm, setWarm] = useState(false);
   const [leaving, setLeaving] = useState<number | null>(null);
@@ -76,7 +87,7 @@ export function HeroVideoCycle() {
   }, [active, running]);
 
   const next = (active + 1) % VIDEOS.length;
-  const mounted = (i: number) => !reduced && (i === active || i === leaving || (warm && i === next));
+  const mounted = (i: number) => !reduced && (started || running) && (i === active || i === leaving || (warm && i === next));
 
   return (
     <>

@@ -88,4 +88,6 @@ const height = Math.round(size * 0.22);
   @media (prefers-reduced-motion: reduce) {
     .evato-logo-svg { animation: none; }
   }
+  /* Bouton Pause de l'accueil (MotionToggle) : la pulsation se fige aussi. */
+  :global(html[data-motion='paused']) .evato-logo-svg { animation-play-state: paused; }
 </style>

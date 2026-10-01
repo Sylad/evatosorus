@@ -1,0 +1,101 @@
+---
+/**
+ * Bouton Pause / Lecture des animations de l'accueil (WCAG 2.2.2) — vidéo de
+ * fond, crâne SMIL (svg.pauseAnimations()), poussière, pulsation du logo.
+ * Rond 44×44 en bas à droite, jumeau visuel du bouton d'ambiance sonore ; il en
+ * prend la place quand celui-ci est masqué (pas de fichier audio), sinon il se
+ * range à sa gauche. Choix mémorisé (src/lib/motion.ts). Masqué en
+ * prefers-reduced-motion : tout y est déjà figé (image fixe, SMIL en pause).
+ */
+import { HAS_AMBIENT_AUDIO } from '../lib/ambient-audio';
+---
+<button
+  id="evato-motion-toggle"
+  type="button"
+  class:list={['evato-motion-toggle', { 'beside-audio': HAS_AMBIENT_AUDIO }]}
+  aria-label="Mettre en pause les animations"
+  aria-pressed="false"
+  hidden
+>
+  <svg class="icon-pause" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <rect x="6.5" y="5" width="3.6" height="14" rx="1" />
+    <rect x="13.9" y="5" width="3.6" height="14" rx="1" />
+  </svg>
+  <svg class="icon-play" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M8 5.2v13.6a.8.8 0 0 0 1.2.7l10.6-6.8a.8.8 0 0 0 0-1.4L9.2 4.5A.8.8 0 0 0 8 5.2z" />
+  </svg>
+</button>
+
+<script>
+  import { isUserPaused, onMotionChange, prefersReducedMotion, setUserPaused } from '../lib/motion';
+
+  const btn = document.getElementById('evato-motion-toggle');
+  const skulls = () => Array.from(document.querySelectorAll<SVGSVGElement>('svg.evato-skull'));
+  const apply = (paused: boolean) => {
+    document.documentElement.dataset.motion = paused ? 'paused' : 'running';
+    for (const s of skulls()) {
+      if (paused) s.pauseAnimations();
+      else s.unpauseAnimations();
+    }
+    if (btn) {
+      btn.setAttribute('aria-pressed', String(paused));
+      btn.classList.toggle('is-paused', paused);
+    }
+  };
+
+  if (prefersReducedMotion()) {
+    apply(true);
+  } else if (btn) {
+    btn.hidden = false;
+    apply(isUserPaused());
+    btn.addEventListener('click', () => setUserPaused(btn.getAttribute('aria-pressed') !== 'true'));
+    onMotionChange(apply);
+  }
+</script>
+
+<style>
+  .evato-motion-toggle {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 70;
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(212, 165, 94, 0.55);
+    background: rgba(13, 10, 6, 0.7);
+    color: #ffc879;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    box-shadow:
+      0 0 14px -6px rgba(255, 200, 121, 0.35),
+      inset 0 0 0 1px rgba(212, 165, 94, 0.10);
+    transition: color 200ms ease, border-color 200ms ease, box-shadow 200ms ease, transform 150ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .evato-motion-toggle[hidden] { display: none; }
+  .evato-motion-toggle.beside-audio { right: calc(1rem + 2.5rem + 0.5rem); }
+  .evato-motion-toggle:hover {
+    color: #ffe2a8;
+    border-color: rgba(212, 165, 94, 0.8);
+    box-shadow: 0 0 22px -4px rgba(255, 200, 121, 0.55);
+  }
+  .evato-motion-toggle:active { transform: scale(0.95); }
+  .evato-motion-toggle:focus-visible {
+    outline: 3px solid #fff5e2;
+    outline-offset: 3px;
+  }
+  .evato-motion-toggle svg { width: 1.1rem; height: 1.1rem; }
+  .evato-motion-toggle .icon-play { display: none; }
+  .evato-motion-toggle.is-paused .icon-pause { display: none; }
+  .evato-motion-toggle.is-paused .icon-play { display: block; }
+
+  @media (max-width: 480px) {
+    .evato-motion-toggle { bottom: 0.85rem; right: 0.85rem; }
+    .evato-motion-toggle.beside-audio { right: calc(0.85rem + 2.5rem + 0.5rem); }
+  }
+</style>

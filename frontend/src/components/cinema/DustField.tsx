@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { isUserPaused, onMotionChange } from '../../lib/motion';
 
 // Lightweight particle field — amber dust motes drifting upward, evoking
 // volcanic ash / pollen in the mesozoic atmosphere. Uses 2D canvas (not
@@ -40,24 +41,29 @@ export function DustField() {
     const onResize = () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
+      if (!running) draw(false); // figé : redessiner l'image après effacement du canvas
     };
     window.addEventListener('resize', onResize);
 
     // Pause la boucle quand l'onglet est en arrière-plan (visibilitychange).
     // Sans ça : 90 particles × radial gradient par frame = ~5% CPU + drain
     // batterie en arrière-plan, alors que personne ne regarde.
+    // Bouton Pause de l'accueil (MotionToggle) : les particules se figent
+    // (une image dessinée, puis plus de boucle) et repartent à la relance.
     let raf = 0;
-    let running = !document.hidden;
-    const tick = () => {
-      if (!running) return;
+    let userPaused = isUserPaused();
+    let running = !document.hidden && !userPaused;
+    const draw = (advance: boolean) => {
       ctx.clearRect(0, 0, width, height);
       for (const m of motes) {
-        m.y += m.vy;
-        m.x += m.vx;
-        m.alpha += (Math.random() - 0.5) * 0.005;
-        m.alpha = Math.max(0.05, Math.min(0.55, m.alpha));
-        if (m.y < -10 || m.x < -20 || m.x > width + 20) {
-          Object.assign(m, spawn(width, height, false));
+        if (advance) {
+          m.y += m.vy;
+          m.x += m.vx;
+          m.alpha += (Math.random() - 0.5) * 0.005;
+          m.alpha = Math.max(0.05, Math.min(0.55, m.alpha));
+          if (m.y < -10 || m.x < -20 || m.x > width + 20) {
+            Object.assign(m, spawn(width, height, false));
+          }
         }
         ctx.beginPath();
         const grad = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, m.r * 4);
@@ -67,21 +73,32 @@ export function DustField() {
         ctx.arc(m.x, m.y, m.r * 4, 0, Math.PI * 2);
         ctx.fill();
       }
+    };
+    const tick = () => {
+      if (!running) return;
+      draw(true);
       raf = requestAnimationFrame(tick);
     };
-    const onVisibility = () => {
+    const update = () => {
       const wasRunning = running;
-      running = !document.hidden;
+      running = !document.hidden && !userPaused;
       if (running && !wasRunning) {
         raf = requestAnimationFrame(tick);
       }
     };
+    const onVisibility = () => update();
     document.addEventListener('visibilitychange', onVisibility);
-    raf = requestAnimationFrame(tick);
+    const offMotion = onMotionChange((p) => {
+      userPaused = p;
+      update();
+    });
+    if (running) raf = requestAnimationFrame(tick);
+    else draw(false);
 
     return () => {
       window.removeEventListener('resize', onResize);
       document.removeEventListener('visibilitychange', onVisibility);
+      offMotion();
       cancelAnimationFrame(raf);
     };
   }, []);

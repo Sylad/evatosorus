@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EvatoLogo from '../components/EvatoLogo.astro';
 import EvatoSkull from '../components/EvatoSkull.astro';
+import MotionToggle from '../components/MotionToggle.astro';
 import { HeroVideoCycle } from '../components/cinema/HeroVideoCycle';
 import { DustField } from '../components/cinema/DustField';
 import { SPECIES } from '../data/species';
@@ -68,6 +69,8 @@ const totalSpecies = SPECIES.length.toLocaleString('fr-FR').replace(/\u202f/g, '
       <span><strong>3</strong> ères à explorer</span>
     </div>
   </main>
+
+  <MotionToggle />
 </BaseLayout>
 
 <script is:inline>
