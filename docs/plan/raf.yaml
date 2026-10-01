@@ -91,12 +91,18 @@ lots:
     created: 2026-09-28
   - id: L13
     title: Page Nouveautés branchée sur cadence news (raf news → page), signature commune des apps
-    status: todo
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-09-28
     notes:
       - { date: 2026-09-28, text: "Sylvain 28-09 : ordre DÉCROISSANT, la nouveauté la plus récente en haut (départage à date égale corrigé dans cadence news)" }
+      - { date: 2026-10-01, text: "Clos avec L13/t1 ouverte : les alt par capture dépendent d'un champ alt dans cadence news (outil), pas de ce site" }
+    started: 2026-10-01
+    tasks:
+      - { id: t1, title: "Nouveautés : textes alternatifs décrivant chaque capture (WCAG 1.1.1) — dépend d'un champ alt dans cadence news", status: todo }
+    ux: { date: 2026-10-01, verdict: "OK avec réserves levées — chapeau/sur-titre ≥ 4,85:1 au pire pixel (Nouveautés + À propos), capture L19 recadrée 498×96, visionneuse au clavier, place réservée à 320 px, U+202F ; reste L13/t1 (alt par capture)" }
+    finished: 2026-10-01
   - id: L14
     title: "Livraison cadence : cadence.yaml (deploy = push → Cloudflare Pages, verify = la page sert la NOUVELLE version, pas seulement 200)"
     status: done
@@ -187,5 +193,12 @@ lots:
     title: "Carte paléo-monde : tuiles CARTO « API KEY REQUIRED » vues en local (dark_nolabels) et clusters en chiffres nus — vérifier en prod, changer de fond gratuit si confirmé"
     status: todo
     estimate: 0.25
+    visible: true
+    created: 2026-10-01
+  - id: L25
+    title: Contraste des sur-titres de section posés sur l'image de fond (vidéos, films, périodes, carte, fiches) — même traitement qu'en L13 (halo + ombre), mesure au pire pixel
+    status: todo
+    estimate: 0.25
+    quickwin: true
     visible: true
     created: 2026-10-01
