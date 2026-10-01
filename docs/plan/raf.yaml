@@ -16,9 +16,10 @@ lots:
     finished: 2026-09-28
   - id: L2
     title: Revue UX — Accueil
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-09-28
+    started: 2026-10-01
   - id: L3
     title: Revue UX — Périodes (liste + fiche)
     status: todo
