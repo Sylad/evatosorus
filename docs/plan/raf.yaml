@@ -132,12 +132,14 @@ lots:
     finished: 2026-10-01
   - id: L18
     title: "Menu mobile : le voile passe au-dessus du tiroir sur les pages à CodexLayout (codex, espèces) — navigation impossible à 390 px ; z-index de .codex-shell (CodexLayout.astro:186-188)"
-    status: doing
+    status: done
     estimate: 0.25
     quickwin: true
     visible: true
     created: 2026-10-01
     started: 2026-10-01
+    ux: { date: 2026-10-01, verdict: "OK avec réserves (cadence:ux-reviewer 01-10, 390/320/1440 px) : tiroir net et cliquable sur codex, fiche, films, about ; fermeture voile/Échap/croix, aria-expanded, scroll bloqué, bureau inchangé. Régression /carte (Leaflet au-dessus du menu) trouvée par la revue et corrigée dans le lot (isolation: isolate, e2e /carte défilée rouge→vert, capture relue par le lead). Préexistants reportés : focus clavier L23, reflow 320 px L22, contraste pied du tiroir L20." }
+    finished: 2026-10-01
   - id: L19
     title: "Compteur du codex : tiret demi-cadratin entre bornes (« 1 501 – 1 511 sur 1 511 »)"
     status: todo
@@ -170,6 +172,12 @@ lots:
       - { date: 2026-10-01, text: "Revue UX L18 : cause mesurée = colonne 1fr de .codex-shell (min auto) → minmax(0,1fr) ou min-width:0 sur .codex-main ; débordement codex +55, fiche +42, about +27, films +8 px." }
   - id: L23
     title: "Menu mobile au clavier : focus dans le tiroir à l'ouverture, inert sur le contenu, retour au burger à la fermeture, tiroir fermé retiré de l'ordre Tab (WCAG 2.4.3 / 2.4.11, préexistant, revue UX L18)"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-01
+  - id: L24
+    title: "Carte paléo-monde : tuiles CARTO « API KEY REQUIRED » vues en local (dark_nolabels) et clusters en chiffres nus — vérifier en prod, changer de fond gratuit si confirmé"
     status: todo
     estimate: 0.25
     visible: true
