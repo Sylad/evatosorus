@@ -204,3 +204,24 @@ test('visionneuse : Entrée sur une capture l’ouvre, Échap la ferme ; clic su
   await Promise.all([page.waitForURL((u) => u.pathname === '/codex/'), page.locator('#evato-sidebar a[href="/codex/"]').click()]);
   await context.close();
 });
+
+// Revue UX L13 : avant leur chargement, les captures doivent déjà occuper leur place
+// (sinon 2×2 px puis saut de mise en page de plusieurs centaines de px à 320 px).
+test('320 px, captures pas encore chargées : la place est réservée aux bonnes proportions', { timeout: 60_000 }, async (t) => {
+  const env = await setup(t);
+  if (!env) return;
+  const context = await env.browser.newContext({ viewport: { width: 320, height: 700 } });
+  const page = await context.newPage();
+  await page.route('**/nouveautes-data/captures/**', (route) => route.abort());
+  await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'domcontentloaded' });
+  const boxes = await page.evaluate(() => [...document.querySelectorAll('.news-capture img')].map((i) => {
+    const r = i.getBoundingClientRect();
+    return { src: i.getAttribute('src'), w: r.width, h: r.height, ratio: +i.getAttribute('width') / +i.getAttribute('height') };
+  }));
+  assert.ok(boxes.length > 0);
+  for (const b of boxes) {
+    assert.ok(b.w > 50, `${b.src} : largeur ${b.w}px`);
+    assert.ok(Math.abs(b.w / b.h - b.ratio) < 0.05 * b.ratio, `${b.src} : ${b.w}×${b.h} au lieu du ratio ${b.ratio.toFixed(2)}`);
+  }
+  await context.close();
+});

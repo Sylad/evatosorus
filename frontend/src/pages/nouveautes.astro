@@ -69,8 +69,20 @@ const pngSize = (rel: string) => {
                       ? `Capture d'écran ${i + 1} sur ${e.captures.length} : ${e.title}`
                       : `Capture d'écran : ${e.title}`;
                     return (
-                      <a href={`${BASE}/${c}`} class="news-capture">
-                        <img src={`${BASE}/${c}`} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
+                      <a
+                        href={`${BASE}/${c}`}
+                        class="news-capture"
+                        style={`width: min(100%, ${width}px, calc(32rem * ${width} / ${height}))`}
+                      >
+                        <img
+                          src={`${BASE}/${c}`}
+                          alt={alt}
+                          width={width}
+                          height={height}
+                          style={`aspect-ratio: ${width} / ${height}`}
+                          loading="lazy"
+                          decoding="async"
+                        />
                       </a>
                     );
                   })}
@@ -184,14 +196,14 @@ const pngSize = (rel: string) => {
       border-radius: 4px;
       line-height: 0;
     }
-    /* Taille naturelle bornée : une capture de téléphone ne s'étire pas sur toute
-       la largeur, une capture de bureau ne déborde jamais. */
+    /* Taille réservée AVANT chargement (pas de saut de mise en page) : le lien prend
+       min(largeur dispo, largeur naturelle, largeur qui donne 32rem de haut), l'image
+       le remplit à ses proportions (aspect-ratio en ligne). Une capture de téléphone
+       ne s'étire pas, une capture de bureau ne déborde jamais. */
     .news-capture img {
       display: block;
-      width: auto;
+      width: 100%;
       height: auto;
-      max-width: 100%;
-      max-height: 32rem;
       border: 1px solid rgba(212, 165, 94, 0.3);
       border-radius: 4px;
       cursor: zoom-in;
