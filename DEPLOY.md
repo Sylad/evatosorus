@@ -3,12 +3,16 @@
 Site statique pur, déployé via le connecteur Cloudflare Pages → GitHub.
 Pas de NAS, pas de Docker, pas de NestJS. Tout vit sur l'edge CDN.
 
+Livraison courante : push sur `main` → Cloudflare Pages construit et publie ;
+`cadence deliver` vérifie ensuite que la page d'accueil porte le sha court du
+commit poussé (voir `cadence.yaml`).
+
 ## Premier déploiement
 
 1. **Crée le repo GitHub** (public, MIT)
 
    ```bash
-   cd /volume2/docker/developpeur/evatosorus  # ou ton chemin local
+   cd ~/projects/developpeur/evatosorus  # ou ton chemin local
    git init
    git add .
    git commit -m "feat: bootstrap Evatosorus codex mésozoïque"
