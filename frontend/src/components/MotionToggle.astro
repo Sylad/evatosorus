@@ -2,7 +2,7 @@
 /**
  * Bouton Pause / Lecture des animations de l'accueil (WCAG 2.2.2) — vidéo de
  * fond, crâne SMIL (svg.pauseAnimations()), poussière, pulsation du logo.
- * Rond 44×44 en bas à droite, jumeau visuel du bouton d'ambiance sonore ; il en
+ * Rond 44×44 en bas à droite (en haut à droite sous 360 px), jumeau visuel du bouton d'ambiance sonore ; il en
  * prend la place quand celui-ci est masqué (pas de fichier audio), sinon il se
  * range à sa gauche. Choix mémorisé (src/lib/motion.ts). Masqué en
  * prefers-reduced-motion : tout y est déjà figé (image fixe, SMIL en pause).
@@ -97,5 +97,11 @@ import { HAS_AMBIENT_AUDIO } from '../lib/ambient-audio';
   @media (max-width: 480px) {
     .evato-motion-toggle { bottom: 0.85rem; right: 0.85rem; }
     .evato-motion-toggle.beside-audio { right: calc(0.85rem + 2.5rem + 0.5rem); }
+  }
+  /* Sous 360 px, en bas il recouvrait le lien « À propos » (39×39 px à
+     320×568) : en haut à droite, dans la zone libre à côté du crâne. */
+  @media (max-width: 359px) {
+    .evato-motion-toggle,
+    .evato-motion-toggle.beside-audio { top: 0.85rem; bottom: auto; right: 0.85rem; }
   }
 </style>
