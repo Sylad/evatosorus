@@ -9,3 +9,13 @@ const FR = new Intl.NumberFormat('fr-FR');
 export function formatCount(n) {
   return FR.format(n).replace(/ /g, ' ');
 }
+
+/**
+ * Intervalle « 1 501 – 1 511 » (L19) : tiret demi-cadratin U+2013 entre bornes,
+ * entouré d'espaces insécables pour que la plage ne se coupe pas en fin de ligne.
+ * @param {number} start
+ * @param {number} end
+ */
+export function formatRange(start, end) {
+  return `${formatCount(start)} – ${formatCount(end)}`;
+}
