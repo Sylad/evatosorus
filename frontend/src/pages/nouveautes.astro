@@ -1,0 +1,200 @@
+---
+/*
+  Nouveautés — journal des évolutions visibles du site (signature commune des apps).
+
+  Source : docs/nouveautes/*.md, compilé par `cadence news build` (`npm run news`)
+  dans public/nouveautes-data/ (nouveautes.json + captures), versionné : Cloudflare
+  Pages construit sans cadence. La page est rendue AU BUILD depuis ce JSON, déjà
+  trié du plus récent au plus ancien (date, puis heure de création).
+*/
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import CodexLayout from '../layouts/CodexLayout.astro';
+import news from '../../public/nouveautes-data/nouveautes.json';
+
+interface NewsEntry {
+  slug: string;
+  title: string;
+  date: string;
+  lots: string[];
+  captures: string[];
+  html: string;
+}
+
+const BASE = '/nouveautes-data';
+const entries = (news as { entries: NewsEntry[] }).entries;
+
+const formatDate = (day: string) =>
+  new Date(`${day}T12:00:00Z`).toLocaleDateString('fr-FR', {
+    day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+  });
+
+// Dimensions lues dans l'en-tête PNG (IHDR) : réservent la place des captures,
+// pas de saut de mise en page au chargement.
+const pngSize = (rel: string) => {
+  const buf = readFileSync(join(process.cwd(), 'public', 'nouveautes-data', rel));
+  return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+};
+---
+<CodexLayout
+  title="Nouveautés — Evatosorus"
+  description="Ce qui a changé sur Evatosorus, la nouveauté la plus récente en premier."
+  active="nouveautes"
+>
+  <div class="news">
+    <header>
+      <p class="codex-eyebrow">nouveautés</p>
+      <h1>Ce qui a changé</h1>
+      <p class="lede">
+        Le journal des évolutions du site, la plus récente en premier.
+      </p>
+    </header>
+
+    {entries.length === 0 ? (
+      <p class="news-empty">Aucune nouveauté publiée pour l'instant.</p>
+    ) : (
+      <ol class="news-list">
+        {entries.map((e) => (
+          <li>
+            <article class="news-entry" id={e.slug} aria-labelledby={`${e.slug}-titre`}>
+              <p class="news-date"><time datetime={e.date}>{formatDate(e.date)}</time></p>
+              <h2 id={`${e.slug}-titre`}>{e.title}</h2>
+              {/* HTML produit par cadence depuis le Markdown du dépôt (texte échappé à la génération). */}
+              <div class="news-body" set:html={e.html} />
+              {e.captures.length > 0 && (
+                <div class="news-captures" data-lightbox>
+                  {e.captures.map((c, i) => {
+                    const { width, height } = pngSize(c);
+                    const alt = e.captures.length > 1
+                      ? `Capture d'écran ${i + 1} sur ${e.captures.length} : ${e.title}`
+                      : `Capture d'écran : ${e.title}`;
+                    return (
+                      <a href={`${BASE}/${c}`} class="news-capture">
+                        <img src={`${BASE}/${c}`} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
+                      </a>
+                    );
+                  })}
+                </div>
+              )}
+            </article>
+          </li>
+        ))}
+      </ol>
+    )}
+  </div>
+
+  <style>
+    .news {
+      max-width: 70ch;
+    }
+    .codex-eyebrow {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.32em;
+      color: var(--color-evato-amber);
+      text-transform: uppercase;
+      margin: 0 0 0.4rem;
+    }
+    .news h1 {
+      font-size: clamp(2rem, 6vw, 2.6rem);
+      margin: 0 0 0.8rem;
+      overflow-wrap: anywhere;
+    }
+    .lede {
+      font-size: 1.2rem;
+      line-height: 1.7;
+      color: var(--color-evato-bone-muted);
+      margin: 0 0 2.5rem;
+    }
+    .news-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+    /* Carte quasi opaque : le texte garde son contraste quelle que soit la zone
+       de l'image de fond qui passe derrière. */
+    .news-entry {
+      padding: 1.5rem clamp(1rem, 4vw, 1.8rem) 1.75rem;
+      background: rgba(20, 14, 8, 0.92);
+      border: 1px solid rgba(212, 165, 94, 0.25);
+      border-left: 3px solid var(--color-evato-amber);
+      border-radius: 6px;
+      box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.6);
+    }
+    .news-date {
+      font-family: var(--font-display);
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-evato-amber);
+      margin: 0 0 0.5rem;
+    }
+    .news-entry h2 {
+      font-size: clamp(1.2rem, 4.2vw, 1.45rem);
+      letter-spacing: 0.04em;
+      line-height: 1.35;
+      color: var(--color-evato-amber-bright);
+      margin: 0 0 1rem;
+      overflow-wrap: anywhere;
+    }
+    .news-body :global(p),
+    .news-body :global(li) {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--color-evato-bone);
+    }
+    .news-body :global(p) { margin: 0 0 0.8rem; }
+    .news-body :global(ul) {
+      margin: 0 0 0.8rem;
+      padding-left: 1.3rem;
+      list-style: disc;
+    }
+    .news-body :global(li) { margin-bottom: 0.45rem; }
+    .news-body :global(li::marker) { color: var(--color-evato-amber); }
+    .news-body :global(strong) { color: var(--color-evato-bone); font-weight: 600; }
+    .news-body :global(code) {
+      font-size: 0.9em;
+      padding: 0 0.3em;
+      border-radius: 3px;
+      background: rgba(212, 165, 94, 0.12);
+    }
+    .news-body :global(a) {
+      color: var(--color-evato-amber-bright);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .news-captures {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    .news-capture {
+      display: block;
+      flex: 0 1 auto;
+      min-width: 0;
+      max-width: 100%;
+      border-radius: 4px;
+      line-height: 0;
+    }
+    /* Taille naturelle bornée : une capture de téléphone ne s'étire pas sur toute
+       la largeur, une capture de bureau ne déborde jamais. */
+    .news-capture img {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: 32rem;
+      border: 1px solid rgba(212, 165, 94, 0.3);
+      border-radius: 4px;
+      cursor: zoom-in;
+    }
+    .news-empty {
+      color: var(--color-evato-bone-muted);
+      font-style: italic;
+    }
+  </style>
+</CodexLayout>

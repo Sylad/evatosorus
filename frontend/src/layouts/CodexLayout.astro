@@ -5,7 +5,7 @@ import EvatoSkull from '../components/EvatoSkull.astro';
 interface Props {
   title?: string;
   description?: string;
-  active?: 'vitrines' | 'codex' | 'comprendre' | 'periodes' | 'carte' | 'films' | 'videos' | 'about' | 'home';
+  active?: 'vitrines' | 'codex' | 'comprendre' | 'periodes' | 'carte' | 'films' | 'videos' | 'nouveautes' | 'about' | 'home';
 }
 
 const { title, description, active = 'home' } = Astro.props;
@@ -19,6 +19,7 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
   { id: 'carte',    label: 'Carte paléo-monde', href: '/carte/' },
   { id: 'films',    label: 'Films',           href: '/films/' },
   { id: 'videos',   label: 'Vidéos',          href: '/videos/' },
+  { id: 'nouveautes', label: 'Nouveautés',    href: '/nouveautes/' },
   { id: 'about',    label: 'À propos',        href: '/about/' },
 ];
 ---
@@ -72,6 +73,7 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
           <a
             href={n.href}
             class:list={["codex-nav-link", { active: n.id === active }]}
+            aria-current={n.id === active ? 'page' : undefined}
           >{n.label}</a>
         ))}
       </nav>

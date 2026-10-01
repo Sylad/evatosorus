@@ -30,6 +30,7 @@ const PAGES = [
   '/films/',
   '/films/jurassic-park-1993/',
   '/videos/',
+  '/nouveautes/',
   '/about/',
   '/',
 ];
