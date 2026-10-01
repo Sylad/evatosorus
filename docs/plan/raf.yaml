@@ -109,11 +109,13 @@ lots:
     finished: 2026-10-01
   - id: L15
     title: "Nombre d'espèces formaté fr-FR partout (codex, vitrines, about, films : « 1511 » sans séparateur) et meta « 1500+ » alignées"
-    status: doing
+    status: done
     estimate: 0.25
     quickwin: true
     created: 2026-10-01
     started: 2026-10-01
+    ux: { date: 2026-10-01, verdict: "OK avec réserves (cadence:ux-reviewer, 01-10, preview local 1440/390/320 px) : séparateur U+00A0 rendu sans tofu ni coupure en Cinzel et Crimson Text, compteur client « 1-60 sur 1 511 » vérifié, formulations cohérentes. Mineurs reportés en lots : tiret demi-cadratin du compteur, contraste pied de page 2,6:1. Captures tmp/l15/." }
+    finished: 2026-10-01
   - id: L16
     title: Bouton pause des vidéos automatiques hors accueil (about, vitrines, films, fiches espèces, PageHero) — WCAG 2.2.2, même mécanisme que l'accueil
     status: todo
@@ -128,3 +130,37 @@ lots:
       - { date: 2026-10-01, text: "Sylvain 01-10 : plus rien en prod sur le NAS ; garder ce qui sert au dev local" }
     started: 2026-10-01
     finished: 2026-10-01
+  - id: L18
+    title: "Menu mobile : le voile passe au-dessus du tiroir sur les pages à CodexLayout (codex, espèces) — navigation impossible à 390 px ; z-index de .codex-shell (CodexLayout.astro:186-188)"
+    status: doing
+    estimate: 0.25
+    quickwin: true
+    visible: true
+    created: 2026-10-01
+    started: 2026-10-01
+  - id: L19
+    title: "Compteur du codex : tiret demi-cadratin entre bornes (« 1 501 – 1 511 sur 1 511 »)"
+    status: todo
+    estimate: 0.1
+    quickwin: true
+    visible: true
+    created: 2026-10-01
+  - id: L20
+    title: "Pied de page latéral : contraste du texte ≥ 4,5:1 (mesuré 2,6:1, rgba(235,217,197,.35) sur #0D0B06)"
+    status: todo
+    estimate: 0.1
+    quickwin: true
+    visible: true
+    created: 2026-10-01
+  - id: L21
+    title: "Codex : état vide en français (« ne correspond à »), sans « 0-0 », compteur aria-live=polite"
+    status: todo
+    estimate: 0.25
+    visible: true
+    created: 2026-10-01
+  - id: L22
+    title: "Redistribution à 320 px : défilement horizontal sur /codex/, /about/, /vitrines/, fiches espèces (WCAG 1.4.10) ; décimales fr-FR sur la fiche espèce"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-10-01
