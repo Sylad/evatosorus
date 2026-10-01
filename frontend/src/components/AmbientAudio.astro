@@ -13,12 +13,17 @@
    - critères : ambiance vent + cris reptiles / oiseaux préhistoriques, loopable,
      < 1.5 MB, CC0. Style "BBC Walking with Dinosaurs au lever du jour".
    - Sylvain choisira et remplacera /audio/evato-ambient.mp3.
+
+  Tant que le fichier n'existe pas, rien n'est rendu (ni <audio> ni bouton) :
+  décision prise au build par HAS_AMBIENT_AUDIO.
 */
+import { AMBIENT_AUDIO_SRC, HAS_AMBIENT_AUDIO } from '../lib/ambient-audio';
 ---
+{HAS_AMBIENT_AUDIO && (<>
 
 <audio
   id="evato-ambient"
-  src="/audio/evato-ambient.mp3"
+  src={AMBIENT_AUDIO_SRC}
   loop
   preload="none"
   muted
@@ -94,6 +99,7 @@
     }
   })();
 </script>
+</>)}
 
 <style>
   .evato-ambient-toggle {

@@ -5,8 +5,9 @@ Placeholder pour le clip ambiance lu par `<AmbientAudio />` (ambiance mésozoïq
 ## TODO sourcer un freesound CC0
 
 Le composant attend `evato-ambient.mp3` à la racine de ce dossier. Tant que le
-fichier n'est pas en place, le clic sur le bouton speaker entraîne un échec
-silencieux côté `<audio>` (404 → `play()` rejette → on retombe muet).
+fichier n'est pas en place, le bouton speaker n'est **pas rendu** (décision prise
+au build, `src/lib/ambient-audio.ts`) : il réapparaît au build suivant le dépôt
+du vrai fichier. Ne jamais déposer de faux fichier pour le faire apparaître.
 
 ### Critères
 
