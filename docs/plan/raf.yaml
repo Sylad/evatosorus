@@ -32,6 +32,7 @@ lots:
       - { id: t9, title: "Accueil : retirer la CSS PaleoMap (Leaflet) du bundle de l'accueil — 7 Ko inutiles", status: todo }
     notes:
       - { date: 2026-10-01, text: "Revue UX 01-10 (cadence:ux-reviewer, prod) : À REPRENDRE — 2 bloquants (2.2.2 animation sans pause, 1.4.3 contraste CTA sur vidéo), 6 majeurs (polices CSP, audio sans fichier, aucun titre, 11,5 Mo, CTA mobile sous la ligne de flottaison, Comprendre absent) ; mesures dans tmp/ux-evatosorus-l2/" }
+      - { date: 2026-10-01, text: "Sylvain 01-10 : maquette mobile validée (tmp/maquette-evato/maquette-390.png : Explorer le codex plein, Espèces vitrines contour, grille 2 colonnes avec Comprendre, citation + chiffres sous les boutons) ; taille du crâne (~140 px) à juger sur le rendu réel ; audio masqué sans fichier + bouton pause, comme Eywa" }
   - id: L3
     title: Revue UX — Périodes (liste + fiche)
     status: todo
