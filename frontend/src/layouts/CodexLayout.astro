@@ -50,9 +50,16 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
       <path class="evato-burger__line evato-burger__line--bot" d="M3 18h18" />
     </svg>
   </button>
-  <div id="evato-drawer-overlay" class="evato-drawer-overlay" aria-hidden="true"></div>
 
   <div class="codex-shell">
+    <!--
+      Le voile vit DANS .codex-shell, à côté du tiroir : .codex-shell crée un
+      plan d'empilement (z-index 10, nécessaire pour passer au-dessus des fonds
+      fixes .codex-bg / .codex-bg-veil). Hors de ce plan, le voile (z 40) passait
+      au-dessus du tiroir (z 50 mais enfermé à 10) : menu flouté et liens
+      inaccessibles au téléphone (L18). Ici voile 40 < tiroir 50 dans le même plan.
+    -->
+    <div id="evato-drawer-overlay" class="evato-drawer-overlay" aria-hidden="true"></div>
     <aside id="evato-sidebar" class="codex-sidebar" aria-label="Navigation du codex">
       <a href="/" class="codex-brand">
         <div class="brand-skull"><EvatoSkull size={180} /></div>
