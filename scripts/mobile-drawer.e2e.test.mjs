@@ -34,6 +34,9 @@ const PAGES = [
   '/',
 ];
 const MOBILE_WIDTHS = [390, 320];
+// Pages rejouées après défilement : la carte Leaflet (panes z 200–400, contrôles
+// z 800–1000) passe alors sous le tiroir (revue UX de L18).
+const SCROLLED = [['/carte/', 600]];
 
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.mjs': 'text/javascript',
@@ -87,17 +90,40 @@ async function setup(t) {
 }
 
 // Pour chaque lien du tiroir : l'élément au centre du lien est-il bien ce lien ?
-// Renvoie la liste des liens recouverts (vide = tout est cliquable).
+// Puis balayage VISUEL de toute la surface visible du tiroir (pas de 12 px) : l'élément
+// peint au-dessus de chaque point doit appartenir au tiroir (ou être le burger).
+// Une carte Leaflet, une vidéo ou le voile peints par-dessus apparaissent ici.
+// Renvoie la liste des recouvrements (vide = tiroir net et cliquable).
 const coveredLinks = (page) => page.evaluate(() => {
   const out = [];
-  for (const a of document.querySelectorAll('#evato-sidebar a')) {
+  const name = (el) => (el ? (el.id ? `#${el.id}` : `${el.tagName.toLowerCase()}.${String(el.className).split(' ')[0]}`) : 'rien');
+  const sidebar = document.getElementById('evato-sidebar');
+  const burger = document.getElementById('evato-burger');
+  for (const a of sidebar.querySelectorAll('a')) {
     const r = a.getBoundingClientRect();
     if (r.width === 0 || r.bottom <= 0 || r.top >= innerHeight) continue; // hors écran (défilement du tiroir)
-    const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
-    if (!hit || hit.closest('a') !== a) {
-      out.push(`${a.getAttribute('href')} → ${hit ? (hit.id ? `#${hit.id}` : hit.tagName.toLowerCase() + '.' + hit.className) : 'rien'}`);
+    const stack = document.elementsFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    const above = stack.slice(0, stack.findIndex((el) => el === a || a.contains(el)));
+    if (stack[0]?.closest('a') !== a) out.push(`${a.getAttribute('href')} → ${name(stack[0])}`);
+    else if (above.length) out.push(`${a.getAttribute('href')} → ${name(above[0])}`);
+  }
+  // Pendant le balayage, tout devient « touchable » : elementFromPoint renvoie alors
+  // ce qui est PEINT au-dessus, y compris les éléments en pointer-events: none
+  // (tuiles Leaflet, calques décoratifs).
+  const probe = document.createElement('style');
+  probe.textContent = '* { pointer-events: auto !important; }';
+  document.head.append(probe);
+  const r = sidebar.getBoundingClientRect();
+  const seen = new Set();
+  for (let y = Math.max(r.top, 0) + 2; y < Math.min(r.bottom, innerHeight) - 1; y += 12) {
+    for (let x = Math.max(r.left, 0) + 2; x < Math.min(r.right, innerWidth) - 1; x += 12) {
+      const top = document.elementFromPoint(x, y);
+      if (top && (sidebar.contains(top) || burger?.contains(top))) continue;
+      const key = name(top);
+      if (!seen.has(key)) { seen.add(key); out.push(`tiroir (${Math.round(x)}, ${Math.round(y)}) → ${key}`); }
     }
   }
+  probe.remove();
   return out;
 });
 
@@ -128,9 +154,18 @@ test('L18 — menu mobile : tiroir au-dessus du voile, liens cliquables, fermetu
   for (const width of MOBILE_WIDTHS) {
     const context = await browser.newContext({ viewport: { width, height: 844 }, reducedMotion: 'reduce' });
     const page = await context.newPage();
-    for (const path of PAGES) {
-      const where = `${path} @ ${width}px`;
+    const cases = [...PAGES.map((p) => [p, 0]), ...SCROLLED];
+    for (const [path, scroll] of cases) {
+      const where = `${path}${scroll ? ` défilée ${scroll} px` : ''} @ ${width}px`;
       await page.goto(base + path, { waitUntil: 'domcontentloaded' });
+      // La carte est rendue côté client (client:only) : attendre Leaflet et ses tuiles/contrôles.
+      if (path === '/carte/') await page.waitForSelector('.leaflet-control-zoom', { timeout: 15_000 });
+      if (scroll) {
+        // Borné au bas de page (à 390 px, /carte/ ne défile que de ~580 px).
+        const target = await page.evaluate((y) => Math.min(y, document.documentElement.scrollHeight - innerHeight), scroll);
+        await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), target);
+        await page.waitForFunction((y) => Math.abs(window.scrollY - y) < 2, target);
+      }
       if (await page.locator('#evato-burger').count() === 0) {
         // Accueil (BaseLayout seul) : pas de tiroir, rien ne doit le simuler.
         assert.equal(await page.locator('#evato-drawer-overlay').count(), 0, where);
@@ -139,7 +174,7 @@ test('L18 — menu mobile : tiroir au-dessus du voile, liens cliquables, fermetu
 
       await openDrawer(page);
       assert.ok(await isOpen(page), `${where} : le menu ne s'ouvre pas`);
-      if (shots) await page.screenshot({ path: join(shots, `${path.replace(/\W+/g, '_') || 'home'}-${width}.png`) });
+      if (shots) await page.screenshot({ path: join(shots, `${path.replace(/\W+/g, '_') || 'home'}${scroll ? `-defile${scroll}` : ''}-${width}.png`) });
       assert.deepEqual(await coveredLinks(page), [], `${where} : liens du tiroir recouverts`);
 
       // Clic sur le voile, à droite du tiroir et sous le burger : ferme.

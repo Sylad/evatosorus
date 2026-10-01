@@ -147,6 +147,11 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
           overflow: hidden;
           border: 1px solid rgba(212, 165, 94, 0.25);
           background: #0d0a06;
+          /* Plan d'empilement propre : les panes (z 200–400) et contrôles
+             (z 800–1000) de Leaflet restent enfermés DANS la carte, sous le voile
+             (z 40) et le tiroir (z 50) du menu mobile, qui vivent dans le même
+             plan .codex-shell (L18). */
+          isolation: isolate;
         }
         :global(.leaflet-popup-content-wrapper) {
           background: rgba(13, 10, 6, 0.96);
