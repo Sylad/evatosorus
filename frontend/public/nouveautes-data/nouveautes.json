@@ -1,7 +1,19 @@
 {
   "project": "evatosorus",
-  "generated": "2026-10-01 21:56",
+  "generated": "2026-10-01 21:57",
   "entries": [
+    {
+      "slug": "2026-10-01-une-page-nouveautes-pour-suivre-ce-qui-change-sur-le-site",
+      "title": "Une page Nouveautés pour suivre ce qui change sur le site",
+      "date": "2026-10-01",
+      "lots": [
+        "L13"
+      ],
+      "captures": [
+        "captures/L13-page-nouveautes-telephone.png"
+      ],
+      "html": "<p>Une nouvelle rubrique, <strong>Nouveautés</strong>, raconte ce qui change sur Evatosorus, la nouveauté la plus récente en haut.</p>\n<ul><li>Elle se trouve dans le menu, juste avant <strong>À propos</strong>, sur ordinateur comme dans le menu du téléphone.</li><li>Chaque nouveauté porte sa date, un court texte et une ou plusieurs captures d'écran. Touchez ou cliquez une capture pour la voir en grand, ou ouvrez-la au clavier avec Entrée ; Échap la referme.</li><li>Le texte d'introduction des pages <strong>Nouveautés</strong> et <strong>À propos</strong> est plus marqué, pour rester lisible même quand l'image de fond s'éclaire derrière lui.</li></ul>"
+    },
     {
       "slug": "2026-10-01-le-codex-se-lit-mieux-compteur-et-pied-de-page",
       "title": "Le codex se lit mieux — compteur et pied de page",
