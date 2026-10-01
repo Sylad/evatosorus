@@ -13,3 +13,14 @@ test('formatCount : pas de séparateur sous 1000, jamais d\'U+202F', () => {
   assert.ok(!formatCount(1234567).includes(' '));
   assert.equal(formatCount(1234567), '1 234 567');
 });
+
+import { readFileSync } from 'node:fs';
+
+test('meta/pied de page : « plus de 1 500 » (U+00A0), plus de « 1500+ » ni « 1500 espèces »', () => {
+  const read = (p) => readFileSync(new URL(`../frontend/src/${p}`, import.meta.url), 'utf8');
+  for (const p of ['pages/index.astro', 'layouts/CodexLayout.astro', 'pages/about.astro', 'pages/codex.astro']) {
+    assert.ok(!/1500\+|1500 espèces/.test(read(p)), p);
+  }
+  assert.ok(read('pages/index.astro').includes('lus de 1 500 espèces'));
+  assert.ok(read('layouts/CodexLayout.astro').includes('lus de 1 500 espèces'));
+});
