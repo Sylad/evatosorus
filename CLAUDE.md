@@ -75,7 +75,7 @@ Avant de modifier le seed, `git -C ~/projects/developpeur/evatosorus log --oneli
 
 ## Repo
 
-GitHub public : https://github.com/Sylad/evatosorus. Cloudflare Pages connection à brancher côté dashboard Sylvain (action manuelle, pas automatisable côté CLI).
+GitHub public : https://github.com/Sylad/evatosorus. Cloudflare Pages branché en intégration Git (build à chaque push sur main, constaté le 2026-10-01) ; livraison par `cadence deliver`.
 
 ## Plan, sessions et revue UX (cadence)
 

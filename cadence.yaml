@@ -9,4 +9,4 @@ deliver:
   verify:
     - url: https://evatosorus.pages.dev/
       contains: '<meta name="version" content="${SHORT}">'
-  verifyTimeout: 600
+  verifyTimeout: 1200
