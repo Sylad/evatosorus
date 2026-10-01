@@ -1,0 +1,12 @@
+# Livraison par `cadence deliver` (https://github.com/Sylad/cadence).
+# Cloudflare Pages (intégration Git) construit et publie lui-même à chaque push sur main :
+# pas de CI GitHub, rien à lancer pour déployer. La livraison se prouve par la page
+# d'accueil qui porte le sha court du commit poussé (<meta name="version">, posé au build
+# depuis CF_PAGES_COMMIT_SHA — frontend/src/lib/build-version.ts).
+deliver:
+  ci: none
+  deploy: []
+  verify:
+    - url: https://evatosorus.pages.dev/
+      contains: '<meta name="version" content="${SHORT}">'
+  verifyTimeout: 600
