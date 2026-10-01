@@ -16,9 +16,9 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
   { id: 'codex',    label: 'Codex',           href: '/codex/' },
   { id: 'comprendre', label: 'Comprendre',    href: '/comprendre/' },
   { id: 'periodes', label: 'Voyage temporel', href: '/periodes/' },
-  { id: 'carte',    label: 'Carte paléo',     href: '/carte/' },
+  { id: 'carte',    label: 'Carte paléo-monde', href: '/carte/' },
   { id: 'films',    label: 'Films',           href: '/films/' },
-  { id: 'videos',   label: 'Vidéos YouTube',  href: '/videos/' },
+  { id: 'videos',   label: 'Vidéos',          href: '/videos/' },
   { id: 'about',    label: 'À propos',        href: '/about/' },
 ];
 ---
@@ -191,12 +191,14 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
       min-height: 100vh;
     }
     @media (min-width: 1024px) {
-      .codex-shell { grid-template-columns: 280px 1fr; }
+      /* 304 px (au lieu de 280) : « Carte paléo-monde », libellé unifié avec
+         l'accueil, tient sur une ligne. */
+      .codex-shell { grid-template-columns: 304px 1fr; }
     }
     /*
       Mobile (<1024) : la sidebar devient un drawer fixed slide-in depuis
       la gauche, contrôlé par data-drawer-open sur <html>.
-      Desktop (>=1024) : sidebar sticky 280px comme avant.
+      Desktop (>=1024) : sidebar sticky 304px.
     */
     .codex-sidebar {
       position: fixed;
