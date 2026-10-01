@@ -109,10 +109,11 @@ lots:
     finished: 2026-10-01
   - id: L15
     title: "Nombre d'espèces formaté fr-FR partout (codex, vitrines, about, films : « 1511 » sans séparateur) et meta « 1500+ » alignées"
-    status: todo
+    status: doing
     estimate: 0.25
     quickwin: true
     created: 2026-10-01
+    started: 2026-10-01
   - id: L16
     title: Bouton pause des vidéos automatiques hors accueil (about, vitrines, films, fiches espèces, PageHero) — WCAG 2.2.2, même mécanisme que l'accueil
     status: todo
