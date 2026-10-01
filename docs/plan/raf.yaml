@@ -16,7 +16,7 @@ lots:
     finished: 2026-09-28
   - id: L2
     title: Revue UX — Accueil
-    status: doing
+    status: done
     estimate: 0.25
     created: 2026-09-28
     started: 2026-10-01
@@ -30,9 +30,15 @@ lots:
       - { id: t7, title: "Accueil mobile : remonter les 2 CTA principaux au-dessus de la ligne de flottaison (crâne réduit, autres sections en grille 2 colonnes) selon maquette — 1re action à y=776 (390) et y=888 (320)", status: done }
       - { id: t8, title: "Accueil : ajouter le CTA Comprendre, dans l'ordre de la nav interne — section présente dans CodexLayout, absente de l'accueil (Nielsen 4)", status: done }
       - { id: t9, title: "Accueil : retirer la CSS PaleoMap (Leaflet) du bundle de l'accueil — 7 Ko inutiles", status: done }
+      - { id: t10, title: "Accueil : word-spacing de l'accroche et de la citation (espace Crimson 600 italique ~2 px, « Crétacé.1 511 » se lit comme un nombre)", status: done }
+      - { id: t11, title: "Accueil < 360 px : bouton Pause en haut à droite, il recouvrait 39×39 px d'« À propos » à 320×568", status: done }
+      - { id: t12, title: "Logo : sous-titre « codex mésozoïque » lisible au téléphone (≥ 12 px rendus, capitales espacées ; ~8 px à 390, 6,5 px à 320)", status: done }
+      - { id: t13, title: "Libellés identiques partout (WCAG 3.2.4) : « Vidéos » et « Carte paléo-monde » dans la nav interne et les titres de page", status: done }
     notes:
       - { date: 2026-10-01, text: "Revue UX 01-10 (cadence:ux-reviewer, prod) : À REPRENDRE — 2 bloquants (2.2.2 animation sans pause, 1.4.3 contraste CTA sur vidéo), 6 majeurs (polices CSP, audio sans fichier, aucun titre, 11,5 Mo, CTA mobile sous la ligne de flottaison, Comprendre absent) ; mesures dans tmp/ux-evatosorus-l2/" }
       - { date: 2026-10-01, text: "Sylvain 01-10 : maquette mobile validée (tmp/maquette-evato/maquette-390.png : Explorer le codex plein, Espèces vitrines contour, grille 2 colonnes avec Comprendre, citation + chiffres sous les boutons) ; taille du crâne (~140 px) à juger sur le rendu réel ; audio masqué sans fichier + bouton pause, comme Eywa" }
+    ux: { date: 2026-10-01, verdict: "conforme — revue initiale (à reprendre, 9 constats) puis contrôle (9/9 levés, conforme avec réserves) puis 4 retouches t10–t13 mesurées : contraste CTA ≥ 4,5:1 sur 80 images, actions principales à 346/409 px (390×844), 1,55 Mo (0,36 Mo mouvement réduit), polices chargées sans erreur CSP, pause persistante, h1 + nav ; crâne 140 px validé par Sylvain ; barre latérale interne 280→304 px pour « Carte paléo-monde »" }
+    finished: 2026-10-01
   - id: L3
     title: Revue UX — Périodes (liste + fiche)
     status: todo
@@ -101,3 +107,14 @@ lots:
       - { date: 2026-10-01, text: "Sylvain 01-10 : validé (signature commune, livraisons des revues UX par cadence deliver)" }
     started: 2026-10-01
     finished: 2026-10-01
+  - id: L15
+    title: "Nombre d'espèces formaté fr-FR partout (codex, vitrines, about, films : « 1511 » sans séparateur) et meta « 1500+ » alignées"
+    status: todo
+    estimate: 0.25
+    quickwin: true
+    created: 2026-10-01
+  - id: L16
+    title: Bouton pause des vidéos automatiques hors accueil (about, vitrines, films, fiches espèces, PageHero) — WCAG 2.2.2, même mécanisme que l'accueil
+    status: todo
+    estimate: 0.5
+    created: 2026-10-01
