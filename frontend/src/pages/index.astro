@@ -25,17 +25,38 @@ const totalSpecies = SPECIES.length.toLocaleString('fr-FR').replace(/\u202f/g, '
   <HeroVideoCycle client:only="react" />
   <DustField client:only="react" />
 
-  <main class="relative z-10 min-h-[92svh] flex flex-col items-center justify-center text-center px-6 pt-10 pb-16">
+  <main class="landing">
     <div class="landing-skull"><EvatoSkull size={300} /></div>
     <h1 class="landing-title"><EvatoLogo size={500} /></h1>
 
-    <p class="mt-8 max-w-3xl text-evato-bone text-lg italic font-body landing-tagline" data-amber-split>
-      <span class="font-semibold not-italic">Evatosorus</span> — un musée vivant
-      du Mésozoïque pour Eva, entre scènes de vie, fossiles, cartes et créatures
-      qui ont vraiment habité la Terre.
+    <p class="landing-tagline font-body" data-amber-split>
+      Un musée vivant du Mésozoïque pour Eva : scènes de vie, fossiles, cartes
+      et créatures qui ont vraiment habité la Terre.
     </p>
 
-    <p class="mt-4 max-w-xl text-evato-bone-muted text-base italic font-body landing-sub" data-amber-split>
+    <!--
+      Hiérarchie (maquette 390 px validée par Sylvain le 2026-10-01) : une seule
+      action pleine (Explorer le codex), une en contour (Espèces vitrines), puis
+      les autres sections en liens secondaires, dans l'ordre de la nav interne
+      de CodexLayout. Les deux actions principales tiennent au-dessus de la ligne
+      de flottaison, au téléphone compris.
+    -->
+    <nav class="landing-nav" aria-label="Sections du codex">
+      <div class="landing-primary">
+        <a href="/codex/" class="cta cta-primary">Explorer le codex</a>
+        <a href="/vitrines/" class="cta cta-outline">Espèces vitrines</a>
+      </div>
+      <ul class="landing-secondary">
+        <li><a href="/comprendre/" class="cta-link">Comprendre</a></li>
+        <li><a href="/periodes/" class="cta-link">Voyage temporel</a></li>
+        <li><a href="/carte/" class="cta-link">Carte paléo-monde</a></li>
+        <li><a href="/films/" class="cta-link">Films</a></li>
+        <li><a href="/videos/" class="cta-link">Vidéos</a></li>
+        <li><a href="/about/" class="cta-link">À propos</a></li>
+      </ul>
+    </nav>
+
+    <p class="landing-sub font-body" data-amber-split>
       « Avant nous, il y a eu eux. »<br/>
       Trias, Jurassique, Crétacé. {totalSpecies} espèces, des paysages perdus
       et quelques géants remis en mouvement.
@@ -46,17 +67,6 @@ const totalSpecies = SPECIES.length.toLocaleString('fr-FR').replace(/\u202f/g, '
       <span><strong>20</strong> scènes animées</span>
       <span><strong>3</strong> ères à explorer</span>
     </div>
-
-    <nav class="mt-10 flex flex-wrap gap-3 justify-center landing-ctas" aria-label="Sections du codex">
-      <a href="/vitrines/" class="cta cta-amber">Espèces vitrines</a>
-      <a href="/codex/" class="cta cta-amber">Explorer le codex</a>
-      <a href="/comprendre/" class="cta cta-bone">Comprendre</a>
-      <a href="/periodes/" class="cta cta-jade">Voyage temporel</a>
-      <a href="/carte/" class="cta cta-rust">Carte paléo-monde</a>
-      <a href="/films/" class="cta cta-bone">Films</a>
-      <a href="/videos/" class="cta cta-bone">Vidéos YouTube</a>
-      <a href="/about/" class="cta cta-ghost">À propos</a>
-    </nav>
   </main>
 </BaseLayout>
 
@@ -108,75 +118,153 @@ const totalSpecies = SPECIES.length.toLocaleString('fr-FR').replace(/\u202f/g, '
   */
 
   /*
-    CTAs landing : retour au design border + texte coloré (préféré par Sylvain),
-    mais avec couleurs vraiment saturées et fond opaque pour ressortir sur la
-    vidéo de fond.
+    Mise en page de l'accueil. Téléphone d'abord (maquette 390 px validée) :
+    crâne réduit, logo, accroche, les deux actions principales empilées, puis
+    une grille 2 colonnes de liens secondaires ; la citation et les chiffres
+    passent sous les boutons. Bureau : même logique, actions côte à côte et
+    liens secondaires sur deux lignes équilibrées (3 + 3).
   */
+  .landing {
+    position: relative;
+    z-index: 10;
+    min-height: 92svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    padding: 1.1rem 1.15rem 4.5rem;
+  }
+  @media (min-width: 640px) {
+    .landing {
+      justify-content: center;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+  }
+
+  .landing-tagline {
+    margin-top: 0.8rem;
+    max-width: 48rem;
+    font-size: 1rem;
+    line-height: 1.4;
+    font-style: italic;
+  }
+  @media (min-width: 640px) {
+    .landing-tagline { margin-top: 1.6rem; font-size: 1.125rem; line-height: 1.55; }
+  }
+
+  .landing-nav {
+    width: 100%;
+    max-width: 40rem;
+    margin-top: 1.1rem;
+  }
+  @media (min-width: 640px) {
+    .landing-nav { margin-top: 2rem; }
+  }
+  .landing-primary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  @media (min-width: 640px) {
+    .landing-primary { flex-direction: row; gap: 0.8rem; }
+    .landing-primary .cta { flex: 1 1 0; }
+  }
+  .landing-secondary {
+    list-style: none;
+    margin: 0.6rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+  @media (min-width: 640px) {
+    .landing-secondary { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 0.8rem; gap: 0.6rem; }
+  }
+
+  /* Action principale : la seule pleine. Action secondaire : contour. */
   .cta {
-    padding: 0.7rem 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0.6rem 1.1rem;
     border-radius: 4px;
-    border: 2px solid;
+    border: 2px solid #ffc879;
     font-family: var(--font-display);
     font-size: 0.82rem;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     text-decoration: none;
-    background: rgba(13, 10, 6, 0.32);
-    backdrop-filter: blur(6px);
-    transition: transform 200ms ease, box-shadow 220ms ease, background 220ms ease, color 200ms ease, border-color 200ms ease;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
     font-weight: 700;
+    transition: transform 200ms ease, box-shadow 220ms ease, background 220ms ease, color 200ms ease, border-color 200ms ease;
   }
-  .cta:hover {
-    transform: translateY(-2px);
-    background: rgba(13, 10, 6, 0.55);
+  .cta:hover { transform: translateY(-2px); }
+  .cta-primary {
+    background: #ffc879;
+    color: #0d0a06;
   }
-  .cta-amber {
-    border-color: #ffc879;
-    color: #ffc879;
-  }
-  .cta-amber:hover {
-    color: #ffe2a8;
+  .cta-primary:hover {
+    background: #ffe2a8;
     border-color: #ffe2a8;
     box-shadow: 0 0 0 1px #ffe2a8, 0 0 32px rgba(255, 200, 121, 0.7);
   }
-  .cta-jade {
-    border-color: #7fd194;
-    color: #7fd194;
+  .cta-outline {
+    color: #ffc879;
+    background: rgba(13, 10, 6, 0.32);
+    backdrop-filter: blur(6px);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
   }
-  .cta-jade:hover {
-    color: #a3e8b3;
-    border-color: #a3e8b3;
-    box-shadow: 0 0 0 1px #a3e8b3, 0 0 28px rgba(127, 209, 148, 0.65);
+  .cta-outline:hover {
+    color: #ffe2a8;
+    border-color: #ffe2a8;
+    background: rgba(13, 10, 6, 0.55);
+    box-shadow: 0 0 0 1px #ffe2a8, 0 0 32px rgba(255, 200, 121, 0.7);
   }
-  .cta-rust {
-    border-color: #ff7a4a;
-    color: #ff7a4a;
-  }
-  .cta-rust:hover {
-    color: #ff9c70;
-    border-color: #ff9c70;
-    box-shadow: 0 0 0 1px #ff9c70, 0 0 30px rgba(255, 122, 74, 0.7);
-  }
-  .cta-bone {
-    border-color: #ebd9c5;
+
+  /* Liens secondaires : plus discrets, cible tactile ≥ 44 px. */
+  .cta-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.6rem;
+    height: 100%;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid rgba(255, 200, 121, 0.5);
+    border-radius: 4px;
+    background: rgba(13, 10, 6, 0.32);
+    backdrop-filter: blur(6px);
     color: #ebd9c5;
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    text-decoration: none;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
+    transition: color 200ms ease, border-color 200ms ease, background 220ms ease, box-shadow 220ms ease;
   }
-  .cta-bone:hover {
+  @media (max-width: 639px) {
+    /* 2 colonnes de ~170 px : « Carte paléo-monde » tient sur une ligne. */
+    .cta-link { font-size: 0.72rem; letter-spacing: 0.03em; }
+  }
+  .cta-link:hover {
     color: #fff5e2;
-    border-color: #fff5e2;
-    box-shadow: 0 0 0 1px #fff5e2, 0 0 24px rgba(232, 230, 221, 0.55);
-  }
-  .cta-ghost {
-    background: rgba(13, 10, 6, 0.22);
-    border-color: rgba(212, 165, 94, 0.45);
-    color: #b8a78f;
-  }
-  .cta-ghost:hover {
-    background: rgba(13, 10, 6, 0.45);
     border-color: #ffc879;
-    color: #fff5e2;
+    background: rgba(13, 10, 6, 0.55);
     box-shadow: 0 0 0 1px #ffc879, 0 0 22px rgba(255, 200, 121, 0.5);
+  }
+  .cta:focus-visible,
+  .cta-link:focus-visible {
+    outline: 3px solid #fff5e2;
+    outline-offset: 3px;
+  }
+
+  .landing-sub {
+    margin-top: 1.6rem;
+    max-width: 36rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-style: italic;
   }
 
   .landing-stats {
@@ -218,10 +306,14 @@ const totalSpecies = SPECIES.length.toLocaleString('fr-FR').replace(/\u202f/g, '
     letter-spacing: normal;
   }
 
-  /* Skull au-dessus du logo */
+  /* Skull au-dessus du logo — réduit à ~140 px au téléphone (maquette). */
   .landing-skull {
     margin-bottom: 0.5rem;
     filter: drop-shadow(0 0 12px rgba(255, 234, 0, 0.4));
+  }
+  @media (max-width: 639px) {
+    .landing-skull { margin-bottom: 0.25rem; }
+    .landing-skull :global(.evato-skull) { width: 140px; height: 77px; }
   }
 
   /*
@@ -241,10 +333,6 @@ const totalSpecies = SPECIES.length.toLocaleString('fr-FR').replace(/\u202f/g, '
        0 0 12px rgba(0, 0, 0, 0.85),
        0 0 28px rgba(255, 200, 121, 0.45);
     font-weight: 600;
-  }
-  .landing-tagline .font-semibold {
-    color: #ffe2a8 !important;
-    font-weight: 800;
   }
   .landing-sub {
     color: #ffe2a8 !important;
