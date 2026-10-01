@@ -169,3 +169,38 @@ test('bureau 1440 px, au clavier : Tab atteint « Nouveautés » dans la barre l
   await Promise.all([page.waitForURL((u) => u.pathname === '/nouveautes/'), page.keyboard.press('Enter')]);
   await context.close();
 });
+
+// Revue UX L13 : Entrée sur le lien d'une capture doit ouvrir la visionneuse comme le clic,
+// pas le PNG brut ; les visionneuses des fiches espèces et des films ne régressent pas.
+test('visionneuse : Entrée sur une capture l’ouvre, Échap la ferme ; clic sur fiche espèce et film inchangé', { timeout: 60_000 }, async (t) => {
+  const env = await setup(t);
+  if (!env) return;
+  const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  const isOpen = () => page.evaluate(() => document.getElementById('evato-lightbox')?.hasAttribute('open'));
+
+  await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+  await page.locator('.news-capture').first().focus();
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(200);
+  assert.equal(new URL(page.url()).pathname, '/nouveautes/', 'Entrée a ouvert le PNG brut');
+  assert.ok(await isOpen(), 'visionneuse fermée après Entrée');
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => !document.getElementById('evato-lightbox').hasAttribute('open'));
+
+  // Clic souris sur la capture : visionneuse aussi.
+  await page.locator('.news-capture img').first().click();
+  assert.ok(await isOpen(), 'visionneuse fermée après clic sur la capture');
+  await page.keyboard.press('Escape');
+
+  for (const path of ['/especes/tyrannosaurus-rex/', '/films/jurassic-park-1993/']) {
+    await page.goto(env.base + path, { waitUntil: 'load' });
+    await page.locator('[data-lightbox] img').first().click();
+    assert.ok(await isOpen(), `${path} : visionneuse fermée après clic`);
+    assert.equal(new URL(page.url()).pathname, path);
+  }
+  // Les liens ordinaires (sans image) dans la page ne sont pas interceptés.
+  await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+  await Promise.all([page.waitForURL((u) => u.pathname === '/codex/'), page.locator('#evato-sidebar a[href="/codex/"]').click()]);
+  await context.close();
+});

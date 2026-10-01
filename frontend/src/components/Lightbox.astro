@@ -39,6 +39,13 @@
       if (el.closest('#evato-sidebar, aside.codex-sidebar')) return null;
       if (el.tagName === 'IMG' && el.closest('[data-lightbox]')) return el;
       if (el.tagName === 'IMG' && el.hasAttribute('data-lightbox')) return el;
+      // Lien qui enveloppe l'image (captures des Nouveautés) : Entrée au clavier
+      // déclenche un clic dont la cible est le lien, pas l'image (L13).
+      const link = el.closest('a');
+      if (link && link.closest('[data-lightbox]')) {
+        const inner = link.querySelector('img');
+        if (inner) return inner;
+      }
       return null;
     };
 
