@@ -12,56 +12,92 @@ const VIDEOS = [
 ];
 const PHASE_MS = 25_000;
 const FADE_MS = 2500;
+// La vidéo suivante n'est montée (et téléchargée) que peu avant son tour.
+const PRELOAD_LEAD_MS = 6_000;
+// Image fixe (1600 px, ~180 Ko) : affichée sous les vidéos le temps qu'elles
+// démarrent, et seule en mouvement réduit.
+const POSTER = '/hero-trex-poster.jpg';
 
-// Three MP4 generated on openart.ai stacked absolute, cross-fade every 25s.
-// preload='auto' on the first video so it starts immediately ; the other
-// two preload metadata only and load opportunistically in the background.
-// Total bandwidth on first paint stays around 12 MB instead of 40.
+const reducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Fond vidéo de l'accueil, une seule vidéo à la fois :
+// - la vidéo active est la seule qui joue ;
+// - la suivante est montée en preload="auto" PRELOAD_LEAD_MS avant son tour,
+//   pour que le fondu ne tombe pas sur une image en cours de chargement ;
+// - la précédente reste montée le temps du fondu (FADE_MS), puis est retirée ;
+// - en prefers-reduced-motion : l'image fixe seule, aucune vidéo demandée.
+// Avant : 5 <video> montées d'emblée (2 en preload auto, 3 en metadata qui
+// finissaient par tout télécharger) et un poster de 2,2 Mo, soit 11,5 Mo.
 export function HeroVideoCycle() {
+  const [reduced] = useState(reducedMotion);
+  const running = !reduced;
   const [active, setActive] = useState(0);
+  const [warm, setWarm] = useState(false);
+  const [leaving, setLeaving] = useState<number | null>(null);
+  const [ready, setReady] = useState<ReadonlySet<number>>(new Set());
   const refs = useRef<(HTMLVideoElement | null)[]>([]);
+  const elapsedRef = useRef(0);
+  const switchingRef = useRef(false);
 
+  // Minuterie de phase : reprend là où elle s'était arrêtée.
   useEffect(() => {
+    if (!running) return;
     const start = performance.now();
-    let raf = 0;
-    const tick = () => {
-      const elapsed = (performance.now() - start) % (PHASE_MS * VIDEOS.length);
-      setActive(Math.floor(elapsed / PHASE_MS));
-      raf = requestAnimationFrame(tick);
+    const remaining = Math.max(0, PHASE_MS - elapsedRef.current);
+    const tWarm = window.setTimeout(() => setWarm(true), Math.max(0, remaining - PRELOAD_LEAD_MS));
+    const tSwitch = window.setTimeout(() => {
+      switchingRef.current = true;
+      setLeaving(active);
+      setActive((active + 1) % VIDEOS.length);
+      setWarm(false);
+    }, remaining);
+    return () => {
+      window.clearTimeout(tWarm);
+      window.clearTimeout(tSwitch);
+      elapsedRef.current = switchingRef.current ? 0 : elapsedRef.current + (performance.now() - start);
+      switchingRef.current = false;
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [active, running]);
 
-  // Bump preload to 'auto' on the next video ~5s before its turn to avoid
-  // the cross-fade landing on a still-loading frame.
+  // La précédente quitte le DOM une fois le fondu terminé.
   useEffect(() => {
-    const next = (active + 1) % VIDEOS.length;
-    const v = refs.current[next];
-    if (v && v.preload !== 'auto') {
-      v.preload = 'auto';
-      v.load();
-    }
-  }, [active]);
+    if (leaving === null) return;
+    const t = window.setTimeout(() => setLeaving(null), FADE_MS);
+    return () => window.clearTimeout(t);
+  }, [leaving]);
+
+  // Seule la vidéo active joue.
+  useEffect(() => {
+    const v = refs.current[active];
+    if (!v) return;
+    if (running) v.play().catch(() => {});
+    else v.pause();
+  }, [active, running]);
+
+  const next = (active + 1) % VIDEOS.length;
+  const mounted = (i: number) => !reduced && (i === active || i === leaving || (warm && i === next));
 
   return (
     <>
       <div className="hero-video-stack" aria-hidden="true">
-        {VIDEOS.map((src, i) => (
-          <video
-            key={src}
-            ref={(el) => { refs.current[i] = el; }}
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload={i === 0 ? 'auto' : 'metadata'}
-            poster="/hero-trex.jpg"
-            style={{ opacity: i === active ? 1 : 0 }}
-          >
-            <source src={src} type="video/mp4" />
-          </video>
-        ))}
+        <img className="hero-poster" src={POSTER} alt="" decoding="async" fetchPriority="high" />
+        {VIDEOS.map((src, i) =>
+          mounted(i) ? (
+            <video
+              key={src}
+              ref={(el) => { refs.current[i] = el; }}
+              loop
+              muted
+              playsInline
+              preload="auto"
+              onPlaying={() => setReady((r) => (r.has(i) ? r : new Set(r).add(i)))}
+              style={{ opacity: i === active && ready.has(i) ? 1 : 0 }}
+            >
+              <source src={src} type="video/mp4" />
+            </video>
+          ) : null,
+        )}
       </div>
       <style>{`
         .hero-video-stack {
@@ -72,18 +108,18 @@ export function HeroVideoCycle() {
           overflow: hidden;
           background: #0d0a06;
         }
-        .hero-video-stack video {
+        .hero-video-stack video,
+        .hero-video-stack .hero-poster {
           position: absolute;
           inset: 0;
           width: 100%;
           height: 100%;
           object-fit: cover;
-          transition: opacity ${FADE_MS}ms ease-in-out;
-          will-change: opacity;
           filter: saturate(1.05) contrast(1.02);
         }
-        @media (prefers-reduced-motion: reduce) {
-          .hero-video-stack video { transition: opacity 600ms ease-in-out; }
+        .hero-video-stack video {
+          transition: opacity ${FADE_MS}ms ease-in-out;
+          will-change: opacity;
         }
       `}</style>
     </>
