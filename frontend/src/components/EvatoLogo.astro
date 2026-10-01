@@ -7,8 +7,10 @@
  */
 interface Props {
   size?: number;
+  /** Nom accessible du wordmark (l'accueil le place dans son <h1>). */
+  label?: string;
 }
-const { size = 460 } = Astro.props;
+const { size = 460, label = 'Evatosorus, codex mésozoïque' } = Astro.props;
 const height = Math.round(size * 0.22);
 ---
 <div class="evato-logo" style={`--logo-size:${size}px;--logo-h:${height}px;`}>
@@ -17,7 +19,7 @@ const height = Math.round(size * 0.22);
     width={size}
     height={height}
     role="img"
-    aria-label="Evatosorus"
+    aria-label={label}
     class="evato-logo-svg"
   >
     <text
@@ -57,7 +59,8 @@ const height = Math.round(size * 0.22);
   .evato-logo {
     width: var(--logo-size);
     max-width: 100%;
-    height: var(--logo-h);
+    height: auto;
+    aspect-ratio: 600 / 130;
     display: inline-block;
   }
   .evato-logo-svg {
