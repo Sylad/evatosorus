@@ -182,7 +182,9 @@ const totalSpecies = SPECIES.length.toLocaleString('fr-FR').replace(/\u202f/g, '
     .landing-secondary { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 0.8rem; gap: 0.6rem; }
   }
 
-  /* Action principale : la seule pleine. Action secondaire : contour. */
+  /* Action principale : la seule pleine. Action secondaire : contour.
+     Voile .70 sous les liens en contour : 4,5:1 sur toute image des vidéos
+     de fond (WCAG 1.4.3), mesuré image par image. */
   .cta {
     display: flex;
     align-items: center;
@@ -211,14 +213,14 @@ const totalSpecies = SPECIES.length.toLocaleString('fr-FR').replace(/\u202f/g, '
   }
   .cta-outline {
     color: #ffc879;
-    background: rgba(13, 10, 6, 0.32);
+    background: rgba(13, 10, 6, 0.7);
     backdrop-filter: blur(6px);
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95);
   }
   .cta-outline:hover {
     color: #ffe2a8;
     border-color: #ffe2a8;
-    background: rgba(13, 10, 6, 0.55);
+    background: rgba(13, 10, 6, 0.82);
     box-shadow: 0 0 0 1px #ffe2a8, 0 0 32px rgba(255, 200, 121, 0.7);
   }
 
@@ -232,7 +234,7 @@ const totalSpecies = SPECIES.length.toLocaleString('fr-FR').replace(/\u202f/g, '
     padding: 0.35rem 0.5rem;
     border: 1px solid rgba(255, 200, 121, 0.5);
     border-radius: 4px;
-    background: rgba(13, 10, 6, 0.32);
+    background: rgba(13, 10, 6, 0.7);
     backdrop-filter: blur(6px);
     color: #ebd9c5;
     font-family: var(--font-display);
@@ -250,7 +252,7 @@ const totalSpecies = SPECIES.length.toLocaleString('fr-FR').replace(/\u202f/g, '
   .cta-link:hover {
     color: #fff5e2;
     border-color: #ffc879;
-    background: rgba(13, 10, 6, 0.55);
+    background: rgba(13, 10, 6, 0.82);
     box-shadow: 0 0 0 1px #ffc879, 0 0 22px rgba(255, 200, 121, 0.5);
   }
   .cta:focus-visible,
