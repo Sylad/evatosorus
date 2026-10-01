@@ -2,6 +2,11 @@
 import CodexLayout from '../layouts/CodexLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import { PaleoMap } from '../components/PaleoMap';
+// CSS Leaflet importée ici (et non dans PaleoMap.tsx) pour qu'elle ne soit
+// liée qu'à cette page — cf commentaire dans PaleoMap.tsx.
+import 'leaflet/dist/leaflet.css';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import { SPECIES } from '../data/species';
 
 // Flatten species locations to one marker per (species, location).
@@ -59,8 +64,8 @@ const periodCounts = {
   {/*
     Leaflet + leaflet.markercluster sont importés via npm dans
     PaleoMap.tsx (plus de CDN unpkg, plus de risque SRI). Vite les
-    bundle et tree-shake correctement. CSS aussi injecté via import
-    dans le composant.
+    bundle et tree-shake correctement. La CSS est importée dans le
+    frontmatter de cette page (liée à /carte/ seulement).
   */}
 
   <style>

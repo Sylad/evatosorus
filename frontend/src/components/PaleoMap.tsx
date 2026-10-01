@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster';
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+// CSS Leaflet importée par src/pages/carte.astro, pas ici : la CSS d'un
+// composant client:only est rattachée à toutes les pages qui ont un îlot
+// client:only (accueil et codex la chargeaient pour rien).
 
 type Marker = {
   speciesId: string;
