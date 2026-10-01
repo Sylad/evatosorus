@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "news": "rm -rf public/nouveautes-data && cadence news build -o public/nouveautes-data && rm -f public/nouveautes-data/index.html",
     "astro": "astro",
     "import:paleobiodb": "node ../scripts/import-paleobiodb.mjs",
     "ollama:species": "node ../scripts/propose-species-ollama.mjs",
