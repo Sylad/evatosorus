@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Lightbox from '../components/Lightbox.astro';
 import AmbientAudio from '../components/AmbientAudio.astro';
+import { BUILD_VERSION } from '../lib/build-version';
 
 interface Props {
   title?: string;
@@ -23,6 +24,7 @@ const ogImageAbs = new URL(ogImage, Astro.site ?? 'https://evatosorus.pages.dev'
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="version" content={BUILD_VERSION} />
 
     <!-- Favicons : SVG en priorité (animable, vectoriel), PNG en fallback. -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
