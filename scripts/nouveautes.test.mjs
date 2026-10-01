@@ -77,3 +77,15 @@ test('le JSON versionné est à jour avec docs/nouveautes/ (sinon : cd frontend 
     rmSync(tmp, { recursive: true, force: true });
   }
 });
+
+// Revue UX L13 : une capture en bandeau très large (2000×98) devient illisible une fois
+// mise à la largeur d'un téléphone. Recadrer sur l'objet de la nouveauté.
+test('captures lisibles : pas de bandeau plus de 6 fois plus large que haut', () => {
+  for (const e of readJson().entries) {
+    for (const c of e.captures) {
+      const buf = readFileSync(join(DATA, c));
+      const [w, h] = [buf.readUInt32BE(16), buf.readUInt32BE(20)];
+      assert.ok(w / h <= 6, `${c} : ${w}×${h}`);
+    }
+  }
+});
