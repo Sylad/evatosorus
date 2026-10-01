@@ -94,6 +94,9 @@ const pngSize = (rel: string) => {
       color: var(--color-evato-amber);
       text-transform: uppercase;
       margin: 0 0 0.4rem;
+      /* Posé sur l'image de fond, en petit corps : ombre de la marque doublée d'un
+         halo serré, ≥ 4,5:1 au pire pixel (L13). */
+      text-shadow: 0 0 2px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.85);
     }
     .news h1 {
       font-size: clamp(2rem, 6vw, 2.6rem);
@@ -103,7 +106,8 @@ const pngSize = (rel: string) => {
     .lede {
       font-size: 1.2rem;
       line-height: 1.7;
-      color: var(--color-evato-bone-muted);
+      color: var(--color-evato-bone);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
       margin: 0 0 2.5rem;
     }
     .news-list {
