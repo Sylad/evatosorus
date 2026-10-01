@@ -89,3 +89,13 @@ test('captures lisibles : pas de bandeau plus de 6 fois plus large que haut', ()
     }
   }
 });
+
+// Revue UX L13 : « et » ne doivent jamais se retrouver seuls en bout de ligne → espace
+// fine insécable (U+202F) entre le guillemet et le mot, dans les sources.
+test('guillemets français tenus par une espace fine insécable (U+202F)', () => {
+  for (const f of mdFiles()) {
+    const src = readFileSync(join(ENTRIES, f), 'utf8');
+    const bad = src.match(/«[  \t]|[  \t]»|«(?=[^ ])|(?<=[^ ])»/g);
+    assert.equal(bad, null, `${f} : ${bad?.length} guillemet(s) sans U+202F`);
+  }
+});

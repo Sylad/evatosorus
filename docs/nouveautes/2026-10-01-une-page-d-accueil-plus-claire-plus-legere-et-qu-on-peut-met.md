@@ -7,10 +7,10 @@ captures: [captures/L2-accueil-telephone.png, captures/L2-accueil-bureau.png]
 ---
 La page d'accueil a été revue pour qu'on trouve plus vite son chemin, surtout au téléphone.
 
-- **Au téléphone**, le crâne est plus petit et les deux portes d'entrée sont visibles tout de suite, sans faire défiler : **Explorer le codex** (le bouton plein) et **Espèces vitrines**. Les autres rubriques suivent en deux colonnes, la citation « Avant nous, il y a eu eux » et les chiffres passent juste en dessous.
+- **Au téléphone**, le crâne est plus petit et les deux portes d'entrée sont visibles tout de suite, sans faire défiler : **Explorer le codex** (le bouton plein) et **Espèces vitrines**. Les autres rubriques suivent en deux colonnes, la citation « Avant nous, il y a eu eux » et les chiffres passent juste en dessous.
 - La rubrique **Comprendre** apparaît enfin sur l'accueil, dans le même ordre que le menu des autres pages.
 - Les boutons restent **bien lisibles** quelle que soit l'image de la vidéo qui défile derrière.
-- Le sous-titre « codex mésozoïque » sous le logo se lit maintenant au téléphone, et les mots de l'accroche et de la citation respirent mieux.
+- Le sous-titre « codex mésozoïque » sous le logo se lit maintenant au téléphone, et les mots de l'accroche et de la citation respirent mieux.
 - Les rubriques portent le même nom partout, sur l'accueil comme dans le menu : **Carte paléo-monde**, **Vidéos**.
 - Un bouton rond **Pause**, en bas à droite (en haut à droite sur les très petits écrans), arrête la vidéo de fond, le crâne lumineux et la poussière ; le site s'en souvient à la visite suivante. Si l'appareil demande moins d'animations, l'accueil affiche directement une image fixe.
 - La page est **beaucoup plus légère** : environ 1,5 Mo au premier affichage au lieu de 11,5 Mo, car une seule vidéo se charge à la fois.
