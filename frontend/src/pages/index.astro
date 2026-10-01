@@ -6,7 +6,9 @@ import { HeroVideoCycle } from '../components/cinema/HeroVideoCycle';
 import { DustField } from '../components/cinema/DustField';
 import { SPECIES } from '../data/species';
 
-const totalSpecies = SPECIES.length.toLocaleString('fr-FR');
+// Espace fine insécable (U+202F) de fr-FR → insécable classique : Cinzel et
+// Crimson Text n'ont pas le glyphe U+202F, « 1 511 » s'affichait « 1511 ».
+const totalSpecies = SPECIES.length.toLocaleString('fr-FR').replace(/\u202f/g, '\u00a0');
 ---
 <BaseLayout
   title="Evatosorus — Codex Mésozoïque"
