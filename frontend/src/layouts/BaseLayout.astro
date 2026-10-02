@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Lightbox from '../components/Lightbox.astro';
 import AmbientAudio from '../components/AmbientAudio.astro';
 import { BUILD_VERSION } from '../lib/build-version';
+import newsData from '../../public/nouveautes-data/nouveautes.json';
 
 interface Props {
   title?: string;
@@ -15,6 +16,10 @@ const {
   description = 'Un codex visuel des dinosaures — Trias, Jurassique, Crétacé.',
   ogImage = '/og-image.jpg',
 } = Astro.props;
+
+// L27 — index léger (slug + date, jamais le texte) des Nouveautés, pour la pastille
+// « nouveau » posée sur tout lien Nouveautés (components/NewsBadge.astro).
+const newsIndex = JSON.stringify(newsData.entries.map(({ slug, date }) => ({ slug, date })));
 
 const ogImageAbs = new URL(ogImage, Astro.site ?? 'https://evatosorus.pages.dev').toString();
 ---
@@ -52,6 +57,49 @@ const ogImageAbs = new URL(ogImage, Astro.site ?? 'https://evatosorus.pages.dev'
   </head>
   <body class="bg-evato-bg text-evato-bone min-h-screen">
     <slot />
+    <script type="application/json" id="evato-news-index" is:inline set:html={newsIndex}></script>
+    <script>
+      import {
+        NEWS_SEEN_EVENT, badgeLabel, browserStorage, countUnseen, ensureBaseline, readSeen, unseenLabel,
+      } from '../lib/news-badge';
+
+      // L27 — pastille « nouveau » de tous les liens Nouveautés (menu latéral, bouton du
+      // menu au téléphone, accueil). Premier passage sur une page quelconque : mémoire de
+      // base, tout le publié compte comme vu (pas de pastille) ; les entrées publiées
+      // ensuite la lèvent, même sans visite de /nouveautes/ (qui, elle, marque tout vu).
+      function newsIndex(): { slug: string; date: string }[] {
+        try {
+          return JSON.parse(document.getElementById('evato-news-index')?.textContent ?? '[]');
+        } catch {
+          return [];
+        }
+      }
+      function refreshNewsBadge() {
+        const index = newsIndex();
+        const storage = browserStorage();
+        ensureBaseline(storage, index);
+        const count = countUnseen(index, readSeen(storage));
+        const label = badgeLabel(count);
+        const spoken = unseenLabel(count);
+        document.querySelectorAll<HTMLElement>('.news-badge').forEach((b) => {
+          b.textContent = label;
+          b.hidden = !label;
+        });
+        document.querySelectorAll<HTMLElement>('.news-badge-sr').forEach((s) => {
+          s.textContent = spoken ? ` (${spoken})` : '';
+        });
+        const burger = document.getElementById('evato-burger');
+        if (burger) {
+          burger.dataset.newsUnseen = spoken;
+          if (burger.getAttribute('aria-expanded') !== 'true') {
+            burger.setAttribute('aria-label', spoken ? `Ouvrir la navigation (${spoken})` : 'Ouvrir la navigation');
+          }
+        }
+      }
+      refreshNewsBadge();
+      window.addEventListener(NEWS_SEEN_EVENT, refreshNewsBadge);
+      window.addEventListener('storage', refreshNewsBadge);
+    </script>
     <Lightbox />
     <AmbientAudio />
 

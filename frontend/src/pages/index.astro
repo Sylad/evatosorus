@@ -7,6 +7,7 @@ import { HeroVideoCycle } from '../components/cinema/HeroVideoCycle';
 import { DustField } from '../components/cinema/DustField';
 import { SPECIES } from '../data/species';
 import { formatCount } from '../lib/format-count.mjs';
+import NewsBadge from '../components/NewsBadge.astro';
 
 // Format fr-FR via formatCount (cf. lib/format-count.mjs).
 const totalSpecies = formatCount(SPECIES.length);
@@ -53,6 +54,8 @@ const totalSpecies = formatCount(SPECIES.length);
         <li><a href="/carte/" class="cta-link">Carte paléo-monde</a></li>
         <li><a href="/films/" class="cta-link">Films</a></li>
         <li><a href="/videos/" class="cta-link">Vidéos</a></li>
+        <li><a href="/nouveautes/" class="cta-link">Nouveautés<NewsBadge /></a></li>
+        <li><a href="/plan-de-travail/" class="cta-link">Plan de travail</a></li>
         <li><a href="/about/" class="cta-link">À propos</a></li>
       </ul>
     </nav>

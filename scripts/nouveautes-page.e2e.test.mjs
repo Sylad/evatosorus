@@ -247,9 +247,10 @@ test('L27 : arriver sur /nouveautes/#<slug> signale l’entrée, lui donne le fo
     await page.goto(`${env.base}/nouveautes/#${target}`, { waitUntil: 'load' });
     await page.waitForFunction((s) => document.activeElement?.id === s, target);
     assert.deepEqual(await page.locator('article.is-target').evaluateAll((as) => as.map((a) => a.id)), [target]);
-    const top = await page.locator(`[id="${target}"]`).evaluate((a) => a.getBoundingClientRect().top);
-    // Au téléphone, le bouton du menu (fixe, en haut à droite) ne doit pas masquer le titre.
-    assert.ok(top >= (width > 1000 ? 0 : 56) - 1 && top < 200, `${width}px : entrée à ${top}px du haut`);
+    // Entrée dans l'écran, pas sous le bouton fixe du menu au téléphone ; indépendant de la
+    // hauteur de l'entrée (la dernière, courte, ne peut pas défiler jusqu'en haut).
+    const { top, vh } = await page.locator(`[id="${target}"]`).evaluate((a) => ({ top: a.getBoundingClientRect().top, vh: innerHeight }));
+    assert.ok(top >= (width > 1000 ? 0 : 56) - 1 && top < vh - 40, `${width}px : entrée à ${top}px du haut (écran ${vh}px)`);
     await context.close();
   }
 });
@@ -287,12 +288,22 @@ const SEEN_KEY = 'evato.news.seen-v1';
 const OLD_VISIT = { date: '2026-01-01', slugs: [], at: '2026-01-01T10:00:00.000Z' };
 const unseenText = (n) => (n === 1 ? '1 nouveauté non vue' : `${n} nouveautés non vues`);
 
-test('L27 : la barre latérale de chaque page porte l’index léger (slug + date) des nouveautés, sans leur texte', () => {
-  const page = readFileSync(join(DIST, 'codex', 'index.html'), 'utf8');
-  const m = page.match(/data-news-index="([^"]*)"/);
-  assert.ok(m, 'index des nouveautés absent de la barre latérale');
-  const index = JSON.parse(m[1].replaceAll('&#34;', '"').replaceAll('&quot;', '"').replaceAll('&amp;', '&'));
-  assert.deepEqual(index, DATA.entries.map(({ slug, date }) => ({ slug, date })));
+test('L27 : chaque page (accueil compris) porte l’index léger (slug + date) des nouveautés, sans leur texte', () => {
+  for (const p of ['index.html', 'codex/index.html', 'especes/tyrannosaurus-rex/index.html']) {
+    const page = readFileSync(join(DIST, p), 'utf8');
+    const m = page.match(/<script type="application\/json" id="evato-news-index"[^>]*>([^<]*)<\/script>/);
+    assert.ok(m, `${p} : index des nouveautés absent`);
+    assert.deepEqual(JSON.parse(m[1]), DATA.entries.map(({ slug, date }) => ({ slug, date })), p);
+  }
+});
+
+test('L27/L28 : l’accueil et les pages internes mènent aux Nouveautés et au Plan de travail', () => {
+  const home = readFileSync(join(DIST, 'index.html'), 'utf8');
+  const secondary = home.slice(home.indexOf('class="landing-secondary"'), home.indexOf('</ul>', home.indexOf('class="landing-secondary"')));
+  assert.match(secondary, /<a href="\/nouveautes\/" class="cta-link"/, 'accueil : lien Nouveautés absent');
+  assert.match(secondary, /<a href="\/plan-de-travail\/" class="cta-link"/, 'accueil : lien Plan de travail absent');
+  const inner = readFileSync(join(DIST, 'codex', 'index.html'), 'utf8');
+  for (const href of ['/nouveautes/', '/plan-de-travail/']) assert.match(inner, new RegExp(`<a href="${href}" class="codex-nav-link"`), `codex : ${href}`);
 });
 
 test('L27 : pastille — premier visiteur sans pastille ; après une visite ancienne, nombre d’entrées non vues (texte + lecteur d’écran) au bureau et au téléphone ; éteinte après la visite de /nouveautes/', { timeout: 90_000 }, async (t) => {
@@ -380,5 +391,74 @@ test('L27 : séparateur « Déjà vu lors de votre visite du … » avant la pre
   assert.equal((await sep.textContent()).trim(), 'Déjà vu lors de votre visite du 1 octobre 2026 à 10:30');
   assert.equal(await sep.evaluate((li) => li.nextElementSibling.querySelector('article').id), DATA.entries[1].slug);
   assert.equal(await page.locator('.news-new').count(), 1);
+  await context.close();
+});
+
+test('L27 : mémoire de base — premier passage sur n’importe quelle page sans pastille ; une entrée publiée ensuite la lève sans jamais ouvrir /nouveautes/', { timeout: 60_000 }, async (t) => {
+  const env = await setup(t);
+  if (!env) return;
+  const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/about/`, { waitUntil: 'load' });
+  await page.waitForFunction((k) => localStorage.getItem(k), SEEN_KEY);
+  assert.equal(await page.locator('.news-badge:visible').count(), 0, 'pastille au tout premier passage');
+  const stored = await page.evaluate((k) => JSON.parse(localStorage.getItem(k)), SEEN_KEY);
+  assert.equal(stored.all, true);
+  assert.deepEqual(stored.slugs, DATA.entries.map((e) => e.slug).sort());
+  // Simule une entrée publiée après ce premier passage : son slug n'est pas dans la mémoire.
+  await page.evaluate(([k, slug]) => {
+    const v = JSON.parse(localStorage.getItem(k));
+    v.slugs = v.slugs.filter((s) => s !== slug);
+    localStorage.setItem(k, JSON.stringify(v));
+  }, [SEEN_KEY, DATA.entries[0].slug]);
+  await page.goto(`${env.base}/codex/`, { waitUntil: 'load' });
+  const badge = page.locator('#evato-sidebar a[href="/nouveautes/"] .news-badge');
+  await badge.waitFor({ state: 'visible' });
+  assert.equal((await badge.textContent()).trim(), '1');
+  await context.close();
+});
+
+test('L27 : accueil — pastille sur le lien Nouveautés (lecteur d’écran compris) ; liens atteints au clavier avec contour visible', { timeout: 60_000 }, async (t) => {
+  const env = await setup(t);
+  if (!env) return;
+  const n = DATA.entries.length;
+  const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/`, { waitUntil: 'load' });
+  await page.evaluate(([k, v]) => localStorage.setItem(k, JSON.stringify(v)), [SEEN_KEY, OLD_VISIT]);
+  await page.reload({ waitUntil: 'load' });
+  const link = page.locator('.landing-secondary a[href="/nouveautes/"]');
+  await link.locator('.news-badge').waitFor({ state: 'visible' });
+  assert.equal((await link.locator('.news-badge').textContent()).trim(), String(n));
+  assert.match(await link.textContent(), new RegExp(unseenText(n)));
+  for (const href of ['/nouveautes/', '/plan-de-travail/']) {
+    let reached = false;
+    await page.evaluate(() => document.activeElement?.blur());
+    for (let i = 0; i < 30 && !reached; i++) {
+      await page.keyboard.press('Tab');
+      reached = await page.evaluate((h) => document.activeElement?.getAttribute('href') === h, href);
+    }
+    assert.ok(reached, `${href} hors de l’ordre de tabulation`);
+    const o = await page.evaluate(() => { const s = getComputedStyle(document.activeElement); return { style: s.outlineStyle, w: parseFloat(s.outlineWidth) }; });
+    assert.ok(o.style !== 'none' && o.w >= 2, `${href} : contour de focus invisible`);
+  }
+  await context.close();
+});
+
+test('L27 : nouvelles non contiguës (entrée antidatée plus bas) — marques « Nouveau » sans séparateur trompeur', { timeout: 60_000 }, async (t) => {
+  if (DATA.entries.length < 3) { t.skip('il faut au moins trois nouveautés'); return; }
+  const env = await setup(t);
+  if (!env) return;
+  const unseen = [DATA.entries[0].slug, DATA.entries[2].slug];
+  const visit = { date: DATA.entries[0].date, slugs: DATA.entries.map((e) => e.slug).filter((s) => !unseen.includes(s)).sort(), at: '2026-10-01T08:30:00.000Z', all: true };
+  const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/about/`, { waitUntil: 'load' });
+  await page.evaluate(([k, v]) => localStorage.setItem(k, JSON.stringify(v)), [SEEN_KEY, visit]);
+  await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+  await page.locator('.news-new').first().waitFor();
+  assert.deepEqual(await page.locator('article:has(.news-new)').evaluateAll((as) => as.map((a) => a.id)), unseen);
+  assert.equal(await page.locator('.news-seen-sep').count(), 0);
+  assert.equal((await page.locator('.news-since').textContent()).trim(), '2 nouveautés depuis votre dernière visite');
   await context.close();
 });

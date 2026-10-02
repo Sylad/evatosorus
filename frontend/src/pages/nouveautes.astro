@@ -313,7 +313,7 @@ const pngSize = (rel: string) => {
   <script>
     import { entryForFragment, permalink } from '../lib/news-anchor';
     import {
-      NEWS_SEEN_EVENT, browserStorage, isUnseen, markAllSeen, readSeen, seenSeparatorLabel,
+      NEWS_SEEN_EVENT, browserStorage, isUnseen, markAllSeen, readSeen, seenSeparatorIndex, seenSeparatorLabel,
     } from '../lib/news-badge';
 
     // L27 — dernière visite (repris d'AetherWX news-badge) : « N nouveautés depuis votre
@@ -348,16 +348,17 @@ const pngSize = (rel: string) => {
           : `${count} nouveautés depuis votre dernière visite`;
       }
       list.querySelectorAll('.news-seen-sep').forEach((n) => n.remove());
-      const last = fresh.lastIndexOf(true);
-      if (seen && last >= 0 && last + 1 < articles.length) {
+      // Avant la première entrée vue, seulement si toutes les nouvelles sont au-dessus.
+      const at = seen ? seenSeparatorIndex(fresh) : -1;
+      if (at > 0) {
         const sep = document.createElement('li');
         sep.className = 'news-seen-sep';
         // Repère visuel ; la ligne « N nouveautés depuis… » le dit aux lecteurs d'écran.
         sep.setAttribute('aria-hidden', 'true');
         const text = document.createElement('span');
-        text.textContent = seenSeparatorLabel(seen.at);
+        text.textContent = seenSeparatorLabel(seen!.at);
         sep.append(text);
-        articles[last + 1].closest('li')!.before(sep);
+        articles[at].closest('li')!.before(sep);
       }
       markAllSeen(storage, entries);
       window.dispatchEvent(new Event(NEWS_SEEN_EVENT));

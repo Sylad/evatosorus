@@ -1,0 +1,62 @@
+---
+/*
+  L27 — pastille « nouveau » du lien Nouveautés : nombre d'entrées non vues depuis la
+  dernière visite. Vide et masquée au rendu ; remplie au chargement par le script de
+  BaseLayout (index des nouveautés + localStorage, lib/news-badge). Le nombre est écrit
+  (pas une simple couleur) et dit en toutes lettres aux lecteurs d'écran — sauf sur le
+  bouton du menu, dont l'aria-label porte déjà « (N nouveautés non vues) ».
+*/
+interface Props {
+  variant?: 'inline' | 'burger';
+}
+const { variant = 'inline' } = Astro.props;
+---
+<span class:list={['news-badge', { 'news-badge--burger': variant === 'burger' }]} aria-hidden="true" hidden></span>
+{variant === 'inline' && <span class="news-badge-sr"></span>}
+
+<style>
+  .news-badge {
+    display: inline-grid;
+    place-items: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    margin-left: 0.55rem;
+    padding: 0 0.35rem;
+    border-radius: 999px;
+    background: var(--color-evato-amber-bright);
+    color: var(--color-evato-bg);
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1;
+    text-shadow: none;
+    /* Ne grandit pas la ligne : la pastille tient dans la hauteur du libellé. */
+    vertical-align: middle;
+    margin-block: -0.3rem;
+  }
+  .news-badge[hidden] {
+    display: none;
+  }
+  .news-badge--burger {
+    position: absolute;
+    top: -0.45rem;
+    right: -0.45rem;
+    margin: 0;
+    box-shadow: 0 0 0 2px var(--color-evato-bg);
+  }
+  :global(html[data-drawer-open="true"]) .news-badge--burger {
+    display: none;
+  }
+  .news-badge-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
