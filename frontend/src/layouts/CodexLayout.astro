@@ -174,7 +174,12 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
       });
       sidebar.addEventListener('click', (e) => {
         const target = e.target instanceof Element ? e.target.closest('a') : null;
-        if (target && sidebar.contains(target)) {
+        // Seule une navigation dans CET onglet ferme le tiroir. Ctrl/Cmd/Maj/Alt (+ clic
+        // ou Entrée), bouton autre que le principal, target=_blank : le lien s'ouvre
+        // ailleurs, l'utilisateur reste ici — tiroir ouvert, focus sur le lien.
+        const sameTab = e.button === 0 && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey
+          && !e.defaultPrevented && (!target?.target || target.target === '_self');
+        if (target && sidebar.contains(target) && sameTab) {
           // Navigation en cours : ne pas ramener le focus au bouton.
           setOpen(false, { restoreFocus: false });
         }

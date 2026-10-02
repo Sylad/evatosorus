@@ -178,3 +178,36 @@ test('bureau 1440 px : barre latérale dans l\'ordre Tab, rien d\'inert, bouton 
   assert.equal(await page.evaluate(() => getComputedStyle(document.getElementById('evato-sidebar')).visibility), 'visible');
   await context.close();
 });
+
+// Ouvrir un lien du tiroir dans un nouvel onglet (Ctrl+Entrée, Ctrl+clic, clic du milieu)
+// laisse l'utilisateur sur la page : le tiroir reste ouvert et le focus reste sur le lien.
+// Seule une navigation dans le même onglet ferme le tiroir.
+test('téléphone : un lien du tiroir ouvert dans un nouvel onglet ne ferme pas le tiroir', { timeout: 120_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const { context, page } = await newPage(env, 390);
+  // Les nouveaux onglets sont refermés aussitôt.
+  context.on('page', (p) => p.close().catch(() => {}));
+  await page.goto(`${env.base}/codex/`, { waitUntil: 'load' });
+  const link = page.locator('#evato-sidebar a[href="/vitrines/"]');
+  for (const how of ['Control+Enter', 'Control+clic', 'clic du milieu']) {
+    if (!(await isOpen(page))) {
+      await page.focus('#evato-burger');
+      await page.keyboard.press('Enter');
+      await waitSettled(page);
+    }
+    if (how === 'Control+Enter') {
+      await link.focus();
+      await page.keyboard.press('Control+Enter');
+    } else {
+      await link.click({ button: how === 'clic du milieu' ? 'middle' : 'left', modifiers: how === 'Control+clic' ? ['Control'] : [] });
+    }
+    await page.waitForTimeout(400);
+    assert.equal(new URL(page.url()).pathname, '/codex/', `${how} : la page a changé`);
+    assert.ok(await isOpen(page), `${how} : le tiroir s'est fermé`);
+    assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('href')), '/vitrines/', `${how} : focus perdu`);
+  }
+  // Clic simple : navigation dans l'onglet, tiroir fermé.
+  await Promise.all([page.waitForURL((u) => u.pathname === '/vitrines/'), link.click()]);
+  await context.close();
+});
