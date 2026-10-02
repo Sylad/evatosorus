@@ -160,11 +160,16 @@ const isSilhouette = !primaryImage;
   .card-title {
     --fit-floor: 0.8rem;
     font-family: var(--font-display);
-    font-size: clamp(var(--fit-floor), calc(100cqi / var(--word-em, 8)), 1.05rem);
+    font-size: 1.05rem;
     overflow-wrap: break-word;
     letter-spacing: 0.04em;
     color: var(--color-evato-amber-bright);
     margin: 0;
+  }
+  @supports (width: 1cqi) {
+    .card-title {
+      font-size: clamp(var(--fit-floor), calc(100cqi / var(--word-em, 8)), 1.05rem);
+    }
   }
   .card-sci {
     font-style: italic;

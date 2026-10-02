@@ -443,13 +443,28 @@ const speciesInsights = [
          0,94rem (16,45 px) — vérifié par scripts/title-fit.test.mjs. En dessous (écran
          < 320 px, espacements imposés WCAG 1.4.12) le mot passe à la ligne. */
       --fit-floor: 0.94rem;
-      font-size: clamp(var(--fit-floor), calc(100cqi / var(--word-em, 12)), 3rem);
+      /* Repli : largeur de la fenêtre moins les marges du contenu (moins la barre latérale
+         et plafonnée à la largeur maximale du contenu au bureau). */
+      font-size: clamp(var(--fit-floor), calc((100vw - 2 * max(1.25rem, 3vw)) / var(--word-em, 12)), 3rem);
       overflow-wrap: break-word;
       margin: 0 0 0.3rem;
       color: var(--color-evato-amber-bright);
     }
-    .detail-header {
-      container-type: inline-size;
+    @media (min-width: 1024px) {
+      .detail-header h1 {
+        font-size: clamp(var(--fit-floor), calc((min(100vw - 304px, 1280px) - 2 * max(1.25rem, 3vw)) / var(--word-em, 12)), 3rem);
+      }
+    }
+    /* L22 : sans container queries (navigateur ancien), la déclaration à cqi serait invalide
+       au calcul (elle contient var()) et le titre hériterait de la taille du texte : taille
+       de repli ci-dessus, la version cqi seulement sous @supports. */
+    @supports (width: 1cqi) {
+      .detail-header {
+        container-type: inline-size;
+      }
+      .detail-header h1 {
+        font-size: clamp(var(--fit-floor), calc(100cqi / var(--word-em, 12)), 3rem);
+      }
     }
     .sci-name {
       font-style: italic;

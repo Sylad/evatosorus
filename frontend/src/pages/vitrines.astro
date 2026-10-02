@@ -238,7 +238,7 @@ const visitPaths = [
       /* L22 : 2,6rem → 7vw → 5,8rem comme avant, réduit si « commence » ne tient pas dans
          le bandeau (--word-em, lib/title-fit.mjs). */
       --fit-floor: 1.4rem;
-      font-size: max(var(--fit-floor), min(max(2.6rem, 7vw), 5.8rem, calc(100cqi / var(--word-em, 8))));
+      font-size: min(max(2.6rem, 7vw), 5.8rem);
       overflow-wrap: break-word;
       line-height: 0.96;
       letter-spacing: 0.02em;
@@ -447,7 +447,7 @@ const visitPaths = [
       /* L22 : taille d'origine, réduite si le plus long mot du nom ne tient pas dans la
          carte (--word-em, lib/title-fit.mjs) ; jamais coupé au milieu d'un mot. */
       --fit-floor: 0.9rem;
-      font-size: max(var(--fit-floor), min(clamp(1.15rem, 2vw, 1.65rem), calc(100cqi / var(--word-em, 8))));
+      font-size: clamp(1.15rem, 2vw, 1.65rem);
       overflow-wrap: break-word;
       line-height: 1.08;
       letter-spacing: 0.03em;
@@ -524,6 +524,16 @@ const visitPaths = [
       .vitrine-media {
         min-height: auto;
         aspect-ratio: 16 / 10;
+      }
+    }
+    /* Tailles ajustées (cqi) seulement si les container queries existent : la déclaration
+       contient var(), elle serait invalide au calcul et le titre hériterait du texte. */
+    @supports (width: 1cqi) {
+      .vitrine-body h2 {
+        font-size: max(var(--fit-floor), min(clamp(1.15rem, 2vw, 1.65rem), calc(100cqi / var(--word-em, 8))));
+      }
+      .vitrine-hero h1 {
+        font-size: max(var(--fit-floor), min(max(2.6rem, 7vw), 5.8rem, calc(100cqi / var(--word-em, 8))));
       }
     }
   </style>

@@ -131,7 +131,7 @@ import { fitStyle, LS } from '../../lib/title-fit.mjs';
     .period-card h2 {
       /* L22 : 1,8rem, réduit si le nom de la période ne tient pas dans la carte. */
       --fit-floor: 1.1rem;
-      font-size: max(var(--fit-floor), min(1.8rem, calc(100cqi / var(--word-em, 8))));
+      font-size: 1.8rem;
       overflow-wrap: break-word;
       margin: 0;
       color: var(--color-evato-bone);
@@ -177,6 +177,12 @@ import { fitStyle, LS } from '../../lib/title-fit.mjs';
     }
     .period-card:hover .arrow {
       transform: translateX(4px);
+    }
+    /* Taille ajustée (cqi) seulement si les container queries existent. */
+    @supports (width: 1cqi) {
+      .period-card h2 {
+        font-size: max(var(--fit-floor), min(1.8rem, calc(100cqi / var(--word-em, 8))));
+      }
     }
   </style>
 </CodexLayout>

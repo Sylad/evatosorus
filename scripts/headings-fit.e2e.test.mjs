@@ -153,3 +153,51 @@ test('table des chasses de Cinzel : largeur prédite ≥ largeur rendue, à 8 % 
     assert.ok(p >= measured[i] && p <= measured[i] * 1.08, `${w} : prédit ${p.toFixed(2)} em, rendu ${measured[i].toFixed(2)} em`);
   });
 });
+
+// Navigateur sans unité cqi : dans les feuilles servies, l'unité « cqi » devient une unité
+// inconnue (« cqzz ») — partout, condition @supports comprise. Les titres prennent alors
+// leur taille de repli — jamais la taille du
+// texte courant hérité (déclaration à cqi invalide au calcul), et le titre de fiche reste
+// plus grand que le nom scientifique dessous et tient dans la largeur.
+test('sans container queries : tailles de repli saines (fiche, cartes, vitrines, périodes)', { timeout: 120_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const failures = [];
+  for (const [width, height] of [[390, 844], [1440, 900]]) {
+    const context = await env.browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce' });
+    await context.route('**/*', async (route) => {
+      const res = await route.fetch();
+      const type = res.headers()['content-type'] ?? '';
+      if (!/text\/(css|html)/.test(type)) return route.fulfill({ response: res });
+      const body = (await res.text()).replace(/(\d)cqi\b/g, '$1cqzz');
+      return route.fulfill({ response: res, body });
+    });
+    const page = await context.newPage();
+    const checks = [
+      ['/especes/tyrannosaurus-rex/', '.detail-header h1', '.sci-name'],
+      ['/especes/parasaurolophus-walkeri/', '.detail-header h1', '.sci-name'],
+      ['/periodes/cretace/', '.card-title', null],
+      ['/vitrines/', '.vitrine-body h2', null],
+      ['/periodes/', '.period-card h2', null],
+      ['/comprendre/', '.learn-hero h1', null],
+    ];
+    for (const [path, sel, smaller] of checks) {
+      await page.goto(env.base + path, { waitUntil: 'load' });
+      await page.evaluate(() => document.fonts.ready);
+      const r = await page.evaluate(({ sel, smaller }) => {
+        const h = document.querySelector(sel);
+        const size = parseFloat(getComputedStyle(h).fontSize);
+        const body = parseFloat(getComputedStyle(h.parentElement).fontSize);
+        const sci = smaller ? parseFloat(getComputedStyle(document.querySelector(smaller)).fontSize) : 0;
+        const supported = CSS.supports('width', '1cqi');
+        return { size, body, sci, overflow: h.scrollWidth > h.clientWidth + 1, supported };
+      }, { sel, smaller });
+      const where = `${path} ${sel} @${width}px`;
+      if (r.sci && r.size <= r.sci) failures.push(`${where} : titre ${r.size}px ≤ nom scientifique ${r.sci}px`);
+      if (!r.sci && r.size === r.body) failures.push(`${where} : taille héritée du texte (${r.size}px)`);
+      if (path.startsWith('/especes/') && r.overflow) failures.push(`${where} : déborde`);
+    }
+    await context.close();
+  }
+  assert.deepEqual(failures, []);
+});

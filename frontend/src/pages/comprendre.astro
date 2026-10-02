@@ -142,7 +142,7 @@ import { fitStyle, LS } from '../lib/title-fit.mjs';
       /* L22 : 2,4rem → 6vw → 5rem comme avant, réduit si « dinosaures » ne tient pas dans
          sa colonne (--word-em, lib/title-fit.mjs) : il était rogné au bureau. */
       --fit-floor: 1.4rem;
-      font-size: max(var(--fit-floor), min(max(2.4rem, 6vw), 5rem, calc(100cqi / var(--word-em, 8))));
+      font-size: min(max(2.4rem, 6vw), 5rem);
       overflow-wrap: break-word;
       line-height: 0.98;
     }
@@ -294,6 +294,12 @@ import { fitStyle, LS } from '../lib/title-fit.mjs';
       }
       .learn-card.wide img {
         min-height: 240px;
+      }
+    }
+    /* Taille ajustée (cqi) seulement si les container queries existent (voir vitrines). */
+    @supports (width: 1cqi) {
+      .learn-hero h1 {
+        font-size: max(var(--fit-floor), min(max(2.4rem, 6vw), 5rem, calc(100cqi / var(--word-em, 8))));
       }
     }
   </style>
