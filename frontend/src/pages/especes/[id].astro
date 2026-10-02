@@ -2,6 +2,7 @@
 import CodexLayout from '../../layouts/CodexLayout.astro';
 import { SPECIES, getSpeciesById, getSpeciesVideos, TAXON_GROUP_LABELS, DIET_LABELS, DIET_ICONS } from '../../data/species';
 import { PERIODS_BY_ID } from '../../data/periods';
+import { formatDecimal } from '../../lib/format-count.mjs';
 
 export function getStaticPaths() {
   return SPECIES.map((s) => ({ params: { id: s.id } }));
@@ -44,11 +45,11 @@ const worldNote = s.taxonGroup === 'marine-reptile'
 const fieldNotes = [
   activeMa && {
     label: 'Fenêtre fossile',
-    value: `${activeMa.toLocaleString('fr-FR', { maximumFractionDigits: 1 })} million${activeMa > 1 ? 's' : ''} d’années entre les repères connus.`,
+    value: `${formatDecimal(activeMa, 1)} million${activeMa > 1 ? 's' : ''} d’années entre les repères connus.`,
   },
   massTonnes && {
     label: 'Masse vivante',
-    value: `${massTonnes.toLocaleString('fr-FR', { maximumFractionDigits: 1 })} tonne${massTonnes > 1 ? 's' : ''} environ, d’après les estimations retenues ici.`,
+    value: `${formatDecimal(massTonnes, 1)} tonne${massTonnes > 1 ? 's' : ''} environ, d’après les estimations retenues ici.`,
   },
   scaleNote && {
     label: 'Échelle',
@@ -272,10 +273,10 @@ const speciesInsights = [
         <dl>
           <dt>Régime</dt>
           <dd>{DIET_ICONS[s.diet]} {DIET_LABELS[s.diet]}</dd>
-          {s.lengthM && (<><dt>Longueur</dt><dd>{s.lengthM} m</dd></>)}
-          {s.heightM && s.heightM > 0 && (<><dt>Hauteur</dt><dd>{s.heightM} m</dd></>)}
-          {s.weightKg && (<><dt>Poids</dt><dd>{(s.weightKg / 1000).toLocaleString('fr-FR', { maximumFractionDigits: 1 })} t</dd></>)}
-          {s.earlyMa && s.lateMa && (<><dt>Existence</dt><dd>{s.earlyMa} → {s.lateMa} Ma</dd></>)}
+          {s.lengthM && (<><dt>Longueur</dt><dd>{formatDecimal(s.lengthM)} m</dd></>)}
+          {s.heightM && s.heightM > 0 && (<><dt>Hauteur</dt><dd>{formatDecimal(s.heightM)} m</dd></>)}
+          {s.weightKg && (<><dt>Poids</dt><dd>{formatDecimal(s.weightKg / 1000, 1)} t</dd></>)}
+          {s.earlyMa && s.lateMa && (<><dt>Existence</dt><dd>{formatDecimal(s.earlyMa)} → {formatDecimal(s.lateMa)} Ma</dd></>)}
           <dt>Période</dt>
           <dd><a href={`/periodes/${s.periodId}/`}>{period?.name ?? '?'}</a></dd>
           {s.locations && s.locations.length > 0 && (

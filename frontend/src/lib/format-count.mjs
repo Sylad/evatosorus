@@ -19,3 +19,13 @@ export function formatCount(n) {
 export function formatRange(start, end) {
   return `${formatCount(start)} – ${formatCount(end)}`;
 }
+
+/**
+ * Nombre décimal en français (L22) : virgule décimale, milliers en U+00A0 comme
+ * formatCount (U+202F absente des polices). Longueurs, hauteurs, masses, datations.
+ * @param {number} n
+ * @param {number} [maximumFractionDigits] 3 par défaut (valeur de Intl), 1 pour les masses
+ */
+export function formatDecimal(n, maximumFractionDigits = 3) {
+  return new Intl.NumberFormat('fr-FR', { maximumFractionDigits }).format(n).replace(/ /g, ' ');
+}

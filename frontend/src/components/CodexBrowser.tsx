@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
 import type { Species } from '../data/species.types';
-import { formatCount, formatRange } from '../lib/format-count.mjs';
+import { formatCount, formatDecimal, formatRange } from '../lib/format-count.mjs';
 
 // Subset minimum nécessaire pour afficher une card. Pour préserver les
 // optimisations bandwidth (codex.astro trim ~60% des champs avant de passer
@@ -291,7 +291,7 @@ function Card({
   const primaryImage = s.lifeRestorationUrl ?? s.imageUrl;
   const isSilhouette = !primaryImage;
   const sizeText = s.lengthM
-    ? `${s.lengthM} m${s.weightKg ? ` · ${(s.weightKg / 1000).toLocaleString('fr-FR', { maximumFractionDigits: 1 })} t` : ''}`
+    ? `${formatDecimal(s.lengthM)} m${s.weightKg ? ` · ${formatDecimal(s.weightKg / 1000, 1)} t` : ''}`
     : null;
 
   return (
@@ -300,7 +300,7 @@ function Card({
         {primaryImage ? (
           <img
             src={primaryImage}
-            alt={`${s.commonName ?? s.name} — ${taxonGroupLabels[s.taxonGroup] ?? s.taxonGroup}${s.lengthM ? `, ~${s.lengthM} m` : ''}`}
+            alt={`${s.commonName ?? s.name} — ${taxonGroupLabels[s.taxonGroup] ?? s.taxonGroup}${s.lengthM ? `, ~${formatDecimal(s.lengthM)} m` : ''}`}
             loading="lazy"
             decoding="async"
             width="416"
