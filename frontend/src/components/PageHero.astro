@@ -24,26 +24,32 @@ const { videoSrc, poster = '/hero-trex.jpg', eyebrow, title } = Astro.props;
 </div>
 
 <style>
+  /* L22 : vidéo et texte empilés dans la même case de grille — le bandeau garde son
+     format (21:9, 16:10 au téléphone) mais GRANDIT si le texte est plus haut. Avant, le
+     texte en position absolue débordait par le haut et le sur-titre était coupé à 320 px. */
   .page-hero {
     position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
     margin: 0 0 1.5rem;
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid rgba(212, 165, 94, 0.3);
-    aspect-ratio: 21 / 9;
     background: #0d0a06;
     box-shadow: 0 18px 36px -16px rgba(0, 0, 0, 0.7);
   }
   .page-hero video {
+    grid-area: 1 / 1;
     width: 100%;
     height: 100%;
+    aspect-ratio: 21 / 9;
     object-fit: cover;
     display: block;
     filter: saturate(1.05);
   }
   .page-hero-overlay {
-    position: absolute;
-    inset: 0;
+    grid-area: 1 / 1;
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -71,7 +77,7 @@ const { videoSrc, poster = '/hero-trex.jpg', eyebrow, title } = Astro.props;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
   }
   @media (max-width: 720px) {
-    .page-hero { aspect-ratio: 16 / 10; }
+    .page-hero video { aspect-ratio: 16 / 10; }
     .page-hero-overlay { padding: 1.2rem; }
     .page-hero-overlay h1 { font-size: 1.6rem; }
   }

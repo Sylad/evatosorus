@@ -135,3 +135,44 @@ test('320 px : titres h1/h2 sans mot coupé (sauf noms de 20 lettres et plus)', 
   await context.close();
   assert.deepEqual(failures, []);
 });
+
+// Texte coupé par un parent en overflow: hidden (bandeaux vidéo : le texte en position
+// absolue débordait par le haut, sur-titre « le codex » / « cinéma » invisible à 320 et
+// 390 px). Tout élément porteur de texte du contenu reste dans la boîte qui le découpe.
+test('320 et 390 px : aucun texte coupé par un bandeau ou un cadre', { timeout: 180_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const failures = [];
+  for (const width of [320, 390]) {
+    const context = await env.browser.newContext({ viewport: { width, height: 800 }, reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    for (const path of PAGES) {
+      await page.goto(env.base + path, { waitUntil: 'load' });
+      await page.evaluate(() => document.fonts.ready);
+      const clipped = await page.evaluate(() => {
+        const out = [];
+        for (const el of document.querySelectorAll('main *')) {
+          if (![...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())) continue;
+          const cs = getComputedStyle(el);
+          if (cs.display === 'none' || cs.visibility === 'hidden' || cs.textOverflow === 'ellipsis') continue;
+          if (el.closest('.codex-sr-only, .news-badge-sr, .leaflet-container')) continue;
+          const r = el.getBoundingClientRect();
+          if (!r.width) continue;
+          for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) {
+            const ac = getComputedStyle(a);
+            if (ac.overflowX === 'visible' && ac.overflowY === 'visible') continue;
+            const b = a.getBoundingClientRect();
+            if (r.top < b.top - 1 || r.bottom > b.bottom + 1 || r.left < b.left - 1 || r.right > b.right + 1) {
+              out.push(`« ${el.textContent.trim().slice(0, 30)} » coupé par ${a.tagName.toLowerCase()}.${String(a.className).split(' ')[0]}`);
+            }
+            break;
+          }
+        }
+        return out;
+      });
+      for (const c of clipped) failures.push(`${path} @ ${width}px : ${c}`);
+    }
+    await context.close();
+  }
+  assert.deepEqual(failures, []);
+});

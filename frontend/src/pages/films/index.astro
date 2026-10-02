@@ -62,26 +62,31 @@ const sagaOrder: Array<keyof typeof FILMS_BY_SAGA> = ['park', 'world', 'rebirth'
   })}
 
   <style>
+    /* L22 : vidéo et texte empilés dans la même case de grille — le bandeau grandit si
+       le texte est plus haut que la vidéo (sur-titre « cinéma » coupé à 390 et 320 px). */
     .films-hero {
       position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
       margin: 0 0 1.5rem;
       border-radius: 8px;
       overflow: hidden;
       border: 1px solid rgba(212, 165, 94, 0.3);
-      aspect-ratio: 21 / 9;
       background: #0d0a06;
       box-shadow: 0 18px 36px -16px rgba(0, 0, 0, 0.7);
     }
     .films-hero video {
+      grid-area: 1 / 1;
       width: 100%;
       height: 100%;
+      aspect-ratio: 21 / 9;
       object-fit: cover;
       display: block;
       filter: saturate(1.05);
     }
     .films-hero-overlay {
-      position: absolute;
-      inset: 0;
+      grid-area: 1 / 1;
+      position: relative;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
@@ -108,7 +113,7 @@ const sagaOrder: Array<keyof typeof FILMS_BY_SAGA> = ['park', 'world', 'rebirth'
       text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85);
     }
     @media (max-width: 720px) {
-      .films-hero { aspect-ratio: 16 / 10; }
+      .films-hero video { aspect-ratio: 16 / 10; }
       .films-hero-overlay { padding: 1.2rem; }
       .films-hero-overlay h1 { font-size: 1.8rem; }
     }
