@@ -1,4 +1,5 @@
 ---
+import { fitStyle, LS } from '../lib/title-fit.mjs';
 // Frise horizontale interactive 252 → 66 Ma. Sans dépendance externe :
 // curseur draggable / clickable sur l'axe + tooltip "Ma actuel" + grille
 // iconique des espèces (.iconic) qui passent en surbrillance quand le
@@ -88,7 +89,7 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
         <span class="meso-iconic-img" style={`--accent:var(--color-evato-${sp.period === 'trias' ? 'rust' : sp.period === 'jurassique' ? 'jade' : 'amber'});`}>
           {sp.image ? <img src={sp.image} alt={sp.common} loading="lazy" /> : <span class="meso-iconic-fallback">𓆗</span>}
         </span>
-        <span class="meso-iconic-name">{sp.common}</span>
+        <span class="meso-iconic-name" style={fitStyle(sp.common, LS.card)}>{sp.common}</span>
         <span class="meso-iconic-range">{sp.early}—{sp.late} Ma</span>
       </a>
     ))}
@@ -355,11 +356,16 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
   /* ── Grille iconiques ──────────────────────────────────────────── */
   .meso-iconic-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    /* L22 : colonnes d'au moins 9rem (et jamais plus larges que la grille) : à 140 px,
+       « Pachycéphalosaure » débordait de sa carte à toutes les largeurs et élargissait la
+       page de 4 à 20 px au téléphone. */
+    grid-template-columns: repeat(auto-fill, minmax(min(9rem, 100%), 1fr));
     gap: 0.9rem;
     margin-top: 2.4rem;
   }
   .meso-iconic {
+    container-type: inline-size;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
@@ -408,11 +414,20 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
     font-size: 1.5rem;
   }
   .meso-iconic-name {
+    /* L22 : 0,78rem, réduit si le plus long mot du nom ne tient pas dans la carte
+       (--word-em, lib/title-fit.mjs) ; coupure en dernier recours (espacements imposés). */
+    --fit-floor: 0.65rem;
     font-family: var(--font-display);
     font-size: 0.78rem;
+    overflow-wrap: break-word;
     letter-spacing: 0.04em;
     color: var(--color-evato-bone);
     line-height: 1.25;
+  }
+  @supports (width: 1cqi) {
+    .meso-iconic-name {
+      font-size: clamp(var(--fit-floor), calc(100cqi / var(--word-em, 8)), 0.78rem);
+    }
   }
   .meso-iconic--lit .meso-iconic-name {
     color: var(--color-evato-amber-bright);
