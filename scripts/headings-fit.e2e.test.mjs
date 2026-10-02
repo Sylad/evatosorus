@@ -38,11 +38,15 @@ const PAGES = [
 
 // Mesure dans la page : liste des écarts à la règle.
 const audit = (page) => page.evaluate(() => {
-  const out = [];
+  // Défilement horizontal de la page (un mot qui déborde de sa carte peut l'élargir).
+  const sw = document.documentElement.scrollWidth;
+  const vw = document.documentElement.clientWidth;
+  const out = sw > vw ? [`page plus large que l'écran (${sw} > ${vw})`] : [];
   const probe = document.createElement('span');
   probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;left:-9999px;top:0';
   document.body.append(probe);
-  const headings = document.querySelectorAll('h1, h2, h3, h4');
+  // Titres, et noms des espèces emblématiques de la frise (/periodes/).
+  const headings = document.querySelectorAll('h1, h2, h3, h4, .meso-iconic-name');
   for (const h of headings) {
     if (h.closest('#evato-sidebar, .leaflet-container')) continue;
     const cs = getComputedStyle(h);
@@ -200,4 +204,58 @@ test('sans container queries : tailles de repli saines (fiche, cartes, vitrines,
     await context.close();
   }
   assert.deepEqual(failures, []);
+});
+
+// Balayage tous les 8 px de 320 à 1 440 px : une seule page chargée par URL, fenêtre
+// redimensionnée sur place (la grille des vitrines changeait de disposition entre 1 184
+// et 1 272 px et coupait les noms).
+test('balayage 320 → 1 440 px tous les 8 px (vitrines, périodes, codex, comprendre) : aucun mot coupé, rien ne déborde', { timeout: 600_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const failures = [];
+  const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  for (const path of ['/vitrines/', '/periodes/', '/codex/', '/comprendre/']) {
+    await page.goto(env.base + path, { waitUntil: 'load' });
+    if (path === '/codex/') await page.waitForSelector('.species-card');
+    await page.evaluate(() => document.fonts.ready);
+    for (let width = 320; width <= 1440; width += 8) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+      for (const f of await audit(page)) failures.push(`${path} @${width} : ${f}`);
+    }
+  }
+  await context.close();
+  assert.deepEqual([...new Set(failures)], []);
+});
+
+// Frise des périodes, noms des espèces emblématiques : 320 → 400 px tous les 8 px, police
+// normale, police racine ×1,25, espacements WCAG 1.4.12 — pas de défilement horizontal,
+// aucun nom rogné ni débordant (coupure permise seulement sous espacements imposés).
+test('/periodes/ 320 → 400 px (×1, ×1,25, espacements 1.4.12) : la frise tient dans la largeur', { timeout: 300_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const failures = [];
+  const VARIANTS = {
+    normal: '',
+    'police ×1,25': 'html { font-size: 21.875px !important; }',
+    'espacements 1.4.12': '* { line-height: 1.5 !important; letter-spacing: 0.12em !important; word-spacing: 0.16em !important; } p { margin-bottom: 2em !important; }',
+  };
+  const context = await env.browser.newContext({ viewport: { width: 400, height: 844 }, reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  for (const [name, css] of Object.entries(VARIANTS)) {
+    await page.goto(`${env.base}/periodes/`, { waitUntil: 'load' });
+    if (css) await page.addStyleTag({ content: css });
+    await page.evaluate(() => document.fonts.ready);
+    for (let width = 320; width <= 400; width += 8) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+      for (const f of await audit(page)) {
+        if (name !== 'normal' && / coupé$/.test(f)) continue;
+        failures.push(`${name} @${width} : ${f}`);
+      }
+    }
+  }
+  await context.close();
+  assert.deepEqual([...new Set(failures)], []);
 });

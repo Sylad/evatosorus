@@ -498,7 +498,10 @@ const visitPaths = [
       line-height: 1.58;
     }
 
-    @media (max-width: 1180px) {
+    /* Une carte par ligne jusqu'à 1 280 px (et non 1 180) : entre 1 184 et 1 272 px, deux
+       cartes côte à côte laissaient au nom une colonne de 144 px, trop étroite même au
+       plancher (« Pachycéphalosaure » demande 184 px) — le nom se coupait. */
+    @media (max-width: 1280px) {
       .vitrine-grid {
         grid-template-columns: 1fr;
       }
