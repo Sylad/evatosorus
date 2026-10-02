@@ -267,3 +267,21 @@
     0 0 6px rgba(0, 0, 0, 0.7),
     0 1px 3px rgba(0, 0, 0, 0.85);
 }
+
+/* Sur-titres posés sur une VIDÉO de bandeau (codex, périodes, carte, films, vitrines) :
+   le halo ne suffit pas sur les images les plus claires de la vidéo (3,7:1 mesuré sur la
+   carte à 375 px). Une étiquette sombre translucide, bordée d'ambre comme les pastilles
+   du site, tient le texte au-dessus de 5,5:1 quelle que soit l'image ; le texte garde
+   son alignement (la marge négative compense le retrait intérieur). */
+.page-hero-eyebrow,
+.films-hero-overlay .codex-eyebrow,
+.vitrine-hero .page-kicker {
+  align-self: flex-start;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.3em 0.45em 0.3em 0.6em;
+  margin-left: -0.6em;
+  border-radius: 4px;
+  background: rgba(13, 10, 6, 0.8);
+  box-shadow: inset 0 0 0 1px rgba(212, 165, 94, 0.25);
+}
