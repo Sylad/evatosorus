@@ -225,3 +225,59 @@ test('320 px, captures pas encore chargées : la place est réservée aux bonnes
   }
   await context.close();
 });
+
+// ── L27 : lien permanent par entrée (/nouveautes/#<slug>), repris d'AetherWX ─────────
+test('L27 : le titre de chaque entrée est un lien vers son ancre (#slug), l’entrée est focalisable', () => {
+  const page = html();
+  for (const e of DATA.entries) {
+    const start = page.indexOf(`id="${e.slug}"`);
+    const block = page.slice(start, page.indexOf('</article>', start));
+    assert.match(block, new RegExp(`<a href="#${e.slug}" class="news-permalink"`), `${e.slug} : lien permanent absent`);
+    assert.match(page.slice(page.lastIndexOf('<article', start), start + 200), /tabindex="-1"/, `${e.slug} : entrée non focalisable`);
+  }
+});
+
+test('L27 : arriver sur /nouveautes/#<slug> signale l’entrée, lui donne le focus, juste sous le haut de l’écran', { timeout: 60_000 }, async (t) => {
+  const env = await setup(t);
+  if (!env) return;
+  const target = DATA.entries.at(-1).slug;
+  for (const width of [390, 1440]) {
+    const context = await env.browser.newContext({ viewport: { width, height: width > 1000 ? 900 : 844 }, reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    await page.goto(`${env.base}/nouveautes/#${target}`, { waitUntil: 'load' });
+    await page.waitForFunction((s) => document.activeElement?.id === s, target);
+    assert.deepEqual(await page.locator('article.is-target').evaluateAll((as) => as.map((a) => a.id)), [target]);
+    const top = await page.locator(`[id="${target}"]`).evaluate((a) => a.getBoundingClientRect().top);
+    // Au téléphone, le bouton du menu (fixe, en haut à droite) ne doit pas masquer le titre.
+    assert.ok(top >= (width > 1000 ? 0 : 56) - 1 && top < 200, `${width}px : entrée à ${top}px du haut`);
+    await context.close();
+  }
+});
+
+test('L27 : au clavier, Tab atteint le lien permanent (contour visible) ; Entrée met l’ancre dans l’URL, copie le lien et l’annonce', { timeout: 60_000 }, async (t) => {
+  const env = await setup(t);
+  if (!env) return;
+  const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 }, permissions: ['clipboard-read', 'clipboard-write'] });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+  const slug = DATA.entries[0].slug;
+  let reached = false;
+  for (let i = 0; i < 40 && !reached; i++) {
+    await page.keyboard.press('Tab');
+    reached = await page.evaluate((s) => document.activeElement?.getAttribute('href') === `#${s}`, slug);
+  }
+  assert.ok(reached, 'lien permanent hors de l’ordre de tabulation');
+  const outline = await page.evaluate(() => {
+    const s = getComputedStyle(document.activeElement);
+    return { style: s.outlineStyle, width: parseFloat(s.outlineWidth) };
+  });
+  assert.ok(outline.style !== 'none' && outline.width >= 2, `contour de focus invisible (${JSON.stringify(outline)})`);
+  await page.keyboard.press('Enter');
+  await page.waitForFunction((s) => location.hash === `#${s}`, slug);
+  const status = page.locator(`[id="${slug}"] .news-link-status`);
+  await page.waitForFunction((s) => document.querySelector(`[id="${s}"] .news-link-status`)?.textContent.trim(), slug);
+  assert.equal(await status.getAttribute('role'), 'status');
+  assert.equal((await status.textContent()).trim(), 'Lien copié dans le presse-papiers');
+  assert.equal(await page.evaluate(() => navigator.clipboard.readText()), `${env.base}/nouveautes/#${slug}`);
+  await context.close();
+});

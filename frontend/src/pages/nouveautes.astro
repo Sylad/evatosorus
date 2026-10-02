@@ -56,9 +56,15 @@ const pngSize = (rel: string) => {
       <ol class="news-list">
         {entries.map((e) => (
           <li>
-            <article class="news-entry" id={e.slug} aria-labelledby={`${e.slug}-titre`}>
+            <article class="news-entry" id={e.slug} tabindex="-1" aria-labelledby={`${e.slug}-titre`}>
               <p class="news-date"><time datetime={e.date}>{formatDate(e.date)}</time></p>
-              <h2 id={`${e.slug}-titre`}>{e.title}</h2>
+              {/* L27 : le titre est le lien permanent de l'entrée (/nouveautes/#<slug>), copié au clic. */}
+              <h2 id={`${e.slug}-titre`}><a
+                  href={`#${e.slug}`}
+                  class="news-permalink"
+                  title="Lien vers cette nouveauté (copié au clic)"
+                >{e.title}</a></h2>
+              <p class="news-link-status" role="status"></p>
               {/* HTML produit par cadence depuis le Markdown du dépôt (texte échappé à la génération). */}
               <div class="news-body" set:html={e.html} />
               {e.captures.length > 0 && (
@@ -140,6 +146,49 @@ const pngSize = (rel: string) => {
       border-radius: 6px;
       box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.6);
     }
+    /* L27 — entrée visée par un lien permanent : posée sous le haut de l'écran
+       (au téléphone, sous le bouton fixe du menu), bord ambre vif ; le focus
+       programmatique n'ajoute pas de second contour. */
+    .news-entry {
+      scroll-margin-top: 1.5rem;
+    }
+    @media (max-width: 1023px) {
+      .news-entry { scroll-margin-top: 4.25rem; }
+    }
+    .news-entry:focus {
+      outline: none;
+    }
+    .news-entry.is-target {
+      border-color: var(--color-evato-amber-bright);
+      box-shadow: 0 0 0 1px var(--color-evato-amber-bright), 0 12px 24px -12px rgba(0, 0, 0, 0.6);
+    }
+    .news-permalink {
+      color: inherit;
+      text-decoration: none;
+    }
+    .news-permalink:hover {
+      text-decoration: underline;
+      text-decoration-color: var(--color-evato-amber);
+      text-underline-offset: 5px;
+    }
+    .news-permalink:hover::after,
+    .news-permalink:focus-visible::after {
+      content: " #";
+      color: var(--color-evato-amber);
+    }
+    .news-permalink:focus-visible {
+      outline: 2px solid var(--color-evato-amber-bright);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+    .news-link-status {
+      margin: -0.6rem 0 1rem;
+      font-size: 0.85rem;
+      color: var(--color-evato-amber);
+    }
+    .news-link-status:empty {
+      display: none;
+    }
     .news-date {
       font-family: var(--font-display);
       font-size: 0.78rem;
@@ -213,4 +262,38 @@ const pngSize = (rel: string) => {
       font-style: italic;
     }
   </style>
+
+  <script>
+    import { entryForFragment, permalink } from '../lib/news-anchor';
+
+    // L27 — lien permanent (#slug) : le lien met l'ancre dans l'URL (comportement natif),
+    // on copie l'URL complète et on l'annonce (role="status").
+    let clearStatus: ReturnType<typeof setTimeout> | undefined;
+    document.addEventListener('click', async (e) => {
+      const link = (e.target as Element | null)?.closest?.<HTMLAnchorElement>('a.news-permalink');
+      if (!link) return;
+      const slug = decodeURIComponent(link.getAttribute('href')!.slice(1));
+      const status = document.getElementById(slug)?.querySelector<HTMLElement>('.news-link-status');
+      document.querySelectorAll<HTMLElement>('.news-link-status').forEach((s) => { s.textContent = ''; });
+      try {
+        await navigator.clipboard.writeText(permalink(location.origin, slug));
+        if (status) status.textContent = 'Lien copié dans le presse-papiers';
+      } catch {
+        if (status) status.textContent = "Lien affiché dans la barre d'adresse";
+      }
+      clearTimeout(clearStatus);
+      clearStatus = setTimeout(() => { if (status) status.textContent = ''; }, 4000);
+    });
+
+    // À l'arrivée sur une ancre (ou à son changement), l'entrée est signalée et reçoit le
+    // focus ; le défilement natif tient compte de scroll-margin-top.
+    function revealTarget() {
+      const articles = [...document.querySelectorAll<HTMLElement>('article.news-entry')];
+      const slug = entryForFragment(location.hash, articles.map((a) => ({ slug: a.id })));
+      for (const a of articles) a.classList.toggle('is-target', a.id === slug);
+      if (slug) document.getElementById(slug)!.focus({ preventScroll: true });
+    }
+    revealTarget();
+    window.addEventListener('hashchange', revealTarget);
+  </script>
 </CodexLayout>
