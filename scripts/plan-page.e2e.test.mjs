@@ -98,6 +98,14 @@ test('section vide : texte honnête (« Prévu » vide → « Les prochains trav
   else assert.ok(!page.includes('Les prochains travaux seront annoncés ici.'));
 });
 
+test('aucun identifiant de lot (« L27 »…) dans le texte visible ; il reste en data-id et id', () => {
+  const page = html();
+  const main = page.slice(page.indexOf('<main'), page.indexOf('</main>'));
+  const text = decode(main.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' '));
+  assert.doesNotMatch(text, /\bL\d+\b/, 'identifiant de lot visible');
+  for (const l of published) assert.match(page, new RegExp(`<li[^>]*id="lot-${l.id}"[^>]*data-id="${l.id}"|<li[^>]*data-id="${l.id}"[^>]*id="lot-${l.id}"`), `${l.id} : id d’élément absent`);
+});
+
 test('le menu de toutes les pages internes mène à /plan-de-travail/, actif sur la page', () => {
   for (const p of ['codex', 'about', 'nouveautes']) {
     assert.match(readFileSync(join(DIST, p, 'index.html'), 'utf8'), /<a href="\/plan-de-travail\/" class="codex-nav-link"/, p);
