@@ -226,3 +226,5 @@ lots:
     visible: true
     created: 2026-10-01
     started: 2026-10-01
+    notes:
+      - { date: 2026-10-02, text: "02-10 : récemment livré = les 8 derniers lots terminés (pas une fenêtre de jours : le site statique ne vieillit pas entre deux publications) ; titres de sous-tâches NON publiés, seulement le décompte faites/total ; lots abandonnés absents ; yaml passé en dependency (build Cloudflare)" }
