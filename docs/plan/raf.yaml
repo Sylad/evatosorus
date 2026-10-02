@@ -172,15 +172,17 @@ lots:
   - id: L21
     title: "Codex : état vide en français (« ne correspond à »), sans « 0-0 », compteur aria-live=polite"
     public: "Codex : un message clair quand une recherche ne donne rien"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-01
     started: 2026-10-02
+    ux: { date: 2026-10-02, verdict: "Revue ux-reviewer 02-10 : conforme — état vide en français, compteur « 0 espèce », une seule annonce polie par rafale et aucune au chargement, bouton Afficher toutes les espèces ; réserve levée : message et bouton remontés sous le compteur (visibles à 1440×900 et 390×844). Non vérifié : lecteur d'écran réel." }
+    finished: 2026-10-02
   - id: L22
     title: "Redistribution à 320 px : défilement horizontal sur /codex/, /about/, /vitrines/, fiches espèces (WCAG 1.4.10) ; décimales fr-FR sur la fiche espèce"
     public: "Petits écrans : des pages qui tiennent dans la largeur du téléphone"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-10-01
@@ -188,14 +190,18 @@ lots:
       - { date: 2026-10-01, text: "Revue UX L18 : cause mesurée = colonne 1fr de .codex-shell (min auto) → minmax(0,1fr) ou min-width:0 sur .codex-main ; débordement codex +55, fiche +42, about +27, films +8 px." }
       - { date: 2026-10-01, text: "Revue UX L19/L20 : à 320 px /codex/ scrollWidth 375 ; input.filter-search min-width 280px contribue au débordement → min-width:0 ou min(280px,100%)" }
     started: 2026-10-02
+    ux: { date: 2026-10-02, verdict: "Revue ux-reviewer 02-10 (balayage tous les 8 px de 320 à 1440, comparaison avec la production) : conforme après 2 correctifs, faits — vitrines empilées jusqu'à 1280 px (plus de mot coupé entre 1184 et 1272 px), frise des périodes sans débordement de 320 à 400 px, y compris police ×1,25 et espacements 1.4.12. Aucun défilement horizontal ; nombres au format français. Reste (lot à part) : titre d'espèce plus petit que le nom scientifique sur une dizaine de fiches à 320 px." }
+    finished: 2026-10-02
   - id: L23
     title: "Menu mobile au clavier : focus dans le tiroir à l'ouverture, inert sur le contenu, retour au burger à la fermeture, tiroir fermé retiré de l'ordre Tab (WCAG 2.4.3 / 2.4.11, préexistant, revue UX L18)"
     public: "Menu du téléphone : une navigation au clavier sans accroc"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-01
     started: 2026-10-02
+    ux: { date: 2026-10-02, verdict: "Revue ux-reviewer 02-10 (390 et 320, clavier et toucher) : conforme — focus dans le tiroir, page inerte derrière, Échap / voile / bouton rendent le focus au burger, tiroir fermé hors de l'ordre Tab, Ctrl+clic garde le tiroir ouvert, ancres à 79 px. Non vérifié : lecteur d'écran réel, Safari." }
+    finished: 2026-10-02
   - id: L24
     title: "Carte paléo-monde : tuiles CARTO « API KEY REQUIRED » vues en local (dark_nolabels) et clusters en chiffres nus — vérifier en prod, changer de fond gratuit si confirmé"
     public: "Carte du monde ancien : un fond de carte fiable et des repères lisibles"
@@ -206,12 +212,14 @@ lots:
   - id: L25
     title: Contraste des sur-titres de section posés sur l'image de fond (vidéos, films, périodes, carte, fiches) — même traitement qu'en L13 (halo + ombre), mesure au pire pixel
     public: "Des titres de section plus lisibles sur les images de fond"
-    status: doing
+    status: done
     estimate: 0.25
     quickwin: true
     visible: true
     created: 2026-10-01
     started: 2026-10-02
+    ux: { date: 2026-10-02, verdict: "Revue ux-reviewer 02-10 : conforme avec réserve, levée — étiquettes des bandeaux vidéo ≥ 5,8:1 au pire pixel (12 images, 360 à 1024 px ; la carte à 375 px passe de 3,65 à 7,85), halo renforcé sur les sur-titres de période (Trias 4,55:1 bords compris, cœur des glyphes ≥ 7,16)." }
+    finished: 2026-10-02
   - id: L26
     title: "Nouveautés : textes alternatifs décrivant chaque capture (WCAG 1.1.1) — dépend d'un champ alt dans cadence news"
     public: "Nouveautés : chaque capture décrite pour les lecteurs d'écran"
@@ -245,3 +253,22 @@ lots:
       - { date: 2026-10-02, text: "02-10 (décision Sylvain) : titres bruts jamais publiés — modèle finance-tracker : lot visible + titre public (public:, sinon titre de sa Nouveauté ; revues : public: exigé), sinon masqué ; titre public validé au build (≤ 80 car., ni « / », fichier, technique, identifiant de lot, sécurité)" }
     ux: { date: 2026-10-02, verdict: "Revue ux-reviewer 02-10 (1440/390/320) : non conforme au 1er passage (identifiants visibles, titre en double L19/L20, Prévu vide), réserves toutes levées — identifiants masqués, lots au même titre fondus, titres publics L21–L26 validés par Sylvain, dates « 1er », barre latérale visible à 1366×768. Reflow 320 px et contrastes ≥ 7,7:1 conformes. Non vérifié : lecteur d'écran réel." }
     finished: 2026-10-02
+  - id: L29
+    title: "Veille et enrichissement régulier du contenu (consigne Sylvain 02-10) : rechercher des informations à jour (découvertes et publications paléontologiques récentes, nouvelles espèces, films et documentaires), les vérifier sur des sources en ligne citées et datées, compléter et corriger les fiches et les pages ; images seulement si libres de droits ou créées pour le site ; fixer un rythme de revue et afficher la date de dernière mise à jour"
+    public: "Un site tenu à jour : découvertes récentes et fiches révisées régulièrement"
+    status: todo
+    estimate: 1
+    visible: true
+    created: 2026-10-02
+  - id: L30
+    title: "Titres : plancher de 1,5rem pour le titre d'une fiche espèce, avec césure douce posée au build dans les noms qui ne tiennent pas (environ 77 à 320 px, dont Micropachycephalosaurus aujourd'hui plus petit que son nom scientifique) ; taille uniforme par grille de vitrines (20,7 à 28,8 px aujourd'hui) — revue UX du 02-10"
+    public: "Des titres de fiches plus grands sur les petits téléphones"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-10-02
+  - id: L31
+    title: "Nettoyage récurrent des fichiers de travail devenus inutiles (consigne Sylvain 02-10) : dossier tmp partagé, documents périmés, scripts jetables, captures non référencées, fichiers générés orphelins — lister avant de supprimer, ne rien effacer hors tmp sans l'avoir regardé ; à refaire à chaque clôture de vague. Aussi : l'enrichissement des espèces (npm run enrich:species) peut réintroduire « 1,5 tonnes » sur Labocania"
+    status: todo
+    estimate: 0.25
+    created: 2026-10-02

@@ -111,12 +111,18 @@ test('aucun identifiant de lot (« L27 »…) dans le texte visible ; il reste e
   const main = page.slice(page.indexOf('<main'), page.indexOf('</main>'));
   const text = decode(main.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' '));
   assert.doesNotMatch(text, /\bL\d+\b/, 'identifiant de lot visible');
-  // Chaque lot publié a sa ligne (id lot-<id>), ou est fondu dans celle d'un lot au même titre (data-also).
-  for (const l of published) {
+  // Chaque lot publié en cours ou prévu a sa ligne (id lot-<id>), ou est fondu dans celle d'un lot
+  // au même titre (data-also). Les lots livrés ne sont pas tous affichés : la page ne garde que
+  // les plus récents (RECENT_DONE = 8 lignes), donc on vérifie leur nombre, pas chaque lot.
+  for (const l of published.filter((x) => x.status !== 'done')) {
     const own = new RegExp(`<li[^>]*data-id="${l.id}" id="lot-${l.id}"`).test(page);
     const merged = new RegExp(`<li[^>]*data-also="[^"]*\\b${l.id}\\b`).test(page);
     assert.ok(own || merged, `${l.id} : ni ligne ni fusion`);
   }
+  const doneIds = new Set(published.filter((x) => x.status === 'done').map((x) => x.id));
+  const doneRows = [...page.matchAll(/<li[^>]*data-id="([^"]+)" id="lot-\1"/g)].filter((m) => doneIds.has(m[1]));
+  assert.ok(doneRows.length <= 8, `${doneRows.length} lots livrés affichés, 8 au plus`);
+  if (doneIds.size > 0) assert.ok(doneRows.length >= 1, 'aucun lot livré affiché');
 });
 
 test('un titre public n’apparaît qu’une fois par section (lots fondus, date la plus récente)', () => {

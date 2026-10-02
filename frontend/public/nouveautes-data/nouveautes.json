@@ -1,7 +1,24 @@
 {
   "project": "evatosorus",
-  "generated": "2026-10-02 08:47",
+  "generated": "2026-10-02 19:08",
   "entries": [
+    {
+      "slug": "2026-10-02-un-site-plus-lisible-et-plus-facile-a-parcourir-au-telephone",
+      "title": "Un site plus lisible et plus facile à parcourir au téléphone",
+      "date": "2026-10-02",
+      "lots": [
+        "L21",
+        "L22",
+        "L23",
+        "L25"
+      ],
+      "captures": [
+        "captures/L25-bandeau-carte-sur-titre.png",
+        "captures/L21-codex-aucun-resultat.png",
+        "captures/L23-menu-telephone-clavier.png"
+      ],
+      "html": "<p>Quatre améliorations de lisibilité et d'accessibilité, surtout sensibles sur un petit écran.</p>\n<ul><li><strong>Plus de défilement sur le côté au téléphone</strong> : le codex, les vitrines, la page À propos et les fiches d'espèces tiennent dans la largeur de l'écran. Les titres s'ajustent à leur mot le plus long au lieu d'être coupés ou de déborder.</li><li><strong>Des nombres à la française</strong> : « 201,4 → 192,9 Ma », des notes de films avec une virgule, et les petits animaux pesés en kilogrammes plutôt qu'en « 0 t ».</li><li><strong>Le menu du téléphone se pilote au clavier</strong> : il prend le focus à l'ouverture, la page derrière est mise en pause, et Échap le referme.</li><li><strong>Des sur-titres lisibles sur les images et les vidéos</strong> : ceux des bandeaux ont maintenant un fond sombre, ceux des fiches un halo renforcé.</li><li><strong>Le codex répond clairement quand une recherche ne donne rien</strong>, avec un bouton pour réafficher toutes les espèces.</li></ul>"
+    },
     {
       "slug": "2026-10-02-une-page-plan-de-travail-montre-ce-qui-se-prepare",
       "title": "Une page Plan de travail montre ce qui se prépare",
