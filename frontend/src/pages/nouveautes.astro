@@ -48,6 +48,8 @@ const pngSize = (rel: string) => {
       <p class="lede">
         Le journal des évolutions du site, la plus récente en premier.
       </p>
+      {/* L27 : rempli au chargement selon la dernière visite (localStorage). */}
+      <p class="news-since" role="status"></p>
     </header>
 
     {entries.length === 0 ? (
@@ -57,7 +59,7 @@ const pngSize = (rel: string) => {
         {entries.map((e) => (
           <li>
             <article class="news-entry" id={e.slug} tabindex="-1" aria-labelledby={`${e.slug}-titre`}>
-              <p class="news-date"><time datetime={e.date}>{formatDate(e.date)}</time></p>
+              <p class="news-date"><time datetime={e.date}>{formatDate(e.date)}</time><span class="news-new-slot"></span></p>
               {/* L27 : le titre est le lien permanent de l'entrée (/nouveautes/#<slug>), copié au clic. */}
               <h2 id={`${e.slug}-titre`}><a
                   href={`#${e.slug}`}
@@ -189,6 +191,51 @@ const pngSize = (rel: string) => {
     .news-link-status:empty {
       display: none;
     }
+    /* L27 — « N nouveautés depuis votre dernière visite » : bandeau sur le fond de carte
+       (lisible quelle que soit l'image derrière), masqué quand il est vide. */
+    .news-since {
+      margin: -1.25rem 0 2rem;
+      padding: 0.6rem 1rem;
+      background: rgba(20, 14, 8, 0.92);
+      border-left: 3px solid var(--color-evato-amber-bright);
+      border-radius: 4px;
+      color: var(--color-evato-bone);
+      font-size: 1rem;
+    }
+    .news-since:empty {
+      display: none;
+    }
+    /* Marque « Nouveau » : un mot écrit, pas seulement une couleur. */
+    .news-list :global(.news-new) {
+      display: inline-block;
+      margin-left: 0.75rem;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      background: var(--color-evato-amber-bright);
+      color: var(--color-evato-bg);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+    }
+    /* Séparateur « Déjà vu lors de votre visite du … » avant la première entrée déjà vue. */
+    .news-list :global(.news-seen-sep) {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .news-list :global(.news-seen-sep)::before,
+    .news-list :global(.news-seen-sep)::after {
+      content: "";
+      flex: 1;
+      border-top: 1px solid rgba(212, 165, 94, 0.45);
+    }
+    .news-list :global(.news-seen-sep span) {
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(20, 14, 8, 0.92);
+      color: var(--color-evato-bone-muted);
+      font-size: 0.85rem;
+      text-align: center;
+    }
     .news-date {
       font-family: var(--font-display);
       font-size: 0.78rem;
@@ -265,6 +312,57 @@ const pngSize = (rel: string) => {
 
   <script>
     import { entryForFragment, permalink } from '../lib/news-anchor';
+    import {
+      NEWS_SEEN_EVENT, browserStorage, isUnseen, markAllSeen, readSeen, seenSeparatorLabel,
+    } from '../lib/news-badge';
+
+    // L27 — dernière visite (repris d'AetherWX news-badge) : « N nouveautés depuis votre
+    // dernière visite », marque « Nouveau » sur ces entrées, séparateur « Déjà vu lors de
+    // votre visite du … » avant la première déjà vue ; puis tout est marqué vu et la
+    // pastille du menu s'éteint. Premier visiteur : rien n'est marqué nouveau.
+    function markVisit() {
+      const list = document.querySelector('.news-list');
+      if (!list) return;
+      const articles = [...list.querySelectorAll<HTMLElement>('article.news-entry')];
+      const entries = articles.map((a) => ({ slug: a.id, date: a.querySelector('time')!.dateTime }));
+      const storage = browserStorage();
+      const seen = readSeen(storage);
+      const fresh = entries.map((e) => isUnseen(e, seen));
+      const count = fresh.filter(Boolean).length;
+
+      articles.forEach((a, i) => {
+        const slot = a.querySelector('.news-new-slot');
+        if (!slot) return;
+        slot.replaceChildren();
+        if (fresh[i]) {
+          const mark = document.createElement('span');
+          mark.className = 'news-new';
+          mark.textContent = 'Nouveau';
+          slot.append(mark);
+        }
+      });
+      const since = document.querySelector('.news-since');
+      if (since) {
+        since.textContent = !count ? '' : count === 1
+          ? '1 nouveauté depuis votre dernière visite'
+          : `${count} nouveautés depuis votre dernière visite`;
+      }
+      list.querySelectorAll('.news-seen-sep').forEach((n) => n.remove());
+      const last = fresh.lastIndexOf(true);
+      if (seen && last >= 0 && last + 1 < articles.length) {
+        const sep = document.createElement('li');
+        sep.className = 'news-seen-sep';
+        // Repère visuel ; la ligne « N nouveautés depuis… » le dit aux lecteurs d'écran.
+        sep.setAttribute('aria-hidden', 'true');
+        const text = document.createElement('span');
+        text.textContent = seenSeparatorLabel(seen.at);
+        sep.append(text);
+        articles[last + 1].closest('li')!.before(sep);
+      }
+      markAllSeen(storage, entries);
+      window.dispatchEvent(new Event(NEWS_SEEN_EVENT));
+    }
+    markVisit();
 
     // L27 — lien permanent (#slug) : le lien met l'ancre dans l'URL (comportement natif),
     // on copie l'URL complète et on l'annonce (role="status").

@@ -281,3 +281,104 @@ test('L27 : au clavier, Tab atteint le lien permanent (contour visible) ; Entré
   assert.equal(await page.evaluate(() => navigator.clipboard.readText()), `${env.base}/nouveautes/#${slug}`);
   await context.close();
 });
+
+// ── L27 : pastille « nouveau » et séparateur « Déjà vu » (repris d'AetherWX news-badge) ──
+const SEEN_KEY = 'evato.news.seen-v1';
+const OLD_VISIT = { date: '2026-01-01', slugs: [], at: '2026-01-01T10:00:00.000Z' };
+const unseenText = (n) => (n === 1 ? '1 nouveauté non vue' : `${n} nouveautés non vues`);
+
+test('L27 : la barre latérale de chaque page porte l’index léger (slug + date) des nouveautés, sans leur texte', () => {
+  const page = readFileSync(join(DIST, 'codex', 'index.html'), 'utf8');
+  const m = page.match(/data-news-index="([^"]*)"/);
+  assert.ok(m, 'index des nouveautés absent de la barre latérale');
+  const index = JSON.parse(m[1].replaceAll('&#34;', '"').replaceAll('&quot;', '"').replaceAll('&amp;', '&'));
+  assert.deepEqual(index, DATA.entries.map(({ slug, date }) => ({ slug, date })));
+});
+
+test('L27 : pastille — premier visiteur sans pastille ; après une visite ancienne, nombre d’entrées non vues (texte + lecteur d’écran) au bureau et au téléphone ; éteinte après la visite de /nouveautes/', { timeout: 90_000 }, async (t) => {
+  const env = await setup(t);
+  if (!env) return;
+  const n = DATA.entries.length;
+  const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/about/`, { waitUntil: 'load' });
+  await page.waitForTimeout(200);
+  assert.equal(await page.locator('.news-badge:visible').count(), 0, 'pastille pour un premier visiteur');
+
+  await page.evaluate(([k, v]) => localStorage.setItem(k, JSON.stringify(v)), [SEEN_KEY, OLD_VISIT]);
+  await page.reload({ waitUntil: 'load' });
+  const link = page.locator('#evato-sidebar a[href="/nouveautes/"]');
+  await link.locator('.news-badge').waitFor({ state: 'visible' });
+  assert.equal((await link.locator('.news-badge').textContent()).trim(), String(n));
+  assert.equal(await link.locator('.news-badge').getAttribute('aria-hidden'), 'true');
+  assert.match(await link.textContent(), new RegExp(unseenText(n)), 'texte pour lecteur d’écran absent');
+  // La pastille ne grandit pas le lien (même hauteur que ses voisins, une seule ligne).
+  const h = await link.evaluate((a) => a.getBoundingClientRect().height);
+  const ref = await page.locator('#evato-sidebar a[href="/codex/"]').evaluate((a) => a.getBoundingClientRect().height);
+  assert.ok(h <= ref + 0.5, `lien Nouveautés plus haut que ses voisins (${h}px contre ${ref}px)`);
+
+  // Téléphone : le bouton du menu l'annonce et porte la pastille ; le lien du tiroir aussi.
+  await page.setViewportSize({ width: 390, height: 844 });
+  const burger = page.locator('#evato-burger');
+  assert.equal(await burger.getAttribute('aria-label'), `Ouvrir la navigation (${unseenText(n)})`);
+  assert.equal((await burger.locator('.news-badge').textContent()).trim(), String(n));
+  await burger.click();
+  assert.equal(await burger.getAttribute('aria-label'), 'Fermer la navigation');
+  await link.locator('.news-badge').waitFor({ state: 'visible' });
+
+  // Visite de la page : tout est marqué vu, la pastille s'éteint (et ne revient pas).
+  await Promise.all([page.waitForURL((u) => u.pathname === '/nouveautes/'), link.click()]);
+  await page.waitForFunction(() => ![...document.querySelectorAll('.news-badge')].some((b) => b.offsetParent));
+  const stored = await page.evaluate((k) => JSON.parse(localStorage.getItem(k)), SEEN_KEY);
+  assert.equal(stored.date, DATA.entries.map((e) => e.date).sort().at(-1));
+  await page.goto(`${env.base}/codex/`, { waitUntil: 'load' });
+  await page.waitForTimeout(200);
+  assert.equal(await page.locator('.news-badge:visible').count(), 0, 'pastille revenue après la visite');
+  assert.equal(await page.locator('#evato-burger').getAttribute('aria-label'), 'Ouvrir la navigation');
+  await context.close();
+});
+
+test('L27 : page — « N nouveautés depuis votre dernière visite », marque textuelle « Nouveau » ; premier visiteur sans marque', { timeout: 60_000 }, async (t) => {
+  const env = await setup(t);
+  if (!env) return;
+  const n = DATA.entries.length;
+  const context = await env.browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+  await page.waitForTimeout(200);
+  assert.equal(await page.locator('.news-new').count(), 0);
+  assert.equal((await page.locator('.news-since').textContent()).trim(), '');
+  await page.evaluate(([k, v]) => localStorage.setItem(k, JSON.stringify(v)), [SEEN_KEY, OLD_VISIT]);
+  await page.reload({ waitUntil: 'load' });
+  await page.locator('.news-new').first().waitFor();
+  assert.equal(await page.locator('.news-new').count(), n);
+  assert.equal((await page.locator('.news-new').first().textContent()).trim(), 'Nouveau');
+  assert.equal((await page.locator('.news-since').textContent()).trim(), n === 1 ? '1 nouveauté depuis votre dernière visite' : `${n} nouveautés depuis votre dernière visite`);
+  assert.equal(await page.locator('.news-since').getAttribute('role'), 'status');
+  assert.equal(await page.locator('.news-seen-sep').count(), 0, 'séparateur sans entrée déjà vue');
+  for (const { sel, ratio } of await worstContrast(page)) assert.ok(ratio >= 4.5, `${sel} : ${ratio.toFixed(2)}:1`);
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+  assert.ok(overflow <= 0, `débordement horizontal de ${overflow}px`);
+  await context.close();
+});
+
+test('L27 : séparateur « Déjà vu lors de votre visite du … » avant la première entrée déjà vue', { timeout: 60_000 }, async (t) => {
+  if (DATA.entries.length < 2) { t.skip('il faut au moins deux nouveautés'); return; }
+  const env = await setup(t);
+  if (!env) return;
+  // Visite qui a vu toutes les entrées sauf la plus récente.
+  const date = DATA.entries[1].date;
+  const visit = { date, slugs: DATA.entries.slice(1).filter((e) => e.date === date).map((e) => e.slug), at: '2026-10-01T08:30:00.000Z' };
+  const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 }, timezoneId: 'Europe/Paris' });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/about/`, { waitUntil: 'load' });
+  await page.evaluate(([k, v]) => localStorage.setItem(k, JSON.stringify(v)), [SEEN_KEY, visit]);
+  await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+  const sep = page.locator('.news-seen-sep');
+  await sep.waitFor();
+  assert.equal(await sep.count(), 1);
+  assert.equal((await sep.textContent()).trim(), 'Déjà vu lors de votre visite du 1 octobre 2026 à 10:30');
+  assert.equal(await sep.evaluate((li) => li.nextElementSibling.querySelector('article').id), DATA.entries[1].slug);
+  assert.equal(await page.locator('.news-new').count(), 1);
+  await context.close();
+});
