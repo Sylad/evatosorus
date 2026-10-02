@@ -187,6 +187,14 @@ const totalSpecies = formatCount(SPECIES.length);
   @media (min-width: 640px) {
     .landing-secondary { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 0.8rem; gap: 0.6rem; }
   }
+  /* Revue UX L27/L28 : 8 liens → 4 colonnes × 2 rangées au bureau (plus de rangée
+     orpheline, l'accueil tient dans 1440×900). « Carte paléo-monde » tient sur une
+     ligne à police inchangée grâce à l'interlettrage du téléphone (0.03em) et à un
+     retrait latéral plus court. */
+  @media (min-width: 1024px) {
+    .landing-secondary { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .landing-secondary .cta-link { letter-spacing: 0.03em; padding-inline: 0.3rem; }
+  }
 
   /* Action principale : la seule pleine. Action secondaire : contour.
      Voile .70 sous les liens en contour : 4,5:1 sur toute image des vidéos
