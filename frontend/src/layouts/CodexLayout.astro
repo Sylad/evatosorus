@@ -301,6 +301,12 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
       text-decoration: none;
       transition: color 200ms, border-color 200ms, background 200ms;
     }
+    /* Revue UX L27/L28 : 11 liens — sur un bureau bas (1366×768, 1280×720), liens
+       resserrés pour que « À propos » reste dans l'écran ; cibles ≥ 24 px (~31 px). */
+    @media (min-width: 1024px) and (max-height: 860px) {
+      .codex-nav { gap: 0.15rem; }
+      .codex-nav-link { padding-block: 0.3rem; }
+    }
     .codex-nav-link:hover {
       color: var(--color-evato-amber-bright);
       border-left-color: var(--color-evato-amber);
