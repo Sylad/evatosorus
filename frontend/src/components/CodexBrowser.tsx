@@ -122,16 +122,22 @@ export function CodexBrowser({
     : 'Aucune espèce ne correspond à ces filtres.';
 
   // L21 — région live polie : rien au chargement, puis la valeur STABILISÉE après un
-  // changement de recherche ou de filtre (pas une annonce par touche).
+  // changement de recherche ou de filtre (pas une annonce par touche). Le message nomme
+  // la recherche, et la région est vidée dès la frappe : deux recherches au même nombre
+  // de résultats sont annoncées chacune (un texte identique ne serait pas relu).
   useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false;
       return;
     }
+    setAnnouncement('');
     const n = filtered.length;
+    const context = query
+      ? ` pour «\u202f${query}\u202f»${isFiltered(state) ? ' avec ces filtres' : ''}`
+      : isFiltered(state) ? ' avec ces filtres' : '';
     const text = n === 0
       ? emptyMessage
-      : `${formatCount(n)} espèce${n > 1 ? 's' : ''} trouvée${n > 1 ? 's' : ''}.`;
+      : `${formatCount(n)} espèce${n > 1 ? 's' : ''} trouvée${n > 1 ? 's' : ''}${context}.`;
     const timer = window.setTimeout(() => setAnnouncement(text), ANNOUNCE_DELAY_MS);
     return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps

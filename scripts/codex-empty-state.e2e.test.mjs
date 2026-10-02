@@ -74,7 +74,7 @@ test('codex : compteur au format L19 avec résultats, région live polie, une se
   const log = await page.evaluate(() => window.__liveLog);
   const n = await page.evaluate(() => document.querySelectorAll('.species-card').length);
   assert.equal(log.length, 1, `annonces : ${JSON.stringify(log)}`);
-  assert.match(log[0], /espèces? trouvées?/, log[0]);
+  assert.match(log[0], /^\d+ espèces? trouvées? pour « raptor »\.$/, log[0]);
   const count = (await page.textContent('.filter-count')).replace(/\s+/g, ' ');
   assert.match(count, /^1 – \d+ sur \d+$/, count);
   assert.ok(n > 0);
@@ -87,5 +87,26 @@ test('codex : compteur au format L19 avec résultats, région live polie, une se
   const log2 = await page.evaluate(() => window.__liveLog);
   assert.equal(log2.length, 2, JSON.stringify(log2));
   assert.match(log2[1], /Aucune espèce ne correspond à « zzzqqq »/);
+  await context.close();
+});
+
+// Deux recherches différentes au même nombre de résultats : chacune est annoncée (le
+// message nomme la recherche ; la région est vidée à chaque nouvelle frappe), toujours
+// une fois par rafale.
+test('codex : deux recherches au même compte sont annoncées chacune', { timeout: 60_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const { context, page } = await openCodex(env);
+  await watchLive(page);
+  await page.locator('.filter-search').pressSequentially('tyrannosaurus', { delay: 30 });
+  await page.waitForTimeout(1500);
+  await page.fill('.filter-search', '');
+  await page.locator('.filter-search').pressSequentially('velociraptor', { delay: 30 });
+  await page.waitForTimeout(1500);
+  const log = await page.evaluate(() => window.__liveLog);
+  assert.deepEqual(log, [
+    '1 espèce trouvée pour « tyrannosaurus ».',
+    '1 espèce trouvée pour « velociraptor ».',
+  ]);
   await context.close();
 });
