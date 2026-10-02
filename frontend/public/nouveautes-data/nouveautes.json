@@ -1,7 +1,31 @@
 {
   "project": "evatosorus",
-  "generated": "2026-10-01 21:57",
+  "generated": "2026-10-02 08:47",
   "entries": [
+    {
+      "slug": "2026-10-02-une-page-plan-de-travail-montre-ce-qui-se-prepare",
+      "title": "Une page Plan de travail montre ce qui se prépare",
+      "date": "2026-10-02",
+      "lots": [
+        "L28"
+      ],
+      "captures": [
+        "captures/L28-plan-de-travail-telephone.png"
+      ],
+      "html": "<p>Une nouvelle page, <strong>Plan de travail</strong>, montre où en est le site : les travaux en cours, ceux qui sont prévus et ceux qui viennent d'être livrés.</p>\n<ul><li>Elle se trouve dans le menu, juste après <strong>Nouveautés</strong>, et sur la page d'accueil.</li><li>Chaque travail indique son état en toutes lettres, avec sa date de livraison quand il est terminé.</li><li>La page est remise à jour à chaque publication du site.</li></ul>"
+    },
+    {
+      "slug": "2026-10-02-une-pastille-signale-les-nouveautes-et-chaque-nouveaute-a-so",
+      "title": "Une pastille signale les nouveautés, et chaque nouveauté a son lien",
+      "date": "2026-10-02",
+      "lots": [
+        "L27"
+      ],
+      "captures": [
+        "captures/L27-pastille-copier-le-lien-telephone.png"
+      ],
+      "html": "<p>Vous voyez maintenant d'un coup d'œil s'il y a du nouveau depuis votre dernière visite, et vous pouvez partager une nouveauté précise.</p>\n<ul><li>Une <strong>pastille</strong> avec le nombre de nouveautés non vues apparaît à côté du lien <strong>Nouveautés</strong> : dans le menu, sur le bouton du menu au téléphone et sur la page d'accueil. Elle disparaît dès que vous ouvrez la page.</li><li>Sur la page, les entrées que vous n'avez pas encore vues portent la mention <strong>Nouveau</strong>, et une ligne « Déjà vu lors de votre visite du… » marque l'endroit où vous vous étiez arrêté.</li><li>Chaque nouveauté a un bouton <strong>Copier le lien</strong> : le lien ouvre la page directement sur cette nouveauté.</li><li>La page d'accueil donne maintenant accès aux <strong>Nouveautés</strong> et au <strong>Plan de travail</strong>.</li><li>Rien n'est envoyé à un serveur : la trace de votre dernière visite reste dans votre navigateur.</li></ul>"
+    },
     {
       "slug": "2026-10-01-une-page-nouveautes-pour-suivre-ce-qui-change-sur-le-site",
       "title": "Une page Nouveautés pour suivre ce qui change sur le site",

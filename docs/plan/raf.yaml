@@ -218,7 +218,7 @@ lots:
   - id: L27
     title: "Nouveautés : pastille « nouveau » (entrées non vues depuis la dernière visite, localStorage) + lien permanent par entrée /nouveautes#<slug> — modèle AetherWX news-badge/news-anchor et claude-code-codex L13"
     public: "Nouveautés : une pastille pour ce qui est nouveau, un lien par entrée"
-    status: doing
+    status: done
     estimate: 0.25
     quickwin: true
     visible: true
@@ -226,10 +226,12 @@ lots:
     started: 2026-10-01
     notes:
       - { date: 2026-10-02, text: "02-10 : session lead plantée ; travail partiel NON commité laissé en place (frontend/src/lib/news-anchor.ts, news-badge.ts + tests scripts/, package.json modifié) — à reprendre ou relire avant commit" }
+    ux: { date: 2026-10-02, verdict: "Revue ux-reviewer 02-10 (1440/390/320, Chromium, pixels rendus) : conforme après correction, réserves levées — bouton Copier le lien visible au toucher (150×48 px), titre non copiant, 0 px de décalage, référence de 1re visite sur toute page, liens Nouveautés et Plan sur l'accueil (4×2 au bureau, sans défilement à 1440×900). Pastille 12,97:1, annoncée. Non vérifié : lecteur d'écran réel, iOS." }
+    finished: 2026-10-02
   - id: L28
     title: "Page « Plan de travail » : ce qui est prévu, en cours et récemment livré, généré au build depuis docs/plan/raf.yaml (titres et états seulement, jamais les notes) — inspirée de la page « À venir » d'AetherWX"
     public: "Une page Plan de travail : ce qui se prépare sur le site"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-10-01
@@ -237,3 +239,5 @@ lots:
     notes:
       - { date: 2026-10-02, text: "02-10 : récemment livré = les 8 derniers lots terminés (pas une fenêtre de jours : le site statique ne vieillit pas entre deux publications) ; titres de sous-tâches NON publiés, seulement le décompte faites/total ; lots abandonnés absents ; yaml passé en dependency (build Cloudflare)" }
       - { date: 2026-10-02, text: "02-10 (décision Sylvain) : titres bruts jamais publiés — modèle finance-tracker : lot visible + titre public (public:, sinon titre de sa Nouveauté ; revues : public: exigé), sinon masqué ; titre public validé au build (≤ 80 car., ni « / », fichier, technique, identifiant de lot, sécurité)" }
+    ux: { date: 2026-10-02, verdict: "Revue ux-reviewer 02-10 (1440/390/320) : non conforme au 1er passage (identifiants visibles, titre en double L19/L20, Prévu vide), réserves toutes levées — identifiants masqués, lots au même titre fondus, titres publics L21–L26 validés par Sylvain, dates « 1er », barre latérale visible à 1366×768. Reflow 320 px et contrastes ≥ 7,7:1 conformes. Non vérifié : lecteur d'écran réel." }
+    finished: 2026-10-02
