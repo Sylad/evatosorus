@@ -227,14 +227,19 @@ test('320 px, captures pas encore chargées : la place est réservée aux bonnes
 });
 
 // ── L27 : lien permanent par entrée (/nouveautes/#<slug>), repris d'AetherWX ─────────
-test('L27 : le titre de chaque entrée est un lien vers son ancre (#slug), l’entrée est focalisable', () => {
+test('L27 : titre en texte simple ; bouton « Copier le lien » après la date de chaque entrée ; entrée focalisable', () => {
   const page = html();
   for (const e of DATA.entries) {
     const start = page.indexOf(`id="${e.slug}"`);
     const block = page.slice(start, page.indexOf('</article>', start));
-    assert.match(block, new RegExp(`<a href="#${e.slug}" class="news-permalink"`), `${e.slug} : lien permanent absent`);
+    const h2 = block.slice(block.indexOf('<h2'), block.indexOf('</h2>'));
+    assert.doesNotMatch(h2, /<a /, `${e.slug} : le titre est encore un lien`);
+    const date = block.slice(block.indexOf('class="news-date"'), block.indexOf('</p>', block.indexOf('class="news-date"')));
+    assert.match(date, /<button type="button" class="news-copy"[^>]*data-slug="/, `${e.slug} : bouton absent de la ligne de date`);
+    assert.match(date, /Copier le lien/);
     assert.match(page.slice(page.lastIndexOf('<article', start), start + 200), /tabindex="-1"/, `${e.slug} : entrée non focalisable`);
   }
+  assert.match(page, /<p[^>]*id="news-copy-status"[^>]*role="status"|<p[^>]*role="status"[^>]*id="news-copy-status"/, 'annonce pour lecteur d’écran absente');
 });
 
 test('L27 : arriver sur /nouveautes/#<slug> signale l’entrée, lui donne le focus, juste sous le haut de l’écran', { timeout: 60_000 }, async (t) => {
@@ -255,31 +260,72 @@ test('L27 : arriver sur /nouveautes/#<slug> signale l’entrée, lui donne le fo
   }
 });
 
-test('L27 : au clavier, Tab atteint le lien permanent (contour visible) ; Entrée met l’ancre dans l’URL, copie le lien et l’annonce', { timeout: 60_000 }, async (t) => {
+const copyGeometry = (page, slug) => page.evaluate((sl) => {
+  const art = document.getElementById(sl);
+  const btn = art.querySelector('.news-copy');
+  const r = (el) => { const b = el.getBoundingClientRect(); return { x: b.x, y: b.y + scrollY, w: b.width, h: b.height }; };
+  return { scrollY, hash: location.hash, btn: r(btn), h2: r(art.querySelector('h2')), body: r(art.querySelector('.news-body')), next: art.closest('li').nextElementSibling ? r(art.closest('li').nextElementSibling) : null };
+}, slug);
+
+test('L27 : au clavier, Tab atteint « Copier le lien » (contour visible, ≥ 24×24 px) ; Entrée copie sans défiler ni toucher l’URL ; retour dans le libellé, 0 px de décalage, annoncé', { timeout: 60_000 }, async (t) => {
   const env = await setup(t);
   if (!env) return;
-  const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 }, permissions: ['clipboard-read', 'clipboard-write'] });
+  const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 }, permissions: ['clipboard-read', 'clipboard-write'], reducedMotion: 'reduce' });
   const page = await context.newPage();
   await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
-  const slug = DATA.entries[0].slug;
+  const slug = DATA.entries[1].slug;
+  const btn = page.locator(`[id="${slug}"] .news-copy`);
+  await btn.scrollIntoViewIfNeeded();
+  await page.evaluate(() => scrollBy(0, 120));
+  // Tab depuis l'élément qui précède le bouton.
+  await btn.evaluate((b) => b.closest('article').focus());
   let reached = false;
-  for (let i = 0; i < 40 && !reached; i++) {
+  for (let i = 0; i < 10 && !reached; i++) {
     await page.keyboard.press('Tab');
-    reached = await page.evaluate((s) => document.activeElement?.getAttribute('href') === `#${s}`, slug);
+    reached = await page.evaluate((s) => document.activeElement?.matches(`[id="${s}"] .news-copy`), slug);
   }
-  assert.ok(reached, 'lien permanent hors de l’ordre de tabulation');
-  const outline = await page.evaluate(() => {
-    const s = getComputedStyle(document.activeElement);
-    return { style: s.outlineStyle, width: parseFloat(s.outlineWidth) };
-  });
-  assert.ok(outline.style !== 'none' && outline.width >= 2, `contour de focus invisible (${JSON.stringify(outline)})`);
+  assert.ok(reached, 'bouton hors de l’ordre de tabulation');
+  const outline = await page.evaluate(() => { const s = getComputedStyle(document.activeElement); return { style: s.outlineStyle, w: parseFloat(s.outlineWidth) }; });
+  assert.ok(outline.style !== 'none' && outline.w >= 2, `contour de focus invisible (${JSON.stringify(outline)})`);
+  const before = await copyGeometry(page, slug);
+  assert.ok(before.btn.w >= 24 && before.btn.h >= 24, `cible ${before.btn.w}×${before.btn.h}`);
   await page.keyboard.press('Enter');
-  await page.waitForFunction((s) => location.hash === `#${s}`, slug);
-  const status = page.locator(`[id="${slug}"] .news-link-status`);
-  await page.waitForFunction((s) => document.querySelector(`[id="${s}"] .news-link-status`)?.textContent.trim(), slug);
-  assert.equal(await status.getAttribute('role'), 'status');
-  assert.equal((await status.textContent()).trim(), 'Lien copié dans le presse-papiers');
+  await page.waitForFunction((s) => document.querySelector(`[id="${s}"] .news-copy`).dataset.state === 'ok', slug);
   assert.equal(await page.evaluate(() => navigator.clipboard.readText()), `${env.base}/nouveautes/#${slug}`);
+  assert.equal((await btn.locator('.news-copy-label:not(.is-hidden)').textContent()).trim(), 'Lien copié');
+  assert.equal((await page.locator('#news-copy-status').textContent()).trim(), 'Lien copié dans le presse-papiers');
+  const during = await copyGeometry(page, slug);
+  assert.equal(during.scrollY, before.scrollY, 'la page a défilé');
+  assert.equal(during.hash, before.hash, 'l’URL a changé');
+  assert.deepEqual(during.btn, before.btn, 'le bouton a changé de taille');
+  assert.deepEqual([during.h2, during.body, during.next], [before.h2, before.body, before.next], 'décalage pendant le retour');
+  await page.waitForFunction((s) => document.querySelector(`[id="${s}"] .news-copy`).dataset.state === 'idle', slug, { timeout: 8000 });
+  const after = await copyGeometry(page, slug);
+  assert.deepEqual([after.btn, after.h2, after.body, after.next], [before.btn, before.h2, before.body, before.next], 'décalage à la fin du retour');
+  assert.equal(await page.evaluate(() => document.activeElement?.classList.contains('news-copy')), true, 'focus perdu');
+  await context.close();
+});
+
+test('L27 : au toucher (390 px), « Copier le lien » est visible sans survol, cible ≥ 44 px ; un toucher copie sans défiler', { timeout: 60_000 }, async (t) => {
+  const env = await setup(t);
+  if (!env) return;
+  const context = await env.browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, permissions: ['clipboard-read', 'clipboard-write'], reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+  const slug = DATA.entries[1].slug;
+  const btn = page.locator(`[id="${slug}"] .news-copy`);
+  await btn.scrollIntoViewIfNeeded();
+  assert.ok(await btn.isVisible());
+  const before = await copyGeometry(page, slug);
+  assert.ok(before.btn.h >= 44 && before.btn.w >= 44, `cible tactile ${before.btn.w}×${before.btn.h}`);
+  await btn.tap();
+  await page.waitForFunction((s) => ['ok', 'ko'].includes(document.querySelector(`[id="${s}"] .news-copy`).dataset.state), slug);
+  const during = await copyGeometry(page, slug);
+  assert.equal(during.scrollY, before.scrollY, 'la page a défilé');
+  assert.equal(during.hash, '', 'l’URL a changé');
+  assert.deepEqual([during.btn, during.h2, during.body], [before.btn, before.h2, before.body], 'décalage');
+  // Pas de « # » ni de soulignement collant sur le titre.
+  assert.equal(await page.locator(`[id="${slug}"] h2 a`).count(), 0);
   await context.close();
 });
 
