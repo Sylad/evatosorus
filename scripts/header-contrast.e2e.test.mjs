@@ -11,6 +11,8 @@ const CASES = [
   ['/nouveautes/', '.news .lede'],
   ['/about/', '.about .codex-eyebrow'],
   ['/about/', '.about .lede'],
+  ['/plan-de-travail/', '.plan .codex-eyebrow'],
+  ['/plan-de-travail/', '.plan .lede'],
 ];
 
 test('sur-titre et chapeau ≥ 4,5:1 au pire pixel du fond (1440/390 px, scale 1,04, 1,07 et 1,10)', { timeout: 180_000 }, async (t) => {

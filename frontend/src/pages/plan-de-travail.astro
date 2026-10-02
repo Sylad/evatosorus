@@ -1,0 +1,222 @@
+---
+/*
+  L28 — Plan de travail : ce qui est en cours, prévu et récemment livré sur le site,
+  inspiré de la page « À venir » d'AetherWX.
+
+  Source : docs/plan/raf.yaml (tenu par raf, cadence), lu AU BUILD. On ne publie que
+  l'identifiant, le titre, l'état et le décompte des sous-tâches de chaque lot
+  (liste blanche de lib/plan-public.ts) : les notes, verdicts UX et raisons d'abandon
+  ne sont jamais lus, donc jamais rendus (scripts/plan-page.e2e.test.mjs le vérifie
+  sur tout dist/).
+*/
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import CodexLayout from '../layouts/CodexLayout.astro';
+import { parsePublicPlan, RECENT_DONE, type PublicLot } from '../lib/plan-public';
+
+// Build lancé depuis frontend/ (npm run build, Cloudflare Pages compris).
+const plan = parsePublicPlan(readFileSync(join(process.cwd(), '..', 'docs', 'plan', 'raf.yaml'), 'utf8'));
+
+const formatDate = (day: string) =>
+  new Date(`${day}T12:00:00Z`).toLocaleDateString('fr-FR', {
+    day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
+  });
+
+const plural = (n: number, one: string, many: string) => `${n} ${n > 1 ? many : one}`;
+
+const stateLabel = (l: PublicLot) =>
+  l.status === 'doing' ? 'En cours'
+    : l.status === 'todo' ? 'Prévu'
+      : l.finished ? `Livré le ${formatDate(l.finished)}` : 'Livré';
+
+const sections: { id: string; title: string; intro: string; lots: PublicLot[]; empty: string; news?: boolean }[] = [
+  { id: 'en-cours', title: 'En cours', intro: 'Ce qui est sur l’établi en ce moment.', lots: plan.doing, empty: 'Rien en cours pour l’instant.' },
+  { id: 'prevu', title: 'Prévu', intro: 'La suite, dans l’ordre du plan.', lots: plan.todo, empty: 'Rien de prévu pour l’instant.' },
+  {
+    id: 'livre',
+    title: 'Récemment livré',
+    intro: plan.counts.done > RECENT_DONE
+      ? `Les ${RECENT_DONE} derniers travaux terminés, sur ${plan.counts.done} au total.`
+      : 'Les derniers travaux terminés.',
+    news: true,
+    lots: plan.done,
+    empty: 'Rien de livré pour l’instant.',
+  },
+];
+---
+<CodexLayout
+  title="Plan de travail — Evatosorus"
+  description="Ce qui se prépare sur Evatosorus : travaux en cours, prévus et récemment livrés."
+  active="plan"
+>
+  <div class="plan">
+    <header>
+      <p class="codex-eyebrow">plan de travail</p>
+      <h1>Ce qui se prépare</h1>
+      <p class="lede">
+        Les travaux en cours, ceux qui suivent et ceux qui viennent d’être terminés,
+        mis à jour à chaque publication du site.
+      </p>
+    </header>
+
+    <p class="plan-summary">
+      <span>{plural(plan.counts.doing, 'travail en cours', 'travaux en cours')}</span>
+      <span aria-hidden="true" class="plan-sep">·</span>
+      <span>{plural(plan.counts.todo, 'prévu', 'prévus')}</span>
+      <span aria-hidden="true" class="plan-sep">·</span>
+      <span>{plural(plan.counts.done, 'livré', 'livrés')}</span>
+    </p>
+
+    {sections.map((s) => (
+      <section class="plan-section" aria-labelledby={`plan-${s.id}`}>
+        <h2 id={`plan-${s.id}`}>{s.title} <span class="plan-count">({s.lots.length})</span></h2>
+        <p class="plan-intro">
+          {s.intro}
+          {s.news && <Fragment> Ce qui change à l’écran est raconté dans les <a href="/nouveautes/">Nouveautés</a>.</Fragment>}
+        </p>
+        {s.lots.length === 0 ? (
+          <p class="plan-empty">{s.empty}</p>
+        ) : (
+          <ol class="plan-list">
+            {s.lots.map((l) => (
+              <li class="plan-lot" data-status={l.status} data-id={l.id}>
+                <p class="plan-lot-title">{l.title}</p>
+                <p class="plan-lot-meta">
+                  <span class="plan-state">{stateLabel(l)}</span>
+                  {l.tasks && (
+                    <span class="plan-tasks">
+                      {`${l.tasks.done}\u00a0sur\u00a0${plural(l.tasks.total, 'étape faite', 'étapes faites')}`}
+                    </span>
+                  )}
+                  <span class="plan-id">{l.id}</span>
+                </p>
+              </li>
+            ))}
+          </ol>
+        )}
+      </section>
+    ))}
+  </div>
+
+  <style>
+    .plan {
+      max-width: 70ch;
+    }
+    .codex-eyebrow {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.32em;
+      color: var(--color-evato-amber);
+      text-transform: uppercase;
+      margin: 0 0 0.4rem;
+      text-shadow: 0 0 2px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.85);
+    }
+    .plan h1 {
+      font-size: clamp(2rem, 6vw, 2.6rem);
+      margin: 0 0 0.8rem;
+      overflow-wrap: anywhere;
+    }
+    .lede {
+      font-size: 1.2rem;
+      line-height: 1.7;
+      color: var(--color-evato-bone);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+      margin: 0 0 1.5rem;
+    }
+    /* Bandeau et sections sur la carte quasi opaque des Nouveautés : contraste tenu
+       quelle que soit la zone de l'image de fond qui passe derrière. */
+    .plan-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem 0.7rem;
+      margin: 0 0 1.75rem;
+      padding: 0.6rem 1rem;
+      background: rgba(20, 14, 8, 0.92);
+      border-left: 3px solid var(--color-evato-amber);
+      border-radius: 4px;
+      color: var(--color-evato-bone);
+    }
+    .plan-sep {
+      color: var(--color-evato-amber);
+    }
+    .plan-section {
+      margin: 0 0 1.75rem;
+      padding: 1.5rem clamp(1rem, 4vw, 1.8rem) 1.25rem;
+      background: rgba(20, 14, 8, 0.92);
+      border: 1px solid rgba(212, 165, 94, 0.25);
+      border-left: 3px solid var(--color-evato-amber);
+      border-radius: 6px;
+      box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.6);
+    }
+    .plan-section h2 {
+      font-size: clamp(1.2rem, 4.2vw, 1.45rem);
+      letter-spacing: 0.04em;
+      line-height: 1.35;
+      color: var(--color-evato-amber-bright);
+      margin: 0 0 0.4rem;
+    }
+    .plan-count {
+      color: var(--color-evato-bone-muted);
+      font-size: 0.85em;
+    }
+    .plan-intro,
+    .plan-empty {
+      margin: 0 0 1rem;
+      color: var(--color-evato-bone-muted);
+      line-height: 1.6;
+    }
+    .plan-intro a {
+      color: var(--color-evato-amber-bright);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .plan-intro a:focus-visible {
+      outline: 2px solid var(--color-evato-amber-bright);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+    .plan-empty {
+      font-style: italic;
+    }
+    .plan-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .plan-lot {
+      padding: 0.85rem 0;
+      border-top: 1px solid rgba(212, 165, 94, 0.18);
+    }
+    .plan-lot-title {
+      margin: 0 0 0.35rem;
+      font-size: 1.05rem;
+      line-height: 1.55;
+      color: var(--color-evato-bone);
+      overflow-wrap: anywhere;
+    }
+    .plan-lot-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.3rem 0.9rem;
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--color-evato-bone-muted);
+    }
+    /* L'état est écrit en toutes lettres ; la couleur ne fait que le souligner. */
+    .plan-state {
+      font-family: var(--font-display);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      color: var(--color-evato-amber);
+    }
+    .plan-lot[data-status="doing"] .plan-state {
+      color: var(--color-evato-amber-bright);
+    }
+    .plan-id {
+      margin-left: auto;
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</CodexLayout>

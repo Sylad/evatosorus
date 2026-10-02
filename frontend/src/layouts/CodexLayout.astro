@@ -6,7 +6,7 @@ import newsData from '../../public/nouveautes-data/nouveautes.json';
 interface Props {
   title?: string;
   description?: string;
-  active?: 'vitrines' | 'codex' | 'comprendre' | 'periodes' | 'carte' | 'films' | 'videos' | 'nouveautes' | 'about' | 'home';
+  active?: 'vitrines' | 'codex' | 'comprendre' | 'periodes' | 'carte' | 'films' | 'videos' | 'nouveautes' | 'plan' | 'about' | 'home';
 }
 
 const { title, description, active = 'home' } = Astro.props;
@@ -25,6 +25,7 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
   { id: 'films',    label: 'Films',           href: '/films/' },
   { id: 'videos',   label: 'Vidéos',          href: '/videos/' },
   { id: 'nouveautes', label: 'Nouveautés',    href: '/nouveautes/' },
+  { id: 'plan',     label: 'Plan de travail', href: '/plan-de-travail/' },
   { id: 'about',    label: 'À propos',        href: '/about/' },
 ];
 ---
