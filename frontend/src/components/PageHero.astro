@@ -66,7 +66,9 @@ const { videoSrc, poster = '/hero-trex.jpg', eyebrow, title } = Astro.props;
     font-family: var(--font-display);
     font-size: 0.72rem;
     letter-spacing: 0.32em;
-    color: var(--color-evato-amber);
+    /* Sur la vidéo : ambre clair (comme le titre) + halo de global.css — l'ambre
+       moyen tombait à 2,9:1 sur les zones éclairées de la vidéo. */
+    color: var(--color-evato-amber-bright);
     text-transform: uppercase;
     margin: 0 0 0.3rem;
   }

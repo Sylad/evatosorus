@@ -250,3 +250,20 @@
     transition: none;
   }
 }
+
+/* ────────── Sur-titres posés sur l'image de fond ou une vidéo ──────────
+   Petit corps en capitales espacées, sur un fond qui bouge (image animée, vidéos) :
+   ombre de la marque doublée d'un halo serré, comme les sur-titres de Nouveautés et
+   À propos — le halo assombrit le fond juste sous les lettres. ≥ 4,5:1 mesuré au pire
+   pixel (scripts/eyebrow-contrast.e2e.test.mjs). */
+.codex-eyebrow,
+.page-hero-eyebrow,
+.section-kicker,
+.saga-title {
+  text-shadow:
+    0 0 1px #000,
+    0 0 2px #000,
+    0 0 3px rgba(0, 0, 0, 0.9),
+    0 0 6px rgba(0, 0, 0, 0.7),
+    0 1px 3px rgba(0, 0, 0, 0.85);
+}

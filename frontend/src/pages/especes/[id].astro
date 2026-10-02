@@ -429,7 +429,9 @@ const speciesInsights = [
       font-family: var(--font-display);
       font-size: 0.72rem;
       letter-spacing: 0.32em;
-      color: var(--accent);
+      /* Couleur de la période éclaircie vers l'ivoire : le jade (Jurassique) et la
+         rouille (Trias) purs plafonnaient à 5,6 et 4,7:1 même sur du noir. */
+      color: color-mix(in srgb, var(--accent) 60%, var(--color-evato-bone));
       text-transform: uppercase;
       margin: 0 0 0.4rem;
     }

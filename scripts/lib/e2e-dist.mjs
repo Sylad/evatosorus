@@ -80,7 +80,12 @@ export async function worstPixelContrast(page, selector) {
     const [a, b] = [await load(bg), await load(fg)];
     const lin = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
     const lum = (r, g, bl) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(bl);
-    const [r, g, bl] = color.match(/[\d.]+/g).map(Number);
+    // Couleur calculée normalisée en RGB 0–255 par un canevas : getComputedStyle rend
+    // color-mix() en « color(srgb 0.58 0.67 0.57) », pas en rgb().
+    const px = document.createElement('canvas').getContext('2d');
+    px.fillStyle = color;
+    px.fillRect(0, 0, 1, 1);
+    const [r, g, bl] = px.getImageData(0, 0, 1, 1).data;
     const L = lum(r, g, bl);
     let worst = Infinity; let glyphs = 0;
     for (let i = 0; i < a.length; i += 4) {
