@@ -4,18 +4,23 @@
   inspiré de la page « À venir » d'AetherWX.
 
   Source : docs/plan/raf.yaml (tenu par raf, cadence), lu AU BUILD. On ne publie que
-  l'identifiant, le titre, l'état et le décompte des sous-tâches de chaque lot
-  (liste blanche de lib/plan-public.ts) : les notes, verdicts UX et raisons d'abandon
-  ne sont jamais lus, donc jamais rendus (scripts/plan-page.e2e.test.mjs le vérifie
-  sur tout dist/).
+  les lots visibles qui ont un TITRE PUBLIC (champ public: du plan, sinon titre de leur
+  Nouveauté ; jamais le titre brut), avec leur état et le décompte de leurs sous-tâches
+  (liste blanche de lib/plan-public.ts) : titres bruts, notes, verdicts UX et raisons
+  d'abandon ne sont jamais rendus (scripts/plan-page.e2e.test.mjs le vérifie sur tout
+  dist/).
 */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import CodexLayout from '../layouts/CodexLayout.astro';
 import { parsePublicPlan, RECENT_DONE, type PublicLot } from '../lib/plan-public';
+import news from '../../public/nouveautes-data/nouveautes.json';
 
 // Build lancé depuis frontend/ (npm run build, Cloudflare Pages compris).
-const plan = parsePublicPlan(readFileSync(join(process.cwd(), '..', 'docs', 'plan', 'raf.yaml'), 'utf8'));
+const plan = parsePublicPlan(
+  readFileSync(join(process.cwd(), '..', 'docs', 'plan', 'raf.yaml'), 'utf8'),
+  news.entries,
+);
 
 const formatDate = (day: string) =>
   new Date(`${day}T12:00:00Z`).toLocaleDateString('fr-FR', {
@@ -30,8 +35,8 @@ const stateLabel = (l: PublicLot) =>
       : l.finished ? `Livré le ${formatDate(l.finished)}` : 'Livré';
 
 const sections: { id: string; title: string; intro: string; lots: PublicLot[]; empty: string; news?: boolean }[] = [
-  { id: 'en-cours', title: 'En cours', intro: 'Ce qui est sur l’établi en ce moment.', lots: plan.doing, empty: 'Rien en cours pour l’instant.' },
-  { id: 'prevu', title: 'Prévu', intro: 'La suite, dans l’ordre du plan.', lots: plan.todo, empty: 'Rien de prévu pour l’instant.' },
+  { id: 'en-cours', title: 'En cours', intro: 'Ce qui est sur l’établi en ce moment.', lots: plan.doing, empty: 'Rien d’annoncé pour l’instant.' },
+  { id: 'prevu', title: 'Prévu', intro: 'La suite, dans l’ordre du plan.', lots: plan.todo, empty: 'Rien d’annoncé pour l’instant.' },
   {
     id: 'livre',
     title: 'Récemment livré',

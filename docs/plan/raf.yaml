@@ -211,6 +211,7 @@ lots:
     created: 2026-10-01
   - id: L27
     title: "Nouveautés : pastille « nouveau » (entrées non vues depuis la dernière visite, localStorage) + lien permanent par entrée /nouveautes#<slug> — modèle AetherWX news-badge/news-anchor et claude-code-codex L13"
+    public: "Nouveautés : une pastille pour ce qui est nouveau, un lien par entrée"
     status: doing
     estimate: 0.25
     quickwin: true
@@ -221,6 +222,7 @@ lots:
       - { date: 2026-10-02, text: "02-10 : session lead plantée ; travail partiel NON commité laissé en place (frontend/src/lib/news-anchor.ts, news-badge.ts + tests scripts/, package.json modifié) — à reprendre ou relire avant commit" }
   - id: L28
     title: "Page « Plan de travail » : ce qui est prévu, en cours et récemment livré, généré au build depuis docs/plan/raf.yaml (titres et états seulement, jamais les notes) — inspirée de la page « À venir » d'AetherWX"
+    public: "Une page Plan de travail : ce qui se prépare sur le site"
     status: doing
     estimate: 0.5
     visible: true
@@ -228,3 +230,4 @@ lots:
     started: 2026-10-01
     notes:
       - { date: 2026-10-02, text: "02-10 : récemment livré = les 8 derniers lots terminés (pas une fenêtre de jours : le site statique ne vieillit pas entre deux publications) ; titres de sous-tâches NON publiés, seulement le décompte faites/total ; lots abandonnés absents ; yaml passé en dependency (build Cloudflare)" }
+      - { date: 2026-10-02, text: "02-10 (décision Sylvain) : titres bruts jamais publiés — modèle finance-tracker : lot visible + titre public (public:, sinon titre de sa Nouveauté ; revues : public: exigé), sinon masqué ; titre public validé au build (≤ 80 car., ni « / », fichier, technique, identifiant de lot, sécurité)" }

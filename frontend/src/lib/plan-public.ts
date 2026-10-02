@@ -1,11 +1,20 @@
 /**
  * L28 — ce que la page « Plan de travail » publie du plan (docs/plan/raf.yaml, tenu par raf).
+ * Règles alignées sur finance-tracker (frontend/scripts/plan-data.mjs) :
  *
- * LISTE BLANCHE : de chaque lot on ne recopie que l'identifiant, le titre, l'état, la
- * date de livraison et le décompte des sous-tâches. Notes, verdicts UX, raisons
- * d'abandon et titres de sous-tâches peuvent contenir des informations privées : ils
- * ne sont jamais lus ici, donc jamais rendus. Module pur, testé par node --test
- * (scripts/plan-public.test.mjs) ; la page l'appelle au build.
+ *   1. seuls les lots `visible: true` (changements pour le visiteur) et non abandonnés ;
+ *   2. TITRE PUBLIC seulement, jamais le titre brut du plan : le champ `public:` du lot,
+ *      sinon le titre de son entrée Nouveautés, sinon le lot est masqué ; les lots de
+ *      processus (revues, audits, campagnes) exigent un `public:` ;
+ *   3. liste blanche : id, titre public, état, date de livraison, décompte des
+ *      sous-tâches non abandonnées — jamais les notes, verdicts UX, raisons, titres de
+ *      sous-tâches ;
+ *   4. un titre public non conforme (> 80 caractères, chemin, fichier, nom de technique,
+ *      identifiant de lot, sujet de sécurité) fait échouer le build : on corrige le
+ *      plan, on ne publie pas.
+ *
+ * Module pur, testé par node --test (scripts/plan-public.test.mjs) ; la page l'appelle
+ * au build.
  */
 import { parse } from 'yaml';
 
@@ -24,33 +33,78 @@ export interface PublicLot {
 export interface PublicPlan {
   doing: PublicLot[];
   todo: PublicLot[];
-  /** Les RECENT_DONE derniers lots terminés, le plus récent en haut. */
+  /** Les RECENT_DONE derniers lots terminés publiés, le plus récent en haut. */
   done: PublicLot[];
   counts: { doing: number; todo: number; done: number };
 }
 
 /** Nombre de lots livrés affichés (« récemment livré »). */
 export const RECENT_DONE = 8;
+export const PUBLIC_TITLE_MAX = 80;
 
 const STATUSES: ReadonlySet<string> = new Set(['doing', 'todo', 'done']);
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 const day = (v: unknown): string | undefined => (typeof v === 'string' && DAY.test(v) ? v : undefined);
+const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
-function toPublic(raw: unknown): (PublicLot & { sortKey: string }) | null {
+// Même liste noire que finance-tracker (comparaison sans casse ni accents).
+const DENY = [
+  /securit/, /faille/, /spoof/, /injection/, /\btoken/, /\bjeton/, /secret/,
+  /mot de passe/, /password/, /\bpin\b/, /\bcve\b/, /vulnerab/, /\bxss\b/,
+  /\bcsrf\b/, /x-forwarded/, /forgeable/, /\bauth/, /bypass/,
+];
+const isDenied = (title: unknown) => DENY.some((re) => re.test(fold(String(title ?? ''))));
+
+/** Lots de processus : jamais publiés sans `public:` explicite. */
+const PROCESS = [/^revue\b/, /^audit\b/, /^campagne\b/];
+const isProcessLot = (title: unknown) => PROCESS.some((re) => re.test(fold(String(title ?? '')).trim()));
+
+/** Titre montré au visiteur ; non conforme → erreur (le build échoue). */
+export function checkPublicTitle(title: unknown, where: string): string {
+  const t = String(title ?? '').trim();
+  const why =
+    !t ? 'vide'
+      : t.length > PUBLIC_TITLE_MAX ? `${t.length} caractères (> ${PUBLIC_TITLE_MAX})`
+        : t.includes('/') ? 'contient « / »'
+          : /\.ya?ml\b/i.test(t) ? 'cite un fichier'
+            : /localstorage/i.test(t) ? 'nom de technique'
+              : /\bL\d+\b/.test(t) ? 'cite un identifiant de lot'
+                : isDenied(t) ? 'liste noire sécurité'
+                  : null;
+  if (why) throw new Error(`titre public de ${where} non conforme (${why}) : « ${t} »`);
+  return t;
+}
+
+/** Entrées Nouveautés (du plus récent au plus ancien) → titre de la plus récente citant chaque lot. */
+export function newsTitlesByLot(entries: readonly { title?: unknown; lots?: unknown }[]): Map<string, string> {
+  const m = new Map<string, string>();
+  for (const e of entries) {
+    if (typeof e?.title !== 'string' || !Array.isArray(e.lots)) continue;
+    for (const id of e.lots) if (!m.has(String(id))) m.set(String(id), e.title);
+  }
+  return m;
+}
+
+function toPublic(raw: unknown, newsTitles: ReadonlyMap<string, string | undefined>): (PublicLot & { sortKey: string }) | null {
   if (typeof raw !== 'object' || raw === null) return null;
   const r = raw as Record<string, unknown>;
-  if (typeof r.id !== 'string' || typeof r.title !== 'string' || !r.title.trim()) return null;
+  if (r.visible !== true || typeof r.id !== 'string') return null;
   if (typeof r.status !== 'string' || !STATUSES.has(r.status)) return null;
+  if (isDenied(r.title)) return null;
+  let title: unknown = r.public;
+  if (title == null && !isProcessLot(r.title)) title = newsTitles.get(r.id);
+  if (title == null) return null;
   const lot: PublicLot & { sortKey: string } = {
     id: r.id,
-    title: r.title,
+    title: checkPublicTitle(title, r.id),
     status: r.status as PublicStatus,
     sortKey: day(r.finished) ?? day(r.started) ?? day(r.created) ?? '',
   };
   if (lot.status === 'done' && day(r.finished)) lot.finished = day(r.finished);
   if (Array.isArray(r.tasks)) {
     const states = r.tasks
-      .map((t) => (typeof t === 'object' && t !== null ? (t as Record<string, unknown>).status : null))
+      .filter((t) => typeof t === 'object' && t !== null && !isDenied((t as Record<string, unknown>).title))
+      .map((t) => (t as Record<string, unknown>).status)
       .filter((s) => s !== 'dropped');
     if (states.length) lot.tasks = { done: states.filter((s) => s === 'done').length, total: states.length };
   }
@@ -59,9 +113,12 @@ function toPublic(raw: unknown): (PublicLot & { sortKey: string }) | null {
 
 const strip = ({ sortKey: _sortKey, ...lot }: PublicLot & { sortKey: string }): PublicLot => lot;
 
-export function publicPlan(plan: unknown): PublicPlan {
+export function publicPlan(
+  plan: unknown,
+  { newsTitles = new Map() }: { newsTitles?: ReadonlyMap<string, string | undefined> } = {},
+): PublicPlan {
   const rawLots = typeof plan === 'object' && plan !== null ? (plan as { lots?: unknown }).lots : null;
-  const lots = (Array.isArray(rawLots) ? rawLots : []).map(toPublic).filter((l) => l !== null);
+  const lots = (Array.isArray(rawLots) ? rawLots : []).map((l) => toPublic(l, newsTitles)).filter((l) => l !== null);
   const doing = lots.filter((l) => l.status === 'doing');
   const todo = lots.filter((l) => l.status === 'todo');
   // Tri stable : à date égale, le lot le plus loin dans le plan (le plus récent) d'abord.
@@ -78,7 +135,10 @@ export function publicPlan(plan: unknown): PublicPlan {
   };
 }
 
-/** Lit le texte de raf.yaml (dates laissées en texte, schéma YAML 1.2 core). */
-export function parsePublicPlan(yamlText: string): PublicPlan {
-  return publicPlan(parse(yamlText));
+/** Lit le texte de raf.yaml (schéma YAML 1.2 core : dates laissées en texte). */
+export function parsePublicPlan(
+  yamlText: string,
+  newsEntries: readonly { title?: unknown; lots?: unknown }[] = [],
+): PublicPlan {
+  return publicPlan(parse(yamlText), { newsTitles: newsTitlesByLot(newsEntries) });
 }

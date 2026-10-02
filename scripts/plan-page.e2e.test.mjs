@@ -25,7 +25,12 @@ const decode = (s) => s
   .replaceAll('&amp;', '&');
 
 const lots = RAF.lots;
-const shown = (status) => lots.filter((l) => l.status === status);
+const NEWS = JSON.parse(readFileSync(new URL('../frontend/public/nouveautes-data/nouveautes.json', import.meta.url), 'utf8')).entries;
+// Titre public attendu (modèle finance-tracker) : public:, sinon titre de la Nouveauté la plus
+// récente du lot (sauf lots de processus « Revue … »), sinon lot masqué.
+const publicTitle = (l) => l.public ?? (/^revue\b/i.test(l.title) ? undefined : NEWS.find((e) => e.lots.includes(l.id))?.title);
+const published = lots.filter((l) => l.visible === true && ['doing', 'todo', 'done'].includes(l.status) && publicTitle(l));
+const shown = (status) => published.filter((l) => l.status === status);
 
 test('dist/plan-de-travail/index.html est construit, titré « Plan de travail »', () => {
   assert.ok(existsSync(PAGE), 'page absente : lancer `npx astro build`');
@@ -39,27 +44,35 @@ test('trois sections titrées ; tous les lots en cours et prévus, dans l’ordr
   for (const status of ['doing', 'todo']) {
     const ids = [...page.matchAll(new RegExp(`<li[^>]*class="plan-lot" data-status="${status}"[^>]*data-id="([^"]+)"`, 'g'))].map((m) => m[1]);
     assert.deepEqual(ids, shown(status).map((l) => l.id), status);
-    for (const l of shown(status)) assert.ok(page.includes(l.title), `${l.id} : titre absent`);
+    for (const l of shown(status)) assert.ok(page.includes(publicTitle(l)), `${l.id} : titre public absent`);
   }
   const done = [...page.matchAll(/<li[^>]*class="plan-lot" data-status="done"[^>]*data-id="([^"]+)"/g)].map((m) => m[1]);
   assert.ok(done.length > 0 && done.length <= 8, `${done.length} lots livrés affichés`);
   assert.ok(done.every((id) => shown('done').some((l) => l.id === id)));
-  assert.ok(!lots.filter((l) => l.status === 'dropped').some((l) => page.includes(`data-id="${l.id}"`)), 'lot abandonné publié');
+  const ids = [...page.matchAll(/data-id="([^"]+)"/g)].map((m) => m[1]);
+  assert.deepEqual(ids.filter((id) => !published.some((l) => l.id === id)), [], 'lot masqué (non visible, sans titre public ou abandonné) publié');
 });
 
-test('AUCUN texte privé du plan (notes, verdicts UX, raisons, titres de sous-tâches) dans le site construit', () => {
+test('AUCUN texte privé du plan dans le site construit : titres bruts, notes, verdicts UX, raisons, sous-tâches, lots abandonnés', () => {
+  // Public par construction : les titres publics affichés (public: ou titre de Nouveauté).
+  const allowed = new Set(published.map(publicTitle));
   const secrets = [];
   for (const l of lots) {
+    secrets.push([`${l.id} titre brut${l.status === 'dropped' ? ' (abandonné)' : ''}`, l.title]);
     for (const n of l.notes ?? []) secrets.push([`${l.id} note`, n.text]);
     if (l.ux?.verdict) secrets.push([`${l.id} ux`, l.ux.verdict]);
     if (l.reason) secrets.push([`${l.id} raison`, l.reason]);
-    // Titre de sous-tâche, sauf s'il est aussi le titre d'un lot (sous-tâche promue en lot :
-    // les titres de lots sont publics par construction).
-    for (const t of l.tasks ?? []) if (!lots.some((x) => x.title === t.title)) secrets.push([`${l.id}/${t.id} titre`, t.title]);
+    for (const t of l.tasks ?? []) secrets.push([`${l.id}/${t.id} titre`, t.title]);
   }
   assert.ok(secrets.filter(([k]) => k.endsWith('note')).length > 0, 'aucune note dans raf.yaml : le test ne prouverait rien');
-  // Fragment distinctif de chaque texte (assez long pour ne pas tomber par hasard).
-  const needles = secrets.map(([k, s]) => [k, String(s).trim().slice(0, 48)]).filter(([, s]) => s.length >= 24);
+  // Texte entier (60 premiers caractères pour les longs). Plancher de 12 caractères : en
+  // dessous, un texte n'est qu'un mot ou deux qui peuvent légitimement figurer ailleurs
+  // (aucun texte du plan actuel n'est aussi court : le plancher ne cache rien aujourd'hui).
+  const needles = secrets
+    .filter(([, s]) => !allowed.has(String(s).trim()))
+    .map(([k, s]) => [k, String(s).trim().slice(0, 60)]);
+  const short = needles.filter(([, s]) => s.length < 12);
+  assert.deepEqual(short, [], 'texte privé trop court pour être cherché sans faux positif : relever le plancher en conscience');
   const files = [];
   const walk = (dir) => {
     for (const e of readdirSync(dir, { withFileTypes: true })) {
