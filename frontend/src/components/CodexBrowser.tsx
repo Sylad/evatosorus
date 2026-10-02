@@ -13,6 +13,10 @@ export type SpeciesCardData = Pick<
 >;
 
 const PAGE_SIZE = 60;
+// L21 — délai de stabilisation avant d'annoncer le nombre de résultats : une rafale de
+// frappes ne produit qu'une annonce, la valeur finale.
+const ANNOUNCE_DELAY_MS = 700;
+const INITIAL_STATE: FilterState = { q: '', period: 'all', diet: 'all', group: 'all' };
 
 type FilterState = {
   q: string;
@@ -43,12 +47,10 @@ export function CodexBrowser({
   dietLabels,
   dietIcons,
 }: Props) {
-  const [state, setState] = useState<FilterState>({
-    q: '',
-    period: 'all',
-    diet: 'all',
-    group: 'all',
-  });
+  const [state, setState] = useState<FilterState>(INITIAL_STATE);
+  const [announcement, setAnnouncement] = useState('');
+  const firstRender = useRef(true);
+  const searchRef = useRef<HTMLInputElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [columns, setColumns] = useState(1);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -111,14 +113,35 @@ export function CodexBrowser({
     scrollMargin: offsetRef.current,
   });
 
-  const startNum = filtered.length === 0 ? 0 : startIdx + 1;
+  const startNum = startIdx + 1;
   const endNum = Math.min(endIdx, filtered.length);
+  const query = state.q.trim();
+  const emptyMessage = query
+    ? `Aucune espèce ne correspond à «\u202f${query}\u202f»${isFiltered(state) ? ' avec ces filtres' : ''}.`
+    : 'Aucune espèce ne correspond à ces filtres.';
+
+  // L21 — région live polie : rien au chargement, puis la valeur STABILISÉE après un
+  // changement de recherche ou de filtre (pas une annonce par touche).
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    const n = filtered.length;
+    const text = n === 0
+      ? emptyMessage
+      : `${formatCount(n)} espèce${n > 1 ? 's' : ''} trouvée${n > 1 ? 's' : ''}.`;
+    const timer = window.setTimeout(() => setAnnouncement(text), ANNOUNCE_DELAY_MS);
+    return () => window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtered]);
 
   return (
     <div className="codex-browser">
       <div className="codex-filters">
         <div className="filter-row">
           <input
+            ref={searchRef}
             type="search"
             placeholder="Rechercher (T-Rex, Diplodocus, théropode...)"
             value={state.q}
@@ -127,8 +150,11 @@ export function CodexBrowser({
             aria-label="Recherche par nom"
           />
           <span className="filter-count">
-            {formatRange(startNum, endNum)}<span className="of-total"> sur {formatCount(filtered.length)}</span>
+            {filtered.length === 0
+              ? '0 espèce'
+              : <>{formatRange(startNum, endNum)}<span className="of-total"> sur {formatCount(filtered.length)}</span></>}
           </span>
+          <span role="status" aria-live="polite" aria-atomic="true" className="codex-sr-only">{announcement}</span>
         </div>
 
         <div className="filter-row">
@@ -192,7 +218,12 @@ export function CodexBrowser({
 
       <div ref={scrollRef} className="virtual-scroll" role="region" aria-label="Liste des espèces">
         {pageItems.length === 0 ? (
-          <p className="empty-state">Aucune espèce ne match ces filtres.</p>
+          <div className="empty-state">
+            <p>{emptyMessage}</p>
+            <button type="button" className="empty-reset" onClick={() => { setState(INITIAL_STATE); searchRef.current?.focus(); }}>
+              Afficher toutes les espèces
+            </button>
+          </div>
         ) : (
           <div
             style={{
@@ -237,6 +268,10 @@ export function CodexBrowser({
       </div>
     </div>
   );
+}
+
+function isFiltered(s: FilterState): boolean {
+  return s.period !== 'all' || s.diet !== 'all' || s.group !== 'all';
 }
 
 function Card({

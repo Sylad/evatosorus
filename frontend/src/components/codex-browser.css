@@ -316,3 +316,43 @@
   color: var(--color-evato-amber);
   margin: 0.2rem 0 0;
 }
+
+/* L21 — état vide : message + retour à la liste complète. */
+.empty-state p {
+  margin: 0 0 1rem;
+}
+.empty-state .empty-reset {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  min-height: 2.75rem;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid rgba(212, 165, 94, 0.45);
+  border-radius: 4px;
+  background: rgba(13, 10, 6, 0.6);
+  color: var(--color-evato-amber-bright);
+  cursor: pointer;
+}
+.empty-state .empty-reset:hover {
+  border-color: var(--color-evato-amber-bright);
+  background: rgba(13, 10, 6, 0.85);
+}
+.empty-state .empty-reset:focus-visible {
+  outline: 2px solid var(--color-evato-amber-bright);
+  outline-offset: 2px;
+}
+
+/* L21 — région live du nombre de résultats : lue par les lecteurs d'écran, invisible. */
+.codex-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
