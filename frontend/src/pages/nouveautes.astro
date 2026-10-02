@@ -166,8 +166,10 @@ const pngSize = (rel: string) => {
     .news-entry {
       scroll-margin-top: 1.5rem;
     }
+    /* Au téléphone, c'est le scroll-padding-top de la page (CodexLayout, sous le bouton
+       fixe du menu) qui place l'entrée : pas de marge en plus, sinon les deux s'ajoutent. */
     @media (max-width: 1023px) {
-      .news-entry { scroll-margin-top: 4.25rem; }
+      .news-entry { scroll-margin-top: 0; }
     }
     .news-entry:focus {
       outline: none;

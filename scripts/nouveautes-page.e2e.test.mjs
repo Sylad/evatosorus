@@ -260,6 +260,32 @@ test('L27 : arriver sur /nouveautes/#<slug> signale l’entrée, lui donne le fo
   }
 });
 
+// L23 (revue) : une entrée qui PEUT défiler jusqu'en haut arrive juste sous le bouton fixe
+// du menu au téléphone (≈ 70–90 px, et non 153 px quand scroll-padding et scroll-margin
+// s'additionnaient), et à 1,5rem du haut au bureau (inchangé). Ancres du Plan de travail :
+// sous le bouton au téléphone, en haut au bureau.
+test('ancres : arrivée juste sous le bouton du menu au téléphone, inchangée au bureau (Nouveautés, Plan de travail)', { timeout: 90_000 }, async (t) => {
+  const env = await setup(t);
+  if (!env) return;
+  const target = DATA.entries[0].slug;
+  for (const [width, lo, hi] of [[320, 70, 90], [390, 70, 90], [1440, 20, 32]]) {
+    const context = await env.browser.newContext({ viewport: { width, height: width > 1000 ? 900 : 844 }, reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    await page.goto(`${env.base}/nouveautes/#${target}`, { waitUntil: 'load' });
+    await page.waitForFunction((s) => document.activeElement?.id === s, target);
+    const top = await page.locator(`[id="${target}"]`).evaluate((a) => a.getBoundingClientRect().top);
+    assert.ok(top >= lo && top <= hi, `/nouveautes/ ${width}px : entrée à ${top}px du haut (attendu ${lo}–${hi})`);
+    await page.goto(`${env.base}/plan-de-travail/`, { waitUntil: 'load' });
+    const id = await page.evaluate(() => document.querySelector('[id^="lot-"]').id);
+    await page.goto(`${env.base}/plan-de-travail/#${id}`, { waitUntil: 'load' });
+    await page.waitForTimeout(200);
+    const ptop = await page.locator(`[id="${id}"]`).evaluate((a) => a.getBoundingClientRect().top);
+    const [plo, phi] = width > 1000 ? [0, 32] : [70, 90];
+    assert.ok(ptop >= plo - 1 && ptop <= phi, `/plan-de-travail/ ${width}px : #${id} à ${ptop}px du haut (attendu ${plo}–${phi})`);
+    await context.close();
+  }
+});
+
 const copyGeometry = (page, slug) => page.evaluate((sl) => {
   const art = document.getElementById(sl);
   const btn = art.querySelector('.news-copy');
