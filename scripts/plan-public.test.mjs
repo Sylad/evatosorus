@@ -7,7 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { publicPlan, parsePublicPlan, newsTitlesByLot, checkPublicTitle, RECENT_DONE } from '../frontend/src/lib/plan-public.ts';
+import { publicPlan, parsePublicPlan, newsTitlesByLot, checkPublicTitle, planSummary, RECENT_DONE } from '../frontend/src/lib/plan-public.ts';
 
 const { parse } = createRequire(new URL('../frontend/package.json', import.meta.url))('yaml');
 
@@ -102,4 +102,11 @@ test('le vrai raf.yaml : aucun titre brut (sauf s’il est aussi le titre public
     for (const t of l.tasks ?? []) if (!titles.has(t.title)) assert.ok(!out.includes(t.title), `${l.id}/${t.id} publié`);
   }
   for (const l of shown) assert.equal(raf.lots.find((x) => x.id === l.id).visible, true, `${l.id} non visible publié`);
+});
+
+test('bandeau de décomptes : accordé, espaces insécables, sans les groupes vides (« 0 prévu » n’est pas affiché)', () => {
+  assert.deepEqual(planSummary({ doing: 2, todo: 0, done: 9 }), ['2\u00a0travaux en cours', '9\u00a0livrés']);
+  assert.deepEqual(planSummary({ doing: 1, todo: 1, done: 1 }), ['1\u00a0travail en cours', '1\u00a0prévu', '1\u00a0livré']);
+  assert.deepEqual(planSummary({ doing: 0, todo: 6, done: 0 }), ['6\u00a0prévus']);
+  assert.deepEqual(planSummary({ doing: 0, todo: 0, done: 0 }), []);
 });

@@ -91,6 +91,13 @@ test('AUCUN texte privé du plan dans le site construit : titres bruts, notes, v
   assert.deepEqual(leaks, []);
 });
 
+test('section vide : texte honnête (« Prévu » vide → « Les prochains travaux seront annoncés ici. ») ; jamais « 0 » dans le bandeau', () => {
+  const page = decode(html());
+  assert.doesNotMatch(page, /<span>0\u00a0/, 'décompte nul affiché');
+  if (shown('todo').length === 0) assert.ok(page.includes('Les prochains travaux seront annoncés ici.'));
+  else assert.ok(!page.includes('Les prochains travaux seront annoncés ici.'));
+});
+
 test('le menu de toutes les pages internes mène à /plan-de-travail/, actif sur la page', () => {
   for (const p of ['codex', 'about', 'nouveautes']) {
     assert.match(readFileSync(join(DIST, p, 'index.html'), 'utf8'), /<a href="\/plan-de-travail\/" class="codex-nav-link"/, p);

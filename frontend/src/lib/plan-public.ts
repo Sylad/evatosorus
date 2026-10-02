@@ -142,3 +142,14 @@ export function parsePublicPlan(
 ): PublicPlan {
   return publicPlan(parse(yamlText), { newsTitles: newsTitlesByLot(newsEntries) });
 }
+
+const count = (n: number, one: string, many: string) => `${n}\u00a0${n > 1 ? many : one}`;
+
+/** Bandeau de décomptes de la page : groupes vides omis (pas de « 0 prévu »). */
+export function planSummary(counts: PublicPlan['counts']): string[] {
+  return [
+    counts.doing ? count(counts.doing, 'travail en cours', 'travaux en cours') : '',
+    counts.todo ? count(counts.todo, 'prévu', 'prévus') : '',
+    counts.done ? count(counts.done, 'livré', 'livrés') : '',
+  ].filter(Boolean);
+}

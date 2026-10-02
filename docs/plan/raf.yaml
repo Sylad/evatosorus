@@ -171,12 +171,14 @@ lots:
     finished: 2026-10-01
   - id: L21
     title: "Codex : état vide en français (« ne correspond à »), sans « 0-0 », compteur aria-live=polite"
+    public: "Codex : un message clair quand une recherche ne donne rien"
     status: todo
     estimate: 0.25
     visible: true
     created: 2026-10-01
   - id: L22
     title: "Redistribution à 320 px : défilement horizontal sur /codex/, /about/, /vitrines/, fiches espèces (WCAG 1.4.10) ; décimales fr-FR sur la fiche espèce"
+    public: "Petits écrans : des pages qui tiennent dans la largeur du téléphone"
     status: todo
     estimate: 0.5
     visible: true
@@ -186,18 +188,21 @@ lots:
       - { date: 2026-10-01, text: "Revue UX L19/L20 : à 320 px /codex/ scrollWidth 375 ; input.filter-search min-width 280px contribue au débordement → min-width:0 ou min(280px,100%)" }
   - id: L23
     title: "Menu mobile au clavier : focus dans le tiroir à l'ouverture, inert sur le contenu, retour au burger à la fermeture, tiroir fermé retiré de l'ordre Tab (WCAG 2.4.3 / 2.4.11, préexistant, revue UX L18)"
+    public: "Menu du téléphone : une navigation au clavier sans accroc"
     status: todo
     estimate: 0.25
     visible: true
     created: 2026-10-01
   - id: L24
     title: "Carte paléo-monde : tuiles CARTO « API KEY REQUIRED » vues en local (dark_nolabels) et clusters en chiffres nus — vérifier en prod, changer de fond gratuit si confirmé"
+    public: "Carte du monde ancien : un fond de carte fiable et des repères lisibles"
     status: todo
     estimate: 0.25
     visible: true
     created: 2026-10-01
   - id: L25
     title: Contraste des sur-titres de section posés sur l'image de fond (vidéos, films, périodes, carte, fiches) — même traitement qu'en L13 (halo + ombre), mesure au pire pixel
+    public: "Des titres de section plus lisibles sur les images de fond"
     status: todo
     estimate: 0.25
     quickwin: true
@@ -205,6 +210,7 @@ lots:
     created: 2026-10-01
   - id: L26
     title: "Nouveautés : textes alternatifs décrivant chaque capture (WCAG 1.1.1) — dépend d'un champ alt dans cadence news"
+    public: "Nouveautés : chaque capture décrite pour les lecteurs d'écran"
     status: todo
     estimate: 0.25
     visible: true
