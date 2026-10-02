@@ -110,3 +110,25 @@ test('bandeau de décomptes : accordé, espaces insécables, sans les groupes vi
   assert.deepEqual(planSummary({ doing: 0, todo: 6, done: 0 }), ['6\u00a0prévus']);
   assert.deepEqual(planSummary({ doing: 0, todo: 0, done: 0 }), []);
 });
+
+test('lots au même titre public (une Nouveauté pour deux lots) : une seule ligne par groupe, date la plus récente, étapes additionnées', () => {
+  const p = publicPlan({ lots: [
+    { id: 'L19', title: 'b', visible: true, status: 'done', finished: '2026-10-01', tasks: [{ id: 't1', status: 'done' }] },
+    { id: 'L20', title: 'b', visible: true, status: 'done', finished: '2026-10-03', tasks: [{ id: 't1', status: 'todo' }, { id: 't2', status: 'done' }] },
+    { id: 'L21', title: 'b', visible: true, status: 'done', finished: '2026-10-02' },
+    { id: 'L22', title: 'b', visible: true, status: 'todo' },
+    { id: 'L23', title: 'b', visible: true, status: 'todo' },
+  ] }, { newsTitles: new Map([['L19', 'Le codex se lit mieux'], ['L20', 'Le codex se lit mieux'], ['L21', 'Autre'], ['L22', 'Même suite'], ['L23', 'Même suite']]) });
+  assert.deepEqual(p.done, [
+    { id: 'L20', title: 'Le codex se lit mieux', status: 'done', finished: '2026-10-03', tasks: { done: 2, total: 3 }, also: ['L19'] },
+    { id: 'L21', title: 'Autre', status: 'done', finished: '2026-10-02' },
+  ]);
+  assert.deepEqual(p.todo, [{ id: 'L22', title: 'Même suite', status: 'todo', also: ['L23'] }]);
+  assert.deepEqual(p.counts, { doing: 0, todo: 1, done: 2 });
+  // Même titre mais états différents : deux lignes (une en cours, une livrée).
+  const q = publicPlan({ lots: [
+    { id: 'A1', title: 'b', public: 'Même titre', visible: true, status: 'done', finished: '2026-10-01' },
+    { id: 'A2', title: 'b', public: 'Même titre', visible: true, status: 'doing' },
+  ] });
+  assert.equal(q.done.length + q.doing.length, 2);
+});

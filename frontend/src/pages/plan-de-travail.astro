@@ -89,7 +89,7 @@ const sections: { id: string; title: string; intro: string; lots: PublicLot[]; e
         ) : (
           <ol class="plan-list">
             {s.lots.map((l) => (
-              <li class="plan-lot" data-status={l.status} data-id={l.id} id={`lot-${l.id}`}>
+              <li class="plan-lot" data-status={l.status} data-id={l.id} id={`lot-${l.id}`} data-also={l.also?.join(' ')}>
                 <p class="plan-lot-title">{l.title}</p>
                 <p class="plan-lot-meta">
                   <span class="plan-state">{stateLabel(l)}</span>

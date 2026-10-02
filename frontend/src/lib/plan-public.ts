@@ -28,6 +28,8 @@ export interface PublicLot {
   finished?: string;
   /** Sous-tâches non abandonnées : combien sont faites sur combien. */
   tasks?: { done: number; total: number };
+  /** Autres lots du même groupe au même titre public, fondus dans cette ligne. */
+  also?: string[];
 }
 
 export interface PublicPlan {
@@ -113,20 +115,42 @@ function toPublic(raw: unknown, newsTitles: ReadonlyMap<string, string | undefin
 
 const strip = ({ sortKey: _sortKey, ...lot }: PublicLot & { sortKey: string }): PublicLot => lot;
 
+/**
+ * Revue UX L28 : deux lots d'un même groupe au même titre public (une Nouveauté qui en
+ * raconte deux) ne font qu'une ligne — la première de la liste reçue (la plus récente
+ * pour les livrés), étapes additionnées, les autres identifiants en `also`.
+ */
+function mergeSameTitle(group: (PublicLot & { sortKey: string })[]): (PublicLot & { sortKey: string })[] {
+  const byTitle = new Map<string, PublicLot & { sortKey: string }>();
+  for (const l of group) {
+    const kept = byTitle.get(l.title);
+    if (!kept) {
+      byTitle.set(l.title, { ...l });
+      continue;
+    }
+    kept.also = [...(kept.also ?? []), l.id];
+    if (l.tasks) {
+      const t = kept.tasks ?? { done: 0, total: 0 };
+      kept.tasks = { done: t.done + l.tasks.done, total: t.total + l.tasks.total };
+    }
+  }
+  return [...byTitle.values()];
+}
+
 export function publicPlan(
   plan: unknown,
   { newsTitles = new Map() }: { newsTitles?: ReadonlyMap<string, string | undefined> } = {},
 ): PublicPlan {
   const rawLots = typeof plan === 'object' && plan !== null ? (plan as { lots?: unknown }).lots : null;
   const lots = (Array.isArray(rawLots) ? rawLots : []).map((l) => toPublic(l, newsTitles)).filter((l) => l !== null);
-  const doing = lots.filter((l) => l.status === 'doing');
-  const todo = lots.filter((l) => l.status === 'todo');
+  const doing = mergeSameTitle(lots.filter((l) => l.status === 'doing'));
+  const todo = mergeSameTitle(lots.filter((l) => l.status === 'todo'));
   // Tri stable : à date égale, le lot le plus loin dans le plan (le plus récent) d'abord.
-  const done = lots
+  const done = mergeSameTitle(lots
     .map((l, i) => ({ l, i }))
     .filter(({ l }) => l.status === 'done')
     .sort((a, b) => b.l.sortKey.localeCompare(a.l.sortKey) || b.i - a.i)
-    .map(({ l }) => l);
+    .map(({ l }) => l));
   return {
     doing: doing.map(strip),
     todo: todo.map(strip),

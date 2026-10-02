@@ -43,7 +43,9 @@ test('trois sections titrées ; tous les lots en cours et prévus, dans l’ordr
   for (const h of ['En cours', 'Prévu', 'Récemment livré']) assert.match(page, new RegExp(`<h2[^>]*>${h}`), `section « ${h} » absente`);
   for (const status of ['doing', 'todo']) {
     const ids = [...page.matchAll(new RegExp(`<li[^>]*class="plan-lot" data-status="${status}"[^>]*data-id="([^"]+)"`, 'g'))].map((m) => m[1]);
-    assert.deepEqual(ids, shown(status).map((l) => l.id), status);
+    // Ordre du plan, un lot par titre public (le premier).
+    const firsts = shown(status).filter((l, i, all) => all.findIndex((x) => publicTitle(x) === publicTitle(l)) === i);
+    assert.deepEqual(ids, firsts.map((l) => l.id), status);
     for (const l of shown(status)) assert.ok(page.includes(publicTitle(l)), `${l.id} : titre public absent`);
   }
   const done = [...page.matchAll(/<li[^>]*class="plan-lot" data-status="done"[^>]*data-id="([^"]+)"/g)].map((m) => m[1]);
@@ -103,7 +105,20 @@ test('aucun identifiant de lot (« L27 »…) dans le texte visible ; il reste e
   const main = page.slice(page.indexOf('<main'), page.indexOf('</main>'));
   const text = decode(main.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<[^>]+>/g, ' '));
   assert.doesNotMatch(text, /\bL\d+\b/, 'identifiant de lot visible');
-  for (const l of published) assert.match(page, new RegExp(`<li[^>]*id="lot-${l.id}"[^>]*data-id="${l.id}"|<li[^>]*data-id="${l.id}"[^>]*id="lot-${l.id}"`), `${l.id} : id d’élément absent`);
+  // Chaque lot publié a sa ligne (id lot-<id>), ou est fondu dans celle d'un lot au même titre (data-also).
+  for (const l of published) {
+    const own = new RegExp(`<li[^>]*data-id="${l.id}" id="lot-${l.id}"`).test(page);
+    const merged = new RegExp(`<li[^>]*data-also="[^"]*\\b${l.id}\\b`).test(page);
+    assert.ok(own || merged, `${l.id} : ni ligne ni fusion`);
+  }
+});
+
+test('un titre public n’apparaît qu’une fois par section (lots fondus, date la plus récente)', () => {
+  const page = decode(html());
+  for (const status of ['doing', 'todo', 'done']) {
+    const titles = [...page.matchAll(new RegExp(`<li[^>]*class="plan-lot" data-status="${status}"[\\s\\S]*?<p class="plan-lot-title"[^>]*>([^<]*)<`, 'g'))].map((m) => m[1]);
+    assert.equal(new Set(titles).size, titles.length, `${status} : titre en double (${titles.join(' | ')})`);
+  }
 });
 
 test('le menu de toutes les pages internes mène à /plan-de-travail/, actif sur la page', () => {
