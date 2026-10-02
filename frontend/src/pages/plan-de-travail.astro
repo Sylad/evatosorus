@@ -13,7 +13,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import CodexLayout from '../layouts/CodexLayout.astro';
-import { parsePublicPlan, planSummary, RECENT_DONE, type PublicLot } from '../lib/plan-public';
+import { parsePublicPlan, planSummary, stepsLabel, RECENT_DONE, type PublicLot } from '../lib/plan-public';
 import news from '../../public/nouveautes-data/nouveautes.json';
 
 // Build lancé depuis frontend/ (npm run build, Cloudflare Pages compris).
@@ -28,8 +28,6 @@ const formatDate = (day: string) =>
   new Date(`${day}T12:00:00Z`).toLocaleDateString('fr-FR', {
     day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
   });
-
-const plural = (n: number, one: string, many: string) => `${n} ${n > 1 ? many : one}`;
 
 const stateLabel = (l: PublicLot) =>
   l.status === 'doing' ? 'En cours'
@@ -95,7 +93,7 @@ const sections: { id: string; title: string; intro: string; lots: PublicLot[]; e
                   <span class="plan-state">{stateLabel(l)}</span>
                   {l.tasks && (
                     <span class="plan-tasks">
-                      {`${l.tasks.done}\u00a0sur\u00a0${plural(l.tasks.total, 'étape faite', 'étapes faites')}`}
+                      {stepsLabel(l.tasks)}
                     </span>
                   )}
                 </p>

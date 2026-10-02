@@ -7,7 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { publicPlan, parsePublicPlan, newsTitlesByLot, checkPublicTitle, planSummary, RECENT_DONE } from '../frontend/src/lib/plan-public.ts';
+import { publicPlan, parsePublicPlan, newsTitlesByLot, checkPublicTitle, planSummary, stepsLabel, RECENT_DONE } from '../frontend/src/lib/plan-public.ts';
 
 const { parse } = createRequire(new URL('../frontend/package.json', import.meta.url))('yaml');
 
@@ -131,4 +131,13 @@ test('lots au même titre public (une Nouveauté pour deux lots) : une seule lig
     { id: 'A2', title: 'b', public: 'Même titre', visible: true, status: 'doing' },
   ] });
   assert.equal(q.done.length + q.doing.length, 2);
+});
+
+test('avancement : accord sur le nombre d’étapes faites (0 et 1 au singulier), espaces insécables', () => {
+  const nb = (x) => x.replaceAll('\u00a0', ' ');
+  assert.equal(nb(stepsLabel({ done: 0, total: 1 })), '0 étape faite sur 1');
+  assert.equal(nb(stepsLabel({ done: 1, total: 2 })), '1 étape faite sur 2');
+  assert.equal(nb(stepsLabel({ done: 2, total: 3 })), '2 étapes faites sur 3');
+  assert.equal(nb(stepsLabel({ done: 13, total: 13 })), '13 étapes faites sur 13');
+  assert.doesNotMatch(stepsLabel({ done: 2, total: 3 }), / /, 'espace sécable : le nombre peut se retrouver seul en fin de ligne');
 });

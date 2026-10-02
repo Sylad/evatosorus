@@ -177,3 +177,8 @@ export function planSummary(counts: PublicPlan['counts']): string[] {
     counts.done ? count(counts.done, 'livré', 'livrés') : '',
   ].filter(Boolean);
 }
+
+/** Avancement d'un lot : « 1 étape faite sur 2 », « 2 étapes faites sur 3 » (0 et 1 au singulier). */
+export function stepsLabel({ done, total }: { done: number; total: number }): string {
+  return `${done}\u00a0${done > 1 ? 'étapes faites' : 'étape faite'}\u00a0sur\u00a0${total}`.replace(/ /g, '\u00a0');
+}
