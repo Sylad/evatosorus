@@ -173,8 +173,7 @@
 }
 
 .empty-state {
-  text-align: center;
-  padding: 3rem 1rem;
+  padding: 0;
   color: var(--color-evato-bone-muted);
   font-style: italic;
 }
@@ -334,7 +333,7 @@
 
 /* L21 — état vide : message + retour à la liste complète. */
 .empty-state p {
-  margin: 0 0 1rem;
+  margin: 0 0 0.75rem;
 }
 .empty-state .empty-reset {
   font-family: var(--font-display);

@@ -164,6 +164,17 @@ export function CodexBrowser({
           <span role="status" aria-live="polite" aria-atomic="true" className="codex-sr-only">{announcement}</span>
         </div>
 
+        {/* L21 — état vide juste sous la recherche et le compteur, visible sans défiler
+            (sous les filtres, il tombait hors de l'écran). */}
+        {pageItems.length === 0 && (
+          <div className="empty-state">
+            <p>{emptyMessage}</p>
+            <button type="button" className="empty-reset" onClick={() => { setState(INITIAL_STATE); searchRef.current?.focus(); }}>
+              Afficher toutes les espèces
+            </button>
+          </div>
+        )}
+
         <div className="filter-row">
           <fieldset>
             <legend>Période</legend>
@@ -224,14 +235,7 @@ export function CodexBrowser({
       </div>
 
       <div ref={scrollRef} className="virtual-scroll" role="region" aria-label="Liste des espèces">
-        {pageItems.length === 0 ? (
-          <div className="empty-state">
-            <p>{emptyMessage}</p>
-            <button type="button" className="empty-reset" onClick={() => { setState(INITIAL_STATE); searchRef.current?.focus(); }}>
-              Afficher toutes les espèces
-            </button>
-          </div>
-        ) : (
+        {pageItems.length === 0 ? null : (
           <div
             style={{
               height: `${rowVirtualizer.getTotalSize()}px`,

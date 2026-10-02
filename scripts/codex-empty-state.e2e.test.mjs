@@ -110,3 +110,32 @@ test('codex : deux recherches au même compte sont annoncées chacune', { timeou
   ]);
   await context.close();
 });
+
+// Après une recherche sans résultat, le message et le bouton « Afficher toutes les
+// espèces » sont visibles sans défiler, à côté du compteur (avant : sous les filtres,
+// hors de l'écran à 1 440×900 et 390×844) ; le focus reste dans le champ.
+test('codex vide : message et bouton dans l\'écran, focus gardé dans la recherche (1440×900, 390×844)', { timeout: 60_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  for (const [width, height] of [[1440, 900], [390, 844]]) {
+    const context = await env.browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    await page.goto(`${env.base}/codex/`, { waitUntil: 'load' });
+    await page.waitForSelector('.filter-search');
+    await page.locator('.filter-search').click();
+    await page.keyboard.type('licorne', { delay: 20 });
+    await page.waitForSelector('.empty-state button');
+    await page.waitForTimeout(300);
+    const r = await page.evaluate(() => {
+      const box = (s) => document.querySelector(s).getBoundingClientRect();
+      const b = box('.empty-state button');
+      const m = box('.empty-state p');
+      return { b: [b.top, b.bottom], m: [m.top, m.bottom], vh: innerHeight, focus: document.activeElement?.className };
+    });
+    for (const [name, [top, bottom]] of [['bouton', r.b], ['message', r.m]]) {
+      assert.ok(top >= 0 && bottom <= r.vh, `${width}px : ${name} hors de l'écran (${Math.round(top)}–${Math.round(bottom)}, écran ${r.vh})`);
+    }
+    assert.match(r.focus, /filter-search/, `${width}px : focus déplacé`);
+    await context.close();
+  }
+});
