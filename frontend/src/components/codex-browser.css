@@ -82,7 +82,8 @@
 
 .codex-filters .filter-search {
   flex: 1;
-  min-width: 280px;
+  /* L22 : jamais plus large que la ligne (280 px dépassaient à 320 px). */
+  min-width: min(280px, 100%);
   background: rgba(13, 10, 6, 0.5);
   border: 1px solid rgba(212, 165, 94, 0.25);
   color: var(--color-evato-bone);

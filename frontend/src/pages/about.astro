@@ -284,7 +284,8 @@ import { formatCount } from '../lib/format-count.mjs';
       text-shadow: 0 0 2px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.85);
     }
     .about h1 {
-      font-size: 2.6rem;
+      /* L22 : 2,6rem dès 392 px (mise en page du téléphone courant inchangée), réduit en dessous. */
+      font-size: clamp(1.4rem, 11.6vw, 2.6rem);
       margin: 0 0 0.8rem;
     }
     .lede {

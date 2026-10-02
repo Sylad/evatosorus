@@ -138,7 +138,8 @@ import CodexLayout from '../layouts/CodexLayout.astro';
       margin: 0;
       max-width: 12ch;
       color: #fff5e2;
-      font-size: clamp(2.4rem, 6vw, 5rem);
+      /* L22 : réduit sous 400 px (« dinosaures » tient à 320 px) ; 6vw au-delà, inchangé. */
+      font-size: min(max(min(9.5vw, 2.4rem), 6vw), 5rem);
       line-height: 0.98;
     }
     .learn-hero p:not(.page-kicker) {
@@ -281,7 +282,7 @@ import CodexLayout from '../layouts/CodexLayout.astro';
       .learn-card.wide,
       .truth-strip,
       .learn-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
       }
       .learn-hero img {
         order: -1;

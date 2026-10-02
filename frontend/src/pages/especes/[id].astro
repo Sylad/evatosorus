@@ -18,6 +18,9 @@ const otherSameGroup = SPECIES
 const videos = getSpeciesVideos(s.id);
 const activeMa = s.earlyMa && s.lateMa ? Math.abs(s.earlyMa - s.lateMa) : undefined;
 const massTonnes = s.weightKg ? s.weightKg / 1000 : undefined;
+// L22 : longueur du plus long mot du titre — la taille du titre s'y ajuste pour que le
+// nom tienne dans la largeur (Micropachycephalosaurus : 23 lettres) sans couper le mot.
+const titleLongestWord = Math.max(...(s.commonName ?? s.name).split(/\s+/).map((w) => w.length));
 const scaleNote = s.lengthM && s.lengthM >= 25
   ? 'Une silhouette de la longueur d’un petit immeuble couché.'
   : s.lengthM && s.lengthM >= 10
@@ -233,7 +236,7 @@ const speciesInsights = [
       <p class="codex-eyebrow" style={`--accent:${period?.accentColor ?? '#d4a55e'}`}>
         {TAXON_GROUP_LABELS[s.taxonGroup]} · {period?.name ?? 'Mésozoïque'}
       </p>
-      <h1>{s.commonName ?? s.name}</h1>
+      <h1 style={`--longest-word:${titleLongestWord}`}>{s.commonName ?? s.name}</h1>
       <p class="sci-name">{s.name}</p>
     </header>
 
@@ -429,8 +432,15 @@ const speciesInsights = [
       text-transform: uppercase;
       margin: 0 0 0.4rem;
     }
+    .detail-header {
+      container-type: inline-size;
+    }
     .detail-header h1 {
-      font-size: 3rem;
+      /* L22 : 3rem au plus ; sinon la largeur du conteneur divisée par le plus long mot
+         du nom (≈ 0,72 em par lettre en Cinzel, espacement compris, marge à 0,78) ; jamais
+         sous la taille du nom scientifique (1,15rem) : au-delà de ~19 lettres à 320 px
+         (Micropachycephalosaurus), le mot passe à la ligne plutôt que de rapetisser. */
+      font-size: clamp(1.15rem, calc(100cqi / (var(--longest-word, 12) * 0.78)), 3rem);
       margin: 0 0 0.3rem;
       color: var(--color-evato-amber-bright);
     }
@@ -595,7 +605,7 @@ const speciesInsights = [
     }
     .insight-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
       gap: 0.75rem;
     }
     .insight-grid article {
@@ -653,7 +663,7 @@ const speciesInsights = [
     }
     .videos-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
       gap: 1rem;
     }
     .videos-grid video {

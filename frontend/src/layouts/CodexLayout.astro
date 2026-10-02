@@ -201,13 +201,16 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
       position: relative;
       z-index: 10;
       display: grid;
-      grid-template-columns: 1fr;
+      /* minmax(0, …) et non 1fr : une piste 1fr a pour minimum la largeur min-content
+         de son contenu (un titre, un champ, une grille) ; à 320 px elle débordait de
+         l'écran et toute la page défilait de côté (L22, WCAG 1.4.10). */
+      grid-template-columns: minmax(0, 1fr);
       min-height: 100vh;
     }
     @media (min-width: 1024px) {
       /* 304 px (au lieu de 280) : « Carte paléo-monde », libellé unifié avec
          l'accueil, tient sur une ligne. */
-      .codex-shell { grid-template-columns: 304px 1fr; }
+      .codex-shell { grid-template-columns: 304px minmax(0, 1fr); }
     }
     /*
       Mobile (<1024) : la sidebar devient un drawer fixed slide-in depuis

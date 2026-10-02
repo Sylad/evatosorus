@@ -86,7 +86,7 @@ import { YOUTUBE_CHANNELS, LANGUAGE_LABELS, ACCENT_HEX } from '../data/youtube-c
     }
     .channels-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
       gap: 1.4rem;
       margin-bottom: 2rem;
     }
@@ -118,6 +118,8 @@ import { YOUTUBE_CHANNELS, LANGUAGE_LABELS, ACCENT_HEX } from '../data/youtube-c
     }
     .channel-head {
       display: flex;
+      /* L22 : à 320 px la pastille de langue passe sous le nom au lieu de l'écraser. */
+      flex-wrap: wrap;
       align-items: center;
       gap: 0.9rem;
       position: relative;
@@ -138,7 +140,7 @@ import { YOUTUBE_CHANNELS, LANGUAGE_LABELS, ACCENT_HEX } from '../data/youtube-c
       color: #0d0a06;
       border: 1px solid var(--accent);
     }
-    .channel-id { flex: 1; min-width: 0; }
+    .channel-id { flex: 1 1 9rem; min-width: 0; }
     .channel-id h2 {
       font-family: var(--font-display);
       font-size: 1.1rem;

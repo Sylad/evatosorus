@@ -136,7 +136,7 @@ const sagaOrder: Array<keyof typeof FILMS_BY_SAGA> = ['park', 'world', 'rebirth'
     }
     .saga-title {
       font-size: 0.9rem;
-      letter-spacing: 0.32em;
+      letter-spacing: clamp(0.12em, 0.9vw, 0.32em);
       text-transform: uppercase;
       color: var(--color-evato-amber);
       padding-bottom: 0.5rem;
@@ -145,7 +145,7 @@ const sagaOrder: Array<keyof typeof FILMS_BY_SAGA> = ['park', 'world', 'rebirth'
     }
     .films-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
       gap: 1.4rem;
     }
     .film-card {

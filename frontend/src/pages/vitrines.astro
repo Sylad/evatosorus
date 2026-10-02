@@ -233,7 +233,9 @@ const visitPaths = [
       max-width: 12ch;
       margin: 0;
       color: #fff5e2;
-      font-size: clamp(2.6rem, 7vw, 5.8rem);
+      /* L22 : 2,6rem au téléphone courant comme avant, réduit sous 400 px (« commence »
+         tient à 320 px) ; 7vw au-delà, plafonné à 5,8rem, inchangé. */
+      font-size: min(max(min(11.5vw, 2.6rem), 7vw), 5.8rem);
       line-height: 0.96;
       letter-spacing: 0.02em;
       text-shadow: 0 3px 18px rgba(0, 0, 0, 0.86);

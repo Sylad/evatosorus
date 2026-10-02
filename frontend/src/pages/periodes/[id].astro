@@ -98,7 +98,7 @@ const species = getSpeciesByPeriod(period.id).sort((a, b) => {
       margin: 0 0 0.4rem;
     }
     .period-detail-header h1 {
-      font-size: 3rem;
+      font-size: clamp(1.4rem, 9vw, 3rem);
       margin: 0 0 1rem;
       color: color-mix(in srgb, var(--accent) 70%, var(--color-evato-bone-muted));
     }
@@ -172,7 +172,7 @@ const species = getSpeciesByPeriod(period.id).sort((a, b) => {
     }
     .species-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
       gap: 1.4rem;
     }
     .empty {

@@ -161,6 +161,10 @@
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     letter-spacing: 0.06em;
+    /* L22 : un nom d'espèce de 23 lettres (Micropachycephalosaurus) ne tient pas
+       dans 320 px ; il passe à la ligne au lieu de faire défiler la page de côté.
+       Pas de hyphens: auto : Chromium coupait alors des mots qui tenaient (« es-pèces »). */
+    overflow-wrap: break-word;
   }
 }
 
