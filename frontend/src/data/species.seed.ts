@@ -24,7 +24,7 @@ export const SPECIES_SEED: Species[] = [
     earlyMa: 68, lateMa: 66,
     lengthM: 12, heightM: 4, weightKg: 8800,
     locations: [{ country: 'États-Unis', lat: 45.7, lng: -106.6 }, { country: 'Canada', lat: 50.7, lng: -111.5 }],
-    blurb: "Roi prédateur du Crétacé supérieur. Mâchoires capables d'écraser un os à 5800 kg/cm². Vit 30 ans, court à 30 km/h, vise les proies blessées.",
+    blurb: "Roi prédateur du Crétacé supérieur. Mâchoires capables d'écraser un os à 5 800 kg/cm². Vit 30 ans, court à 30 km/h, vise les proies blessées.",
     imageUrl: '/species/tyrannosaurus-rex.jpg',
     imageCredit: 'Wikimedia Commons (CC-BY-SA / domaine public)',
     wikipediaUrl: 'https://fr.wikipedia.org/wiki/Tyrannosaurus',

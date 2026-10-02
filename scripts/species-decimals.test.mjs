@@ -102,3 +102,17 @@ test('site construit : notes IMDb à virgule, pas de « 0 t », pas de « Autres
   }
   assert.deepEqual(bad, []);
 });
+
+// Textes rédigés : « 1,5 tonne » (singulier sous 2), milliers groupés (« 5 800 kg/cm² »).
+test('site construit : pas de « 1,5 tonnes » ni de nombre à 4 chiffres non groupé devant une unité', (t) => {
+  const root = new URL('../frontend/dist/', import.meta.url);
+  if (!existsSync(root)) { t.skip('frontend/dist absent'); return; }
+  const bad = [];
+  const pages = ['vitrines/index.html', ...readdirSync(new URL('especes/', root)).map((id) => `especes/${id}/index.html`)];
+  for (const p of pages) {
+    const text = readFileSync(new URL(p, root), 'utf8');
+    const m = text.match(/(?<![\d,])[01],\d+ tonnes|\b\d{4,}\s?(kg|km|t)\b/);
+    if (m) bad.push(`${p} : ${m[0]}`);
+  }
+  assert.deepEqual(bad, []);
+});
