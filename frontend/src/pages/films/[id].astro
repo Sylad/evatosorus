@@ -1,4 +1,5 @@
 ---
+import { formatRating } from '../../lib/format-count.mjs';
 import CodexLayout from '../../layouts/CodexLayout.astro';
 import { FILMS, SAGA_LABELS } from '../../data/films';
 import { getSpeciesById } from '../../data/species';
@@ -30,7 +31,7 @@ const next = idx < FILMS.length - 1 ? FILMS[idx + 1] : null;
     <header class="film-header">
       <p class="codex-eyebrow">{SAGA_LABELS[film.saga]} · {film.year}</p>
       <h1>{film.title}</h1>
-      <p class="director">{film.director} · {film.durationMin} min · IMDb {film.imdb}</p>
+      <p class="director">{film.director} · {film.durationMin} min · IMDb {formatRating(film.imdb)}</p>
     </header>
 
     <div class="film-grid">

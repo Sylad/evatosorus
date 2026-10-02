@@ -1,4 +1,5 @@
 ---
+import { formatRating } from '../../lib/format-count.mjs';
 import CodexLayout from '../../layouts/CodexLayout.astro';
 import { FILMS, FILMS_BY_SAGA, SAGA_LABELS } from '../../data/films';
 
@@ -50,7 +51,7 @@ const sagaOrder: Array<keyof typeof FILMS_BY_SAGA> = ['park', 'world', 'rebirth'
                 <p class="director">{f.director}</p>
                 <div class="film-tags">
                   <span class="tag">{f.durationMin} min</span>
-                  <span class="tag tag-imdb">★ {f.imdb}</span>
+                  <span class="tag tag-imdb">★ {formatRating(f.imdb)}</span>
                 </div>
                 <p class="film-blurb-snippet">{f.blurb.split('.').slice(0, 1).join('.') + '.'}</p>
               </div>

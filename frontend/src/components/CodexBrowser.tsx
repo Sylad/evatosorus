@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
 import type { Species } from '../data/species.types';
-import { formatCount, formatDecimal, formatRange } from '../lib/format-count.mjs';
+import { formatCount, formatDecimal, formatMass, formatRange } from '../lib/format-count.mjs';
 import { longestWordEm, LS } from '../lib/title-fit.mjs';
 
 // Subset minimum nécessaire pour afficher une card. Pour préserver les
@@ -298,7 +298,7 @@ function Card({
   const primaryImage = s.lifeRestorationUrl ?? s.imageUrl;
   const isSilhouette = !primaryImage;
   const sizeText = s.lengthM
-    ? `${formatDecimal(s.lengthM)} m${s.weightKg ? ` · ${formatDecimal(s.weightKg / 1000, 1)} t` : ''}`
+    ? `${formatDecimal(s.lengthM)} m${s.weightKg ? ` · ${formatMass(s.weightKg)}` : ''}`
     : null;
 
   return (

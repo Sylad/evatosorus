@@ -55,3 +55,50 @@ test('site construit : aucune fiche espèce n\'affiche de décimale à point', (
   const aardonyx = readFileSync(new URL('aardonyx-celestae/index.html', DIST), 'utf8');
   assert.ok(aardonyx.includes('201,4 → 192,9 Ma'), 'Aardonyx : « 201,4 → 192,9 Ma »');
 });
+
+import { formatMass, formatMassLong, formatRating } from '../frontend/src/lib/format-count.mjs';
+
+test('formatMass : kilogrammes sous la tonne, tonnes au-delà, jamais « 0 t »', () => {
+  assert.equal(formatMass(15), '15 kg');
+  assert.equal(formatMass(0.5), '0,5 kg');
+  assert.equal(formatMass(2.25), '2,3 kg');
+  assert.equal(formatMass(450), '450 kg');
+  assert.equal(formatMass(999.6), '1 t');
+  assert.equal(formatMass(8800), '8,8 t');
+  assert.equal(formatMass(73000), '73 t');
+});
+
+test('formatMassLong : en toutes lettres, pluriel à partir de 2', () => {
+  assert.equal(formatMassLong(15), '15 kilogrammes');
+  assert.equal(formatMassLong(1), '1 kilogramme');
+  assert.equal(formatMassLong(1500), '1,5 tonne');
+  assert.equal(formatMassLong(8800), '8,8 tonnes');
+});
+
+test('formatRating : une décimale toujours, virgule (« 7,0 », « 8,2 »)', () => {
+  assert.equal(formatRating(7), '7,0');
+  assert.equal(formatRating(8.2), '8,2');
+});
+
+test('site construit : notes IMDb à virgule, pas de « 0 t », pas de « Autres autres »', (t) => {
+  const root = new URL('../frontend/dist/', import.meta.url);
+  if (!existsSync(root)) { t.skip('frontend/dist absent'); return; }
+  const html = (p) => readFileSync(new URL(p, root), 'utf8');
+  const films = html('films/index.html');
+  assert.equal(films.match(/★ \d+\.\d/g), null, 'liste des films : note à point');
+  assert.ok(/★ 7,0/.test(films), 'Jurassic World : « 7,0 »');
+  for (const id of readdirSync(new URL('films/', root))) {
+    const f = new URL(`films/${id}/index.html`, root);
+    if (!existsSync(f)) continue;
+    assert.equal(readFileSync(f, 'utf8').match(/IMDb \d+\.\d/), null, `films/${id}`);
+  }
+  const bad = [];
+  for (const id of readdirSync(new URL('especes/', root))) {
+    const h = html(`especes/${id}/index.html`);
+    if (/>0 t<|[ >]0 tonne|Autres autres/i.test(h)) bad.push(id);
+  }
+  for (const p of ['periodes/trias/index.html', 'periodes/jurassique/index.html', 'periodes/cretace/index.html']) {
+    if (/· 0 t</.test(html(p))) bad.push(p);
+  }
+  assert.deepEqual(bad, []);
+});

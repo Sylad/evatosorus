@@ -2,7 +2,7 @@
 import CodexLayout from '../../layouts/CodexLayout.astro';
 import { SPECIES, getSpeciesById, getSpeciesVideos, TAXON_GROUP_LABELS, DIET_LABELS, DIET_ICONS } from '../../data/species';
 import { PERIODS_BY_ID } from '../../data/periods';
-import { formatDecimal } from '../../lib/format-count.mjs';
+import { formatDecimal, formatMass, formatMassLong } from '../../lib/format-count.mjs';
 import { fitStyle, LS } from '../../lib/title-fit.mjs';
 
 export function getStaticPaths() {
@@ -19,9 +19,14 @@ const otherSameGroup = SPECIES
   .slice(0, 6);
 const videos = getSpeciesVideos(s.id);
 const activeMa = s.earlyMa && s.lateMa ? Math.abs(s.earlyMa - s.lateMa) : undefined;
-const massTonnes = s.weightKg ? s.weightKg / 1000 : undefined;
 // L22 : largeur du plus long mot du titre (em) — la taille du titre s'y ajuste.
 const titleFit = fitStyle(s.commonName ?? s.name, LS.heading);
+// « Autres théropodes » ; les groupes « Autres … » gardent leur libellé (plus de
+// « Autres autres ornithischiens »), le groupe fourre-tout devient « Autres espèces ».
+const groupLabel = TAXON_GROUP_LABELS[s.taxonGroup] ?? '';
+const relatedHeading = s.taxonGroup === 'other'
+  ? 'Autres espèces'
+  : groupLabel.startsWith('Autres') ? groupLabel : `Autres ${groupLabel.toLowerCase()}`;
 const scaleNote = s.lengthM && s.lengthM >= 25
   ? 'Une silhouette de la longueur d’un petit immeuble couché.'
   : s.lengthM && s.lengthM >= 10
@@ -47,9 +52,9 @@ const fieldNotes = [
     label: 'Fenêtre fossile',
     value: `${formatDecimal(activeMa, 1)} million${activeMa > 1 ? 's' : ''} d’années entre les repères connus.`,
   },
-  massTonnes && {
+  s.weightKg && {
     label: 'Masse vivante',
-    value: `${formatDecimal(massTonnes, 1)} tonne${massTonnes > 1 ? 's' : ''} environ, d’après les estimations retenues ici.`,
+    value: `${formatMassLong(s.weightKg)} environ, d’après les estimations retenues ici.`,
   },
   scaleNote && {
     label: 'Échelle',
@@ -275,7 +280,7 @@ const speciesInsights = [
           <dd>{DIET_ICONS[s.diet]} {DIET_LABELS[s.diet]}</dd>
           {s.lengthM && (<><dt>Longueur</dt><dd>{formatDecimal(s.lengthM)} m</dd></>)}
           {s.heightM && s.heightM > 0 && (<><dt>Hauteur</dt><dd>{formatDecimal(s.heightM)} m</dd></>)}
-          {s.weightKg && (<><dt>Poids</dt><dd>{formatDecimal(s.weightKg / 1000, 1)} t</dd></>)}
+          {s.weightKg && (<><dt>Poids</dt><dd>{formatMass(s.weightKg)}</dd></>)}
           {s.earlyMa && s.lateMa && (<><dt>Existence</dt><dd>{formatDecimal(s.earlyMa)} → {formatDecimal(s.lateMa)} Ma</dd></>)}
           <dt>Période</dt>
           <dd><a href={`/periodes/${s.periodId}/`}>{period?.name ?? '?'}</a></dd>
@@ -354,7 +359,7 @@ const speciesInsights = [
 
     {otherSameGroup.length > 0 && (
       <section class="related">
-        <h2>Autres {TAXON_GROUP_LABELS[s.taxonGroup]?.toLowerCase()}</h2>
+        <h2>{relatedHeading}</h2>
         <div class="related-grid">
           {otherSameGroup.map((o) => (
             <a href={`/especes/${o.id}/`} class="related-card">

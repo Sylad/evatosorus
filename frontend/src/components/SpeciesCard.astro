@@ -1,7 +1,7 @@
 ---
 import type { Species } from '../data/species.types';
 import { DIET_ICONS, DIET_LABELS, TAXON_GROUP_LABELS } from '../data/species';
-import { formatDecimal } from '../lib/format-count.mjs';
+import { formatDecimal, formatMass } from '../lib/format-count.mjs';
 import { fitStyle, LS } from '../lib/title-fit.mjs';
 
 interface Props {
@@ -52,7 +52,7 @@ const isSilhouette = !primaryImage;
       <span>{TAXON_GROUP_LABELS[s.taxonGroup] ?? s.taxonGroup}</span>
     </div>
     {s.lengthM ? (
-      <p class="card-size">{formatDecimal(s.lengthM)} m{s.weightKg ? ` · ${formatDecimal(s.weightKg / 1000, 1)} t` : ''}</p>
+      <p class="card-size">{formatDecimal(s.lengthM)} m{s.weightKg ? ` · ${formatMass(s.weightKg)}` : ''}</p>
     ) : null}
   </div>
 </a>
