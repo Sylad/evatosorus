@@ -93,6 +93,12 @@ test('AUCUN texte privé du plan dans le site construit : titres bruts, notes, v
   assert.deepEqual(leaks, []);
 });
 
+test('dates de livraison en français, « 1er » le premier du mois', () => {
+  const page = decode(html());
+  assert.ok(!/Livré le 1 /.test(page), '« Livré le 1 octobre » au lieu de « 1er »');
+  if (shown('done').some((l) => String(l.finished).endsWith('-01'))) assert.match(page, /Livré le 1er /);
+});
+
 test('section vide : texte honnête (« Prévu » vide → « Les prochains travaux seront annoncés ici. ») ; jamais « 0 » dans le bandeau', () => {
   const page = decode(html());
   assert.doesNotMatch(page, /<span>0\u00a0/, 'décompte nul affiché');

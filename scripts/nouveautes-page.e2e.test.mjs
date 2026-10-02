@@ -41,8 +41,8 @@ test('une entrée par nouveauté, dans l’ordre du JSON (la plus récente en ha
   }
 });
 
-test('date affichée en français (« 1 octobre 2026 »)', () => {
-  assert.match(html(), /<time datetime="2026-10-01"[^>]*>1 octobre 2026<\/time>/);
+test('date affichée en français (« 1er octobre 2026 »)', () => {
+  assert.match(html(), /<time datetime="2026-10-01"[^>]*>1er octobre 2026<\/time>/);
 });
 
 test('le menu de toutes les pages internes mène à /nouveautes/, actif sur la page', () => {
@@ -388,7 +388,7 @@ test('L27 : séparateur « Déjà vu lors de votre visite du … » avant la pre
   const sep = page.locator('.news-seen-sep');
   await sep.waitFor();
   assert.equal(await sep.count(), 1);
-  assert.equal((await sep.textContent()).trim(), 'Déjà vu lors de votre visite du 1 octobre 2026 à 10:30');
+  assert.equal((await sep.textContent()).trim(), 'Déjà vu lors de votre visite du 1er octobre 2026 à 10:30');
   assert.equal(await sep.evaluate((li) => li.nextElementSibling.querySelector('article').id), DATA.entries[1].slug);
   assert.equal(await page.locator('.news-new').count(), 1);
   await context.close();

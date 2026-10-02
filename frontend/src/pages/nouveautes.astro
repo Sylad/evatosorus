@@ -10,6 +10,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import CodexLayout from '../layouts/CodexLayout.astro';
+import { formatDay } from '../lib/format-date.mjs';
 import news from '../../public/nouveautes-data/nouveautes.json';
 
 interface NewsEntry {
@@ -24,10 +25,7 @@ interface NewsEntry {
 const BASE = '/nouveautes-data';
 const entries = (news as { entries: NewsEntry[] }).entries;
 
-const formatDate = (day: string) =>
-  new Date(`${day}T12:00:00Z`).toLocaleDateString('fr-FR', {
-    day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
-  });
+const formatDate = formatDay;
 
 // Dimensions lues dans l'en-tête PNG (IHDR) : réservent la place des captures,
 // pas de saut de mise en page au chargement.

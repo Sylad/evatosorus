@@ -10,6 +10,8 @@
  * si absente des slugs ET pas plus ancienne que cette date — dates comparées en
  * millisecondes, jamais en chaînes (`13:15:00Z` < `13:15Z` en chaîne).
  */
+import { formatLongDate, formatTime } from "./format-date.mjs";
+
 export const NEWS_SEEN_KEY = "evato.news.seen-v1";
 
 export interface NewsSeen {
@@ -154,11 +156,9 @@ export function browserStorage(): StorageLike | null {
 /** Événement émis après la visite de /nouveautes : la barre (persistée) relit la mémoire. */
 export const NEWS_SEEN_EVENT = "evato:news-seen";
 
-/** Texte du séparateur posé avant la première entrée déjà vue. */
-export function seenSeparatorLabel(at: string | undefined): string {
+/** Texte du séparateur posé avant la première entrée déjà vue (fuseau du navigateur par défaut). */
+export function seenSeparatorLabel(at: string | undefined, timeZone?: string): string {
   if (!at || Number.isNaN(Date.parse(at))) return "Déjà vu lors d’une visite précédente";
   const d = new Date(at);
-  const day = d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
-  const time = d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
-  return `Déjà vu lors de votre visite du ${day} à ${time}`;
+  return `Déjà vu lors de votre visite du ${formatLongDate(d, timeZone)} à ${formatTime(d, timeZone)}`;
 }
