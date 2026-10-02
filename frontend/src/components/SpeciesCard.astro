@@ -2,6 +2,7 @@
 import type { Species } from '../data/species.types';
 import { DIET_ICONS, DIET_LABELS, TAXON_GROUP_LABELS } from '../data/species';
 import { formatDecimal } from '../lib/format-count.mjs';
+import { fitStyle, LS } from '../lib/title-fit.mjs';
 
 interface Props {
   species: Species;
@@ -43,7 +44,7 @@ const isSilhouette = !primaryImage;
     {isSilhouette && <span class="card-silhouette-tag">silhouette</span>}
   </div>
   <div class="card-body">
-    <h3 class="card-title">{s.commonName ?? s.name}</h3>
+    <h3 class="card-title" style={fitStyle(s.commonName ?? s.name, LS.card)}>{s.commonName ?? s.name}</h3>
     <p class="card-sci">{s.name}</p>
     <div class="card-meta">
       <span title={DIET_LABELS[s.diet]}>{DIET_ICONS[s.diet]} {DIET_LABELS[s.diet]}</span>
@@ -147,14 +148,20 @@ const isSilhouette = !primaryImage;
     border: 1px solid var(--p);
   }
   .card-body {
+    container-type: inline-size;
     padding: 1rem 1.1rem 1.1rem;
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
   }
+  /* L22 : titre de carte ajusté à son plus long mot (--word-em, lib/title-fit.mjs) :
+     1,05rem au plus, 0,8rem (14 px) au moins ; à ce plancher, seuls les noms listés dans
+     scripts/title-fit.test.mjs dépassent la carte la plus étroite et passent à la ligne. */
   .card-title {
+    --fit-floor: 0.8rem;
     font-family: var(--font-display);
-    font-size: 1.05rem;
+    font-size: clamp(var(--fit-floor), calc(100cqi / var(--word-em, 8)), 1.05rem);
+    overflow-wrap: break-word;
     letter-spacing: 0.04em;
     color: var(--color-evato-amber-bright);
     margin: 0;

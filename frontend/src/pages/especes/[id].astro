@@ -3,6 +3,7 @@ import CodexLayout from '../../layouts/CodexLayout.astro';
 import { SPECIES, getSpeciesById, getSpeciesVideos, TAXON_GROUP_LABELS, DIET_LABELS, DIET_ICONS } from '../../data/species';
 import { PERIODS_BY_ID } from '../../data/periods';
 import { formatDecimal } from '../../lib/format-count.mjs';
+import { fitStyle, LS } from '../../lib/title-fit.mjs';
 
 export function getStaticPaths() {
   return SPECIES.map((s) => ({ params: { id: s.id } }));
@@ -19,9 +20,8 @@ const otherSameGroup = SPECIES
 const videos = getSpeciesVideos(s.id);
 const activeMa = s.earlyMa && s.lateMa ? Math.abs(s.earlyMa - s.lateMa) : undefined;
 const massTonnes = s.weightKg ? s.weightKg / 1000 : undefined;
-// L22 : longueur du plus long mot du titre — la taille du titre s'y ajuste pour que le
-// nom tienne dans la largeur (Micropachycephalosaurus : 23 lettres) sans couper le mot.
-const titleLongestWord = Math.max(...(s.commonName ?? s.name).split(/\s+/).map((w) => w.length));
+// L22 : largeur du plus long mot du titre (em) — la taille du titre s'y ajuste.
+const titleFit = fitStyle(s.commonName ?? s.name, LS.heading);
 const scaleNote = s.lengthM && s.lengthM >= 25
   ? 'Une silhouette de la longueur d’un petit immeuble couché.'
   : s.lengthM && s.lengthM >= 10
@@ -237,7 +237,7 @@ const speciesInsights = [
       <p class="codex-eyebrow" style={`--accent:${period?.accentColor ?? '#d4a55e'}`}>
         {TAXON_GROUP_LABELS[s.taxonGroup]} · {period?.name ?? 'Mésozoïque'}
       </p>
-      <h1 style={`--longest-word:${titleLongestWord}`}>{s.commonName ?? s.name}</h1>
+      <h1 style={titleFit}>{s.commonName ?? s.name}</h1>
       <p class="sci-name">{s.name}</p>
     </header>
 
@@ -435,17 +435,21 @@ const speciesInsights = [
       text-transform: uppercase;
       margin: 0 0 0.4rem;
     }
-    .detail-header {
-      container-type: inline-size;
-    }
     .detail-header h1 {
-      /* L22 : 3rem au plus ; sinon la largeur du conteneur divisée par le plus long mot
-         du nom (≈ 0,72 em par lettre en Cinzel, espacement compris, marge à 0,78) ; jamais
-         sous la taille du nom scientifique (1,15rem) : au-delà de ~19 lettres à 320 px
-         (Micropachycephalosaurus), le mot passe à la ligne plutôt que de rapetisser. */
-      font-size: clamp(1.15rem, calc(100cqi / (var(--longest-word, 12) * 0.78)), 3rem);
+      /* L22 : 3rem au plus ; sinon largeur disponible ÷ largeur du plus long mot du nom
+         (--word-em, lib/title-fit.mjs) : le nom tient sans couper de mot.
+         Plancher tiré des données : le plus long mot des 1 511 titres
+         (Micropachycephalosaurus, 16,70 em) tient dans 276 px (contenu à 320 px) à
+         0,94rem (16,45 px) — vérifié par scripts/title-fit.test.mjs. En dessous (écran
+         < 320 px, espacements imposés WCAG 1.4.12) le mot passe à la ligne. */
+      --fit-floor: 0.94rem;
+      font-size: clamp(var(--fit-floor), calc(100cqi / var(--word-em, 12)), 3rem);
+      overflow-wrap: break-word;
       margin: 0 0 0.3rem;
       color: var(--color-evato-amber-bright);
+    }
+    .detail-header {
+      container-type: inline-size;
     }
     .sci-name {
       font-style: italic;

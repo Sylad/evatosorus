@@ -5,6 +5,7 @@ import MesozoicTimeline from '../../components/MesozoicTimeline.astro';
 import { PERIODS } from '../../data/periods';
 import { getSpeciesByPeriod } from '../../data/species';
 import { formatCount } from '../../lib/format-count.mjs';
+import { fitStyle, LS } from '../../lib/title-fit.mjs';
 ---
 <CodexLayout
   title="Voyage temporel — Evatosorus"
@@ -33,7 +34,7 @@ import { formatCount } from '../../lib/format-count.mjs';
             <span class="period-num">{p.startMa} → {p.endMa} Ma</span>
             <span class="period-duration">{p.durationMa} Ma</span>
           </div>
-          <h2>{p.name}</h2>
+          <h2 style={fitStyle(p.name, LS.heading)}>{p.name}</h2>
           <p class="period-blurb">{p.blurb}</p>
           <div class="period-iconics">
             {p.iconicSpecies.slice(0, 4).map((sp) => (
@@ -124,8 +125,14 @@ import { formatCount } from '../../lib/format-count.mjs';
       color: var(--accent);
       text-transform: uppercase;
     }
+    .period-card {
+      container-type: inline-size;
+    }
     .period-card h2 {
-      font-size: 1.8rem;
+      /* L22 : 1,8rem, réduit si le nom de la période ne tient pas dans la carte. */
+      --fit-floor: 1.1rem;
+      font-size: max(var(--fit-floor), min(1.8rem, calc(100cqi / var(--word-em, 8))));
+      overflow-wrap: break-word;
       margin: 0;
       color: var(--color-evato-bone);
     }

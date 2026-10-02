@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useWindowVirtualizer } from '@tanstack/react-virtual';
 import type { Species } from '../data/species.types';
 import { formatCount, formatDecimal, formatRange } from '../lib/format-count.mjs';
+import { longestWordEm, LS } from '../lib/title-fit.mjs';
 
 // Subset minimum nécessaire pour afficher une card. Pour préserver les
 // optimisations bandwidth (codex.astro trim ~60% des champs avant de passer
@@ -324,7 +325,7 @@ function Card({
         {isSilhouette && <span className="card-silhouette-tag">silhouette</span>}
       </div>
       <div className="card-body">
-        <h3 className="card-title">{s.commonName ?? s.name}</h3>
+        <h3 className="card-title" style={{ ['--word-em' as never]: longestWordEm(s.commonName ?? s.name, LS.card).toFixed(3) } as React.CSSProperties}>{s.commonName ?? s.name}</h3>
         <p className="card-sci">{s.name}</p>
         <div className="card-meta">
           <span title={dietLabels[s.diet]}>{dietIcons[s.diet]} {dietLabels[s.diet]}</span>

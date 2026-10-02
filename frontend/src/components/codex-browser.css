@@ -275,15 +275,21 @@
 }
 
 .species-card .card-body {
+  container-type: inline-size;
   padding: 1rem 1.1rem 1.1rem;
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
 }
 
+/* L22 : titre de carte ajusté à son plus long mot (--word-em, lib/title-fit.mjs) :
+   1,05rem au plus, 0,8rem (14 px) au moins ; à ce plancher, seuls les noms listés dans
+   scripts/title-fit.test.mjs dépassent la carte la plus étroite et passent à la ligne. */
 .species-card .card-title {
+  --fit-floor: 0.8rem;
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: clamp(var(--fit-floor), calc(100cqi / var(--word-em, 8)), 1.05rem);
+  overflow-wrap: break-word;
   letter-spacing: 0.04em;
   color: var(--color-evato-amber-bright);
   margin: 0;

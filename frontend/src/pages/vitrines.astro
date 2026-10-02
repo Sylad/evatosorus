@@ -1,4 +1,5 @@
 ---
+import { fitStyle, LS } from '../lib/title-fit.mjs';
 import CodexLayout from '../layouts/CodexLayout.astro';
 import { formatCount } from '../lib/format-count.mjs';
 import { SPECIES, getSpeciesVideos, TAXON_GROUP_LABELS, DIET_LABELS } from '../data/species';
@@ -100,7 +101,7 @@ const visitPaths = [
     </video>
     <div class="vitrine-hero-overlay">
       <p class="page-kicker">espèces vitrines</p>
-      <h1 id="vitrine-title">Le musée vivant commence ici.</h1>
+      <h1 id="vitrine-title" style={fitStyle('Le musée vivant commence ici.', LS.vitrineHero)}>Le musée vivant commence ici.</h1>
       <p>
         Les créatures les plus connues ouvrent la visite : une scène animée,
         une fiche claire, et juste assez de science pour nourrir la curiosité
@@ -170,7 +171,7 @@ const visitPaths = [
             <span>{TAXON_GROUP_LABELS[species.taxonGroup] ?? species.taxonGroup}</span>
             <span>{DIET_LABELS[species.diet] ?? species.diet}</span>
           </div>
-          <h2>{species.commonName ?? species.name}</h2>
+          <h2 style={fitStyle(species.commonName ?? species.name, LS.vitrine)}>{species.commonName ?? species.name}</h2>
           <p class="sci">{species.name}</p>
           {species.blurb && <p class="blurb">{species.blurb}</p>}
           <p class="open-card">Ouvrir la fiche</p>
@@ -210,6 +211,7 @@ const visitPaths = [
       filter: saturate(1.05) contrast(1.05) brightness(0.8);
     }
     .vitrine-hero-overlay {
+      container-type: inline-size;
       position: relative;
       z-index: 1;
       min-height: inherit;
@@ -233,9 +235,11 @@ const visitPaths = [
       max-width: 12ch;
       margin: 0;
       color: #fff5e2;
-      /* L22 : 2,6rem au téléphone courant comme avant, réduit sous 400 px (« commence »
-         tient à 320 px) ; 7vw au-delà, plafonné à 5,8rem, inchangé. */
-      font-size: min(max(min(11.5vw, 2.6rem), 7vw), 5.8rem);
+      /* L22 : 2,6rem → 7vw → 5,8rem comme avant, réduit si « commence » ne tient pas dans
+         le bandeau (--word-em, lib/title-fit.mjs). */
+      --fit-floor: 1.4rem;
+      font-size: max(var(--fit-floor), min(max(2.6rem, 7vw), 5.8rem, calc(100cqi / var(--word-em, 8))));
+      overflow-wrap: break-word;
       line-height: 0.96;
       letter-spacing: 0.02em;
       text-shadow: 0 3px 18px rgba(0, 0, 0, 0.86);
@@ -415,6 +419,7 @@ const visitPaths = [
       text-transform: uppercase;
     }
     .vitrine-body {
+      container-type: inline-size;
       padding: 1.05rem 1.15rem 1.2rem;
       display: flex;
       min-width: 0;
@@ -439,7 +444,11 @@ const visitPaths = [
     .vitrine-body h2 {
       margin: 0;
       color: var(--color-evato-amber-bright);
-      font-size: clamp(1.15rem, 2vw, 1.65rem);
+      /* L22 : taille d'origine, réduite si le plus long mot du nom ne tient pas dans la
+         carte (--word-em, lib/title-fit.mjs) ; jamais coupé au milieu d'un mot. */
+      --fit-floor: 0.9rem;
+      font-size: max(var(--fit-floor), min(clamp(1.15rem, 2vw, 1.65rem), calc(100cqi / var(--word-em, 8))));
+      overflow-wrap: break-word;
       line-height: 1.08;
       letter-spacing: 0.03em;
     }

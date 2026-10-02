@@ -1,5 +1,6 @@
 ---
 import CodexLayout from '../layouts/CodexLayout.astro';
+import { fitStyle, LS } from '../lib/title-fit.mjs';
 ---
 
 <CodexLayout
@@ -11,7 +12,7 @@ import CodexLayout from '../layouts/CodexLayout.astro';
     <header class="learn-hero">
       <div class="learn-hero-copy">
         <p class="page-kicker">comprendre</p>
-        <h1>Les dinosaures ne sont pas juste de gros lézards.</h1>
+        <h1 style={fitStyle('Les dinosaures ne sont pas juste de gros lézards.', LS.heading)}>Les dinosaures ne sont pas juste de gros lézards.</h1>
         <p>
           Ils forment une histoire immense : des animaux terrestres, des oiseaux
           survivants, des cousins volants, des reptiles marins, des fossiles
@@ -129,6 +130,7 @@ import CodexLayout from '../layouts/CodexLayout.astro';
       box-shadow: 0 22px 44px -22px rgba(0, 0, 0, 0.82);
     }
     .learn-hero-copy {
+      container-type: inline-size;
       display: flex;
       flex-direction: column;
       justify-content: end;
@@ -136,10 +138,12 @@ import CodexLayout from '../layouts/CodexLayout.astro';
     }
     .learn-hero h1 {
       margin: 0;
-      max-width: 12ch;
       color: #fff5e2;
-      /* L22 : réduit sous 400 px (« dinosaures » tient à 320 px) ; 6vw au-delà, inchangé. */
-      font-size: min(max(min(9.5vw, 2.4rem), 6vw), 5rem);
+      /* L22 : 2,4rem → 6vw → 5rem comme avant, réduit si « dinosaures » ne tient pas dans
+         sa colonne (--word-em, lib/title-fit.mjs) : il était rogné au bureau. */
+      --fit-floor: 1.4rem;
+      font-size: max(var(--fit-floor), min(max(2.4rem, 6vw), 5rem, calc(100cqi / var(--word-em, 8))));
+      overflow-wrap: break-word;
       line-height: 0.98;
     }
     .learn-hero p:not(.page-kicker) {
