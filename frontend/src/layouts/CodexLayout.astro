@@ -123,19 +123,43 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
         window.scrollTo(0, savedScrollY);
       };
 
-      const setOpen = (open) => {
+      // L23 — tiroir ouvert : tout ce qui n'est ni le tiroir ni le bouton du menu devient
+      // inert (hors de l'ordre Tab et de l'arbre d'accessibilité). Le voile reste cliquable
+      // (il ferme le tiroir) : il est déjà aria-hidden et n'a rien de focalisable.
+      const shell = sidebar.parentElement;
+      let madeInert = [];
+      const setBackgroundInert = (on) => {
+        if (on) {
+          const targets = [
+            ...[...document.body.children].filter((el) => el !== burger && el !== shell && !el.inert),
+            ...[...shell.children].filter((el) => el !== sidebar && el !== overlay && !el.inert),
+          ];
+          targets.forEach((el) => { el.inert = true; });
+          madeInert = targets;
+        } else {
+          madeInert.forEach((el) => { el.inert = false; });
+          madeInert = [];
+        }
+      };
+
+      const setOpen = (open, { restoreFocus = true } = {}) => {
         if (open) {
           html.setAttribute('data-drawer-open', 'true');
           burger.setAttribute('aria-expanded', 'true');
           burger.setAttribute('aria-label', 'Fermer la navigation');
           lockScroll();
+          setBackgroundInert(true);
+          // Focus sur le premier lien du tiroir (le logo, lien vers l'accueil).
+          sidebar.querySelector('a, button')?.focus({ preventScroll: true });
         } else {
           html.removeAttribute('data-drawer-open');
           burger.setAttribute('aria-expanded', 'false');
           // L27 : le libellé au repos annonce les nouveautés non vues (posé par le script de la pastille).
           const unseen = burger.dataset.newsUnseen;
           burger.setAttribute('aria-label', unseen ? `Ouvrir la navigation (${unseen})` : 'Ouvrir la navigation');
+          setBackgroundInert(false);
           unlockScroll();
+          if (restoreFocus) burger.focus({ preventScroll: true });
         }
       };
 
@@ -151,13 +175,15 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
       sidebar.addEventListener('click', (e) => {
         const target = e.target instanceof Element ? e.target.closest('a') : null;
         if (target && sidebar.contains(target)) {
-          setOpen(false);
+          // Navigation en cours : ne pas ramener le focus au bouton.
+          setOpen(false, { restoreFocus: false });
         }
       });
       const mql = window.matchMedia('(min-width: 1024px)');
       const onChange = () => {
         if (mql.matches && html.getAttribute('data-drawer-open') === 'true') {
-          setOpen(false);
+          // Passage au bureau : le bouton disparaît, le focus reste où il est.
+          setOpen(false, { restoreFocus: false });
         }
       };
       mql.addEventListener?.('change', onChange);
@@ -234,11 +260,16 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
       flex-direction: column;
       gap: 2rem;
       transform: translateX(-100%);
-      transition: transform 250ms ease-out;
+      /* L23 : fermé, le tiroir est visibility: hidden — ses liens sortent de l'ordre Tab
+         et de l'arbre d'accessibilité ; masqué APRÈS le glissement de fermeture. */
+      visibility: hidden;
+      transition: transform 250ms ease-out, visibility 0s linear 250ms;
       box-shadow: 6px 0 28px -10px rgba(0, 0, 0, 0.7);
     }
     :global(html[data-drawer-open="true"]) .codex-sidebar {
       transform: translateX(0);
+      visibility: visible;
+      transition: transform 250ms ease-out, visibility 0s;
     }
     @media (min-width: 1024px) {
       .codex-sidebar {
@@ -252,6 +283,7 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
         background: rgba(13, 10, 6, 0.45);
         backdrop-filter: blur(6px);
         transform: none;
+        visibility: visible;
         transition: none;
         box-shadow: none;
       }
@@ -328,6 +360,11 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
     @media (max-width: 1023px) {
       .codex-main {
         padding-top: 4.25rem;
+      }
+      /* L23 (WCAG 2.4.11) : un élément focalisé amené dans l'écran s'arrête sous le
+         bouton fixe du menu (bas à 3,6rem), jamais dessous. */
+      :global(html) {
+        scroll-padding-top: 4.5rem;
       }
     }
 
