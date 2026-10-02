@@ -34,6 +34,7 @@ const ON_BG = [
   ['/films/jurassic-park-1993/', '.codex-eyebrow'],
   ['/periodes/jurassique/', '.codex-eyebrow'],
   ['/periodes/cretace/', '.codex-eyebrow'],
+  ['/periodes/trias/', '.codex-eyebrow'],
   ['/especes/tyrannosaurus-rex/', '.detail-header .codex-eyebrow'], // Crétacé
   ['/especes/allosaurus-fragilis/', '.detail-header .codex-eyebrow'], // Jurassique
   ['/especes/eoraptor-lunensis/', '.detail-header .codex-eyebrow'], // Trias (accent rouge)
@@ -120,6 +121,13 @@ test(`sur-titres posés sur l'image de fond ≥ ${BG_MIN}:1 au pire pixel (1440/
         worstByCase.set(key, Math.min(worstByCase.get(key) ?? Infinity, worst));
         if (process.env.EVATO_CONTRAST_REPORT) t.diagnostic(`${where} : ${worst.toFixed(2)}:1 (${glyphs} px)`);
         if (worst < BG_MIN) failures.push(`${where} : ${worst.toFixed(2)}:1`);
+        // Sur-titres à la couleur de la période : bords anticrénelés compris, ≥ 4,5:1
+        // (ils tombaient à 3,5:1 sur le Trias quand le fond zoomait).
+        if (/detail-header|\/periodes\/\w/.test(`${path} ${sel}`)) {
+          const e = await worstPixelContrast(page, sel, { edges: true });
+          worstByCase.set(`${key} (bords)`, Math.min(worstByCase.get(`${key} (bords)`) ?? Infinity, e.worst));
+          if (e.worst < BG_MIN) failures.push(`${where} bords : ${e.worst.toFixed(2)}:1`);
+        }
       }
     }
     await context.close();

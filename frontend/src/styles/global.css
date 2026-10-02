@@ -280,3 +280,22 @@
   background: rgba(13, 10, 6, 0.8);
   box-shadow: inset 0 0 0 1px rgba(212, 165, 94, 0.25);
 }
+
+/* Sur-titres à la couleur de la période (fiches espèces, pages de période), posés sur
+   l'image de fond : halo plus dense au ras des lettres (passes répétées de 1 à 3 px) — les bords
+   anticrénelés du Trias tombaient à 3,5:1 quand le fond zoomait. */
+.detail-header .codex-eyebrow,
+.period-detail-header .codex-eyebrow {
+  text-shadow:
+    0 0 1px #000,
+    0 0 1px #000,
+    0 0 1px #000,
+    0 0 1.5px #000,
+    0 0 1.5px #000,
+    0 0 2px #000,
+    0 0 2px #000,
+    0 0 3px #000,
+    0 0 3px rgba(0, 0, 0, 0.9),
+    0 0 6px rgba(0, 0, 0, 0.7),
+    0 1px 3px rgba(0, 0, 0, 0.85);
+}

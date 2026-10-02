@@ -57,7 +57,9 @@ export async function setupBrowser(t) {
 // vu derrière les lettres, ombre portée comprise), puis texte visible ; les pixels qui
 // changent sont ceux des glyphes. Pour chacun, contraste couleur du texte / pixel du fond.
 // Renvoie { worst, glyphs } (ratio minimal, nombre de pixels de glyphes mesurés).
-export async function worstPixelContrast(page, selector) {
+// { edges: true } : compte aussi les bords anticrénelés (tout pixel modifié par le texte,
+// couleur du texte contre le fond sous ce pixel) — mesure plus sévère que le cœur des glyphes.
+export async function worstPixelContrast(page, selector, { edges = false } = {}) {
   const el = page.locator(selector).first();
   const box = await el.boundingBox();
   const clip = { x: Math.floor(box.x), y: Math.floor(box.y), width: Math.ceil(box.width), height: Math.ceil(box.height) };
@@ -66,7 +68,7 @@ export async function worstPixelContrast(page, selector) {
   const bg = await page.screenshot({ clip, animations: 'disabled' });
   await el.evaluate((n) => { n.style.color = n.dataset.prevColor; delete n.dataset.prevColor; });
   const fg = await page.screenshot({ clip, animations: 'disabled' });
-  return page.evaluate(async ({ bg, fg, color }) => {
+  return page.evaluate(async ({ bg, fg, color, edges }) => {
     const load = async (b64) => {
       const img = new Image();
       img.src = `data:image/png;base64,${b64}`;
@@ -93,12 +95,12 @@ export async function worstPixelContrast(page, selector) {
       // Cœur des glyphes seulement : le pixel rendu est proche de la couleur du texte
       // (l'anticrénelage des bords mélange texte et fond, il ne se mesure pas).
       const near = Math.abs(b[i] - r) + Math.abs(b[i + 1] - g) + Math.abs(b[i + 2] - bl) < 60;
-      if (diff < 30 || !near) continue;
+      if (edges ? diff <= 24 : (diff < 30 || !near)) continue;
       glyphs++;
       const B = lum(a[i], a[i + 1], a[i + 2]);
       const ratio = (Math.max(L, B) + 0.05) / (Math.min(L, B) + 0.05);
       if (ratio < worst) worst = ratio;
     }
     return { worst, glyphs };
-  }, { bg: bg.toString('base64'), fg: fg.toString('base64'), color });
+  }, { bg: bg.toString('base64'), fg: fg.toString('base64'), color, edges });
 }
