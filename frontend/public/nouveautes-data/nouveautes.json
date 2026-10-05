@@ -1,7 +1,22 @@
 {
   "project": "evatosorus",
-  "generated": "2026-10-02 19:08",
+  "generated": "2026-10-05 12:04",
   "entries": [
+    {
+      "slug": "2026-10-05-carte-paleo-monde-tuiles-carto-api-key-required-vues-en-loca",
+      "title": "Carte du monde ancien : un fond de carte fiable et des repères lisibles",
+      "date": "2026-10-05",
+      "lots": [
+        "L24"
+      ],
+      "captures": [
+        "captures/L24-carte-fond-esri-clusters-lisibles.png"
+      ],
+      "alts": [
+        "La carte paléo-monde sur fond gris ardoise, avec des repères ronds numérotés : orange pour le Crétacé, vert pour le Jurassique, rouge pour le Trias, chiffres bien lisibles."
+      ],
+      "html": "<p>La carte des fossiles s'affiche de nouveau avec un vrai fond de carte, et ses repères se lisent facilement.</p>\n<ul><li>Le <strong>fond de carte</strong> précédent affichait parfois un message d'erreur à la place des continents. Il est remplacé par un fond gris ardoise gratuit et fiable, fourni par Esri, qui met bien en valeur les couleurs des périodes.</li><li>Les <strong>repères ronds</strong> qui regroupent plusieurs espèces retrouvent leur aspect : une pastille de la couleur de la période (Trias, Jurassique ou Crétacé) et le nombre d'espèces au centre.</li><li>Le <strong>nombre</strong> est écrit en noir ou en ivoire selon la couleur de la pastille, pour rester lisible sur chacune des trois périodes.</li><li>Les crédits de la page À propos citent le nouveau fond de carte.</li></ul>"
+    },
     {
       "slug": "2026-10-02-un-site-plus-lisible-et-plus-facile-a-parcourir-au-telephone",
       "title": "Un site plus lisible et plus facile à parcourir au téléphone",
