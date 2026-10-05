@@ -32,3 +32,22 @@ test('pied du tiroir / de la barre latérale (« 252 → 66 Ma ») porte ce toke
   const src = read('layouts/CodexLayout.astro');
   assert.match(src, /class="text-xs text-evato-bone-ghost italic">\s*252 → 66 Ma/);
 });
+
+// L24 — chiffres des clusters (.evato-cluster) et des pins groupés (.evato-pin-count) :
+// texte foncé rgba(13,10,6,.92) sur la couleur de période, ≥ 4,5:1 (1.4.3 ; ni 18,66 px gras,
+// donc pas « grand texte »). Le dégradé radial part de la couleur à 95 % + 5 % de blanc.
+test('carte : chiffres des clusters et pins ≥ 4,5:1 sur chaque couleur de période', () => {
+  const src = read('components/PaleoMap.tsx');
+  const block = src.match(/const PERIOD_COLOR[^{]*\{([^}]*)\}/);
+  assert.ok(block, 'PERIOD_COLOR introuvable');
+  const colors = [...block[1].matchAll(/(\w+):\s*'#([0-9a-f]{6})'/gi)];
+  assert.equal(colors.length, 3);
+  const TEXT = [13, 10, 6];
+  for (const [, id, hex] of colors) {
+    const c = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
+    for (const bg of [c, over([255, 255, 255], 0.05, c)]) {
+      const fg = over(TEXT, 0.92, bg);
+      assert.ok(ratio(fg, bg) >= 4.5, `${id} #${hex} : ${ratio(fg, bg).toFixed(2)}:1`);
+    }
+  }
+});

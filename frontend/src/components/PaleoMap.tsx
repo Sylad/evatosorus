@@ -17,7 +17,7 @@ type Marker = {
 };
 
 const PERIOD_COLOR: Record<Marker['periodId'], string> = {
-  trias: '#c75131',
+  trias: '#d25b3b',
   jurassique: '#5e8f6e',
   cretace: '#d4a55e',
 };
