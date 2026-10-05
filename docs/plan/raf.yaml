@@ -206,10 +206,11 @@ lots:
   - id: L24
     title: "Carte paléo-monde : tuiles CARTO « API KEY REQUIRED » vues en local (dark_nolabels) et clusters en chiffres nus — vérifier en prod, changer de fond gratuit si confirmé"
     public: "Carte du monde ancien : un fond de carte fiable et des repères lisibles"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-01
+    started: 2026-10-05
   - id: L25
     title: Contraste des sur-titres de section posés sur l'image de fond (vidéos, films, périodes, carte, fiches) — même traitement qu'en L13 (halo + ombre), mesure au pire pixel
     public: "Des titres de section plus lisibles sur les images de fond"
