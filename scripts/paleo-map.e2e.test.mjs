@@ -34,6 +34,13 @@ test('carte : tuiles demandées chez un fournisseur sans clé, clusters et pins 
   await page.waitForTimeout(500);
   assert.ok(tiles.length > 0, 'aucune tuile demandée');
   for (const u of tiles) assert.doesNotMatch(u, /cartocdn/, u);
+  // Attribution = copyrightText du service Esri ; ODbL impose « © OpenStreetMap contributors ».
+  const attribution = await page.locator('.leaflet-control-attribution').innerText();
+  assert.match(attribution, /OpenStreetMap/);
+  assert.match(attribution, /Esri/);
+  assert.match(attribution, /HERE/);
+  assert.match(attribution, /Garmin/);
+  assert.equal(await page.locator('.leaflet-control-attribution a[href="https://www.openstreetmap.org/copyright"]').count(), 1);
   assert.ok(tiles.every((u) => /arcgisonline\.com\/ArcGIS\/rest\/services\/Canvas\/World_Dark_Gray_Base\/MapServer\/tile\/\d+\/\d+\/\d+$/.test(u)), tiles.join('\n'));
 
   const cluster = await page.evaluate(() => {

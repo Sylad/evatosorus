@@ -52,7 +52,10 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
     // avant, répond la tuile « API KEY REQUIRED » (constaté le 2026-10-05, L24).
     // Ordre des coordonnées Esri : z/y/x.
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Tiles © Esri — Esri, DeLorme, NAVTEQ',
+      // copyrightText publié par le service (relu le 2026-10-05) ; l'ODbL impose
+      // le « © OpenStreetMap contributors » avec son lien.
+      attribution:
+        'Tiles © Esri, HERE, Garmin, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, and the GIS user community',
       maxZoom: 8,
     }).addTo(map);
 
