@@ -23,7 +23,7 @@ assume la collab humain × Claude Code × openart.ai.
 
 - **Astro 6** + **React 19** (composants interactifs : filtres, carte)
 - **Tailwind 4** (palette ambre fossile / jade fougère / rust terre rouge)
-- **Leaflet** + tuiles CARTO Dark No Labels (carte paléo-monde)
+- **Leaflet** + tuiles Esri World Dark Gray Base (carte paléo-monde)
 - **Cinzel** + **Crimson Text** (typographies lapidaires + lecture serif)
 - Build statique pur, déployé sur **Cloudflare Pages**
 
@@ -37,7 +37,7 @@ assume la collab humain × Claude Code × openart.ai.
   1400+ fiches enrichies, 0 ChatGPT — voir `scripts/enrich-species.mjs`.
 - **Wikimedia Commons** — paleo-art domaine public ou CC-BY-SA
 - **ICS 2024** — International Chronostratigraphic Chart pour les bornes Ma
-- **OpenStreetMap + CARTO** — fond de carte
+- **Esri World Dark Gray Base (données © OpenStreetMap contributors)** — fond de carte
 
 ## Architecture
 

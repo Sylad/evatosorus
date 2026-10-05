@@ -48,7 +48,7 @@ species 3D viewer plus tard, là on bascule sur R3F.
 
 ## La carte paléo-monde
 
-Leaflet + tuiles CARTO Dark No Labels (free tier OK pour < 200 k req/jour).
+Leaflet + tuiles Esri World Dark Gray Base (gratuit, sans clé ; attribution Esri, HERE, Garmin, © OpenStreetMap contributors).
 
 **Choix anti-pattern :** on n'utilise PAS `react-leaflet`. Le UMD
 `leaflet@1.9.4` est chargé via `<link>` + `<script>` (CDN unpkg avec

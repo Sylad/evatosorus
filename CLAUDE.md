@@ -69,7 +69,7 @@ Avant de modifier le seed, `git -C ~/projects/developpeur/evatosorus log --oneli
 
 - **Codex** — filtres React-driven sur 1500 cards SSR.
 - **Voyage temporel** — 4 périodes (Trias / Jurassique / Crétacé / + transition K-Pg) avec 3 périodes détaillées.
-- **Carte** — Leaflet + CARTO Dark, occurrences fossiles GBIF.
+- **Carte** — Leaflet + Esri World Dark Gray Base (+ OSM), occurrences fossiles GBIF.
 - **Films Jurassic Park** — 7 films + détails + cross-link espèces.
 - **About** — dédicace Eva.
 
