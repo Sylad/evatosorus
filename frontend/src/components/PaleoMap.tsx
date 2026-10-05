@@ -46,10 +46,12 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
       scrollWheelZoom: true,
     });
 
-    // Dark base layer matching the Mésozoïque mood. CARTO Dark No Labels
-    // is free (subject to usage limits) and renders nicely against amber.
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
-      attribution: '© OpenStreetMap, © CARTO',
+    // Fond sombre gris-ardoise assorti au Mésozoïque. Esri World Dark Gray Base :
+    // gratuit et sans clé, avec l'attribution Esri. CARTO dark_nolabels, utilisé
+    // avant, répond la tuile « API KEY REQUIRED » (constaté le 2026-10-05, L24).
+    // Ordre des coordonnées Esri : z/y/x.
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles © Esri — Esri, DeLorme, NAVTEQ',
       maxZoom: 8,
     }).addTo(map);
 
@@ -153,16 +155,16 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
              plan .codex-shell (L18). */
           isolation: isolate;
         }
-        :global(.leaflet-popup-content-wrapper) {
+        .leaflet-popup-content-wrapper {
           background: rgba(13, 10, 6, 0.96);
           color: var(--color-evato-bone);
           border: 1px solid rgba(212, 165, 94, 0.35);
           border-radius: 6px;
           box-shadow: 0 8px 24px -10px rgba(0, 0, 0, 0.7);
         }
-        :global(.leaflet-popup-tip) { background: rgba(13, 10, 6, 0.96); }
-        :global(.leaflet-popup-close-button) { color: var(--color-evato-amber) !important; }
-        :global(.evato-popup-loc) {
+        .leaflet-popup-tip { background: rgba(13, 10, 6, 0.96); }
+        .leaflet-popup-close-button { color: var(--color-evato-amber) !important; }
+        .evato-popup-loc {
           font-family: 'Cinzel', serif;
           font-size: 0.7rem;
           letter-spacing: 0.22em;
@@ -172,7 +174,7 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
           border-bottom: 1px solid rgba(212, 165, 94, 0.2);
           padding-bottom: 0.4rem;
         }
-        :global(.evato-popup-link) {
+        .evato-popup-link {
           display: flex;
           gap: 0.6rem;
           align-items: center;
@@ -181,9 +183,9 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
           color: inherit;
           border-bottom: 1px dashed rgba(212, 165, 94, 0.12);
         }
-        :global(.evato-popup-link:last-child) { border-bottom: 0; }
-        :global(.evato-popup-link img),
-        :global(.evato-popup-link .popup-fallback) {
+        .evato-popup-link:last-child { border-bottom: 0; }
+        .evato-popup-link img,
+        .evato-popup-link .popup-fallback {
           width: 44px;
           height: 44px;
           object-fit: cover;
@@ -194,33 +196,33 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
           place-items: center;
           color: rgba(212, 165, 94, 0.4);
         }
-        :global(.evato-popup-link strong) {
+        .evato-popup-link strong {
           display: block;
           font-family: 'Cinzel', serif;
           font-size: 0.85rem;
           color: var(--color-evato-amber-bright);
         }
-        :global(.evato-popup-link em) {
+        .evato-popup-link em {
           display: block;
           font-style: italic;
           font-size: 0.78rem;
           color: var(--color-evato-bone-muted);
         }
-        :global(.evato-popup-more) {
+        .evato-popup-more {
           font-size: 0.75rem;
           color: var(--color-evato-bone-muted);
           padding-top: 0.4rem;
         }
-        :global(.leaflet-control-attribution) {
+        .leaflet-control-attribution {
           background: rgba(13, 10, 6, 0.65) !important;
           color: var(--color-evato-bone-muted) !important;
           font-size: 0.65rem;
         }
-        :global(.leaflet-control-attribution a) { color: var(--color-evato-amber) !important; }
+        .leaflet-control-attribution a { color: var(--color-evato-amber) !important; }
 
         /* ── Pins divIcon colorés par période ──────────────────────── */
-        :global(.evato-pin-wrap) { background: transparent !important; border: 0 !important; }
-        :global(.evato-pin) {
+        .evato-pin-wrap { background: transparent !important; border: 0 !important; }
+        .evato-pin {
           width: var(--size);
           height: var(--size);
           border-radius: 50%;
@@ -238,17 +240,17 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
           letter-spacing: 0.04em;
           transition: transform 180ms ease, box-shadow 180ms ease;
         }
-        :global(.evato-pin:hover) {
+        .evato-pin:hover {
           transform: scale(1.18);
           box-shadow:
             0 0 0 2px rgba(13, 10, 6, 0.85),
             0 0 22px color-mix(in srgb, var(--c) 80%, transparent);
         }
-        :global(.evato-pin-count) {
+        .evato-pin-count {
           color: rgba(13, 10, 6, 0.92);
           font-weight: 800;
         }
-        :global(.evato-pin-dot) {
+        .evato-pin-dot {
           width: 6px;
           height: 6px;
           border-radius: 50%;
@@ -256,8 +258,8 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
         }
 
         /* ── Clusters (leaflet.markercluster) ──────────────────────── */
-        :global(.evato-cluster-wrap) { background: transparent !important; border: 0 !important; }
-        :global(.evato-cluster) {
+        .evato-cluster-wrap { background: transparent !important; border: 0 !important; }
+        .evato-cluster {
           width: 40px;
           height: 40px;
           border-radius: 50%;
@@ -276,11 +278,11 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
           letter-spacing: 0.04em;
           transition: transform 180ms ease;
         }
-        :global(.evato-cluster:hover) { transform: scale(1.08); }
+        .evato-cluster:hover { transform: scale(1.08); }
         /* Override par défaut du plugin (.marker-cluster-small / -medium / -large
            qui appliquent un fond bleu standard). */
-        :global(.marker-cluster) { background: transparent !important; }
-        :global(.marker-cluster div) { background: transparent !important; }
+        .marker-cluster { background: transparent !important; }
+        .marker-cluster div { background: transparent !important; }
       `}</style>
     </>
   );
