@@ -211,6 +211,9 @@ lots:
     visible: true
     created: 2026-10-01
     started: 2026-10-05
+    tasks:
+      - { id: t1, title: "Attribution de la carte (PaleoMap.tsx:55) et crédits À propos (about.astro:133) alignés sur le copyrightText du service Esri : Esri, HERE, Garmin, © OpenStreetMap contributors, GIS user community ; test e2e sur le texte de .leaflet-control-attribution", status: todo }
+      - { id: t2, title: "README.md:26,40, HOW-IT-WORKS.md:51 et CLAUDE.md:72 : CARTO remplacé par Esri World Dark Gray Base", status: todo }
   - id: L25
     title: Contraste des sur-titres de section posés sur l'image de fond (vidéos, films, périodes, carte, fiches) — même traitement qu'en L13 (halo + ombre), mesure au pire pixel
     public: "Des titres de section plus lisibles sur les images de fond"
@@ -274,3 +277,8 @@ lots:
     status: todo
     estimate: 0.25
     created: 2026-10-02
+  - id: L32
+    title: "Couleurs de période recopiées hors periods.ts : légende de carte.astro:109-111, SpeciesCard.astro:12, CodexBrowser.tsx:300 → importées de periods.ts, test de source unique étendu (relevé en revue L24)"
+    status: todo
+    estimate: 0.5
+    created: 2026-10-05
