@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet.markercluster';
+import { PERIODS } from '../data/periods';
+import { labelColor } from '../data/label-color.mjs';
 // CSS Leaflet importée par src/pages/carte.astro, pas ici : la CSS d'un
 // composant client:only est rattachée à toutes les pages qui ont un îlot
 // client:only (accueil et codex la chargeaient pour rien).
@@ -16,11 +18,10 @@ type Marker = {
   imageUrl?: string;
 };
 
-const PERIOD_COLOR: Record<Marker['periodId'], string> = {
-  trias: '#d25b3b',
-  jurassique: '#5e8f6e',
-  cretace: '#d4a55e',
-};
+// Une seule source : la couleur d'une période est la même sur tout le site.
+const PERIOD_COLOR = Object.fromEntries(
+  PERIODS.map((p) => [p.id, p.accentColor]),
+) as Record<Marker['periodId'], string>;
 
 // HTML escape helper to safely inject user/data strings into popup HTML.
 const escHtml = (s: string) =>
@@ -89,7 +90,7 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
         const color = PERIOD_COLOR[dom];
         const total = c.getChildCount();
         return L.divIcon({
-          html: `<div class="evato-cluster" style="--c:${color};"><span>${total}</span></div>`,
+          html: `<div class="evato-cluster" style="--c:${color}; --fg:${labelColor(color)};"><span>${total}</span></div>`,
           className: 'evato-cluster-wrap',
           iconSize: [40, 40],
         });
@@ -101,7 +102,7 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
       const color = PERIOD_COLOR[first.periodId];
       const size = group.length > 1 ? 30 : 24;
       const icon = L.divIcon({
-        html: `<div class="evato-pin" style="--c:${color}; --size:${size}px;">
+        html: `<div class="evato-pin" style="--c:${color}; --fg:${labelColor(color)}; --size:${size}px;">
           ${group.length > 1 ? `<span class="evato-pin-count">${group.length}</span>` : '<span class="evato-pin-dot"></span>'}
         </div>`,
         className: 'evato-pin-wrap',
@@ -247,7 +248,7 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
             0 0 22px color-mix(in srgb, var(--c) 80%, transparent);
         }
         .evato-pin-count {
-          color: rgba(13, 10, 6, 0.92);
+          color: var(--fg);
           font-weight: 800;
         }
         .evato-pin-dot {
@@ -271,7 +272,7 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
             0 0 18px color-mix(in srgb, var(--c) 65%, transparent);
           display: grid;
           place-items: center;
-          color: rgba(13, 10, 6, 0.92);
+          color: var(--fg);
           font-family: 'Cinzel', serif;
           font-weight: 800;
           font-size: 0.85rem;
