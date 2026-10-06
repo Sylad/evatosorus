@@ -287,7 +287,8 @@ lots:
     created: 2026-10-05
   - id: L33
     title: "Test species-decimals (L22) aléatoire : l'id SVG Math.random d'EvatoSkull.astro:16 (« skull-orb-70465t ») est pris pour « NNNNt » par la regex — id déterministe ou balises retirées avant la regex (relevé en revue L24)"
-    status: todo
+    status: doing
     estimate: 0.25
     quickwin: true
     created: 2026-10-05
+    started: 2026-10-06
