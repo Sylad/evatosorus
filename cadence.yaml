@@ -15,6 +15,6 @@ deliver:
 # sonde l'URL puis tue le groupe. Node 22 (.nvmrc) : le Node par défaut de la machine est trop ancien pour Astro 6.
 orchestrate:
   ux:
-    command: '. ~/.nvm/nvm.sh && nvm use >/dev/null && cd frontend && npx astro dev --port 4312 --host 127.0.0.1'
+    command: 'cd frontend && npx astro dev --port 4312 --host 127.0.0.1'
     url: http://127.0.0.1:4312
     timeout: 300
