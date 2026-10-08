@@ -302,3 +302,5 @@ lots:
     started: 2026-10-07
     review: { date: 2026-10-07, verdict: "conforme (lead) : cadence.yaml seul ; commande essayée avec startApp de cadence (Node 20 au départ, Node du .nvmrc injecté) → ready, HTTP 200, port libéré après stop", commit: b8c00aafac9da54db57872e9d627deeea76cfc0b }
     finished: 2026-10-07
+acknowledged:
+  - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
