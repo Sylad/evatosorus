@@ -19,3 +19,6 @@ frontend/public/**/*.gif
 *.Identifier
 .token-savior-cache.json
 scripts/.cache/
+
+# Artefacts du MCP Playwright (instantanés de revue UX), jamais versionnés.
+.playwright-mcp/
