@@ -43,51 +43,61 @@ lots:
   - id: L3
     title: Revue UX — Périodes (liste + fiche)
     status: todo
+    visible: true
     estimate: 0.25
     created: 2026-09-28
   - id: L4
     title: Revue UX — Films (liste + fiche)
     status: todo
+    visible: true
     estimate: 0.25
     created: 2026-09-28
   - id: L5
     title: Revue UX — Espèces (fiche)
     status: todo
+    visible: true
     estimate: 0.25
     created: 2026-09-28
   - id: L6
     title: Revue UX — Vitrines
     status: todo
+    visible: true
     estimate: 0.25
     created: 2026-09-28
   - id: L7
     title: Revue UX — Vidéos
     status: todo
+    visible: true
     estimate: 0.25
     created: 2026-09-28
   - id: L8
     title: Revue UX — Comprendre
     status: todo
+    visible: true
     estimate: 0.25
     created: 2026-09-28
   - id: L9
     title: Revue UX — Codex
     status: todo
+    visible: true
     estimate: 0.25
     created: 2026-09-28
   - id: L10
     title: Revue UX — Carte
     status: todo
+    visible: true
     estimate: 0.25
     created: 2026-09-28
   - id: L11
     title: Revue UX — À propos
     status: todo
+    visible: true
     estimate: 0.25
     created: 2026-09-28
   - id: L12
     title: "Revue UX — Gabarit commun : navigation, en-tête, pied, rendu téléphone"
     status: todo
+    visible: true
     estimate: 0.25
     created: 2026-09-28
   - id: L13
