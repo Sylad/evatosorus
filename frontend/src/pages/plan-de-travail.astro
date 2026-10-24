@@ -3,7 +3,7 @@
   L28 — Plan de travail : ce qui est en cours, prévu et récemment livré sur le site,
   inspiré de la page « À venir » d'AetherWX.
 
-  Source : docs/plan/raf.yaml (tenu par raf, cadence), lu AU BUILD. On ne publie que
+  Source : .cadence/raf.yaml (tenu par raf, cadence), lu AU BUILD. On ne publie que
   les lots visibles qui ont un TITRE PUBLIC (champ public: du plan, sinon titre de leur
   Nouveauté ; jamais le titre brut), avec leur état et le décompte de leurs sous-tâches
   (liste blanche de lib/plan-public.ts) : titres bruts, notes, verdicts UX et raisons
@@ -19,7 +19,7 @@ import news from '../../public/nouveautes-data/nouveautes.json';
 
 // Build lancé depuis frontend/ (npm run build, Cloudflare Pages compris).
 const plan = parsePublicPlan(
-  readFileSync(join(process.cwd(), '..', 'docs', 'plan', 'raf.yaml'), 'utf8'),
+  readFileSync(join(process.cwd(), '..', '.cadence', 'raf.yaml'), 'utf8'),
   news.entries,
 );
 

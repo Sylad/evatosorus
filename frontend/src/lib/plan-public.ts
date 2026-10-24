@@ -1,5 +1,5 @@
 /**
- * L28 — ce que la page « Plan de travail » publie du plan (docs/plan/raf.yaml, tenu par raf).
+ * L28 — ce que la page « Plan de travail » publie du plan (.cadence/raf.yaml, tenu par raf).
  * Règles alignées sur finance-tracker (frontend/scripts/plan-data.mjs) :
  *
  *   1. seuls les lots `visible: true` (changements pour le visiteur) et non abandonnés ;
