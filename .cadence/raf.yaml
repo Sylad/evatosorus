@@ -318,6 +318,7 @@ lots:
     estimate: 0.1
     created: 2026-10-24
     started: 2026-10-24
+    review: { date: 2026-10-24, verdict: "compliant — orchestré (vague 2026-10-24-2005, 0 passe(s) de correction)", commit: bd7e759bdb973898fe897ba86b3ff4d571a4ba58 }
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
