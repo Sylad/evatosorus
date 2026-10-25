@@ -21,8 +21,9 @@ orchestrate:
   # Porte de tests de la vague (L36) : lancée par le programme après chaque étape d'écriture, depuis la racine.
   # Commandes vérifiées vertes sur main le 2026-10-25 : test:scripts = 129 tests node --test des scripts (~200 s),
   # astro build = 1532 pages en ~15 s. Le site n'a pas d'autre suite (pas de test de composants).
-  # Le programme joue test puis build ; 12 des 14 e2e lisent frontend/dist (ignoré par git, absent d'un
-  # worktree neuf, périmé sinon) : le test construit donc d'abord le site du lot avant de lancer la suite.
+  # Le programme joue test puis build ; 14 fichiers de test lisent frontend/dist (les 12 *.e2e.test.mjs, plus
+  # species-decimals et title-fit ; species-decimals s'ignore seul sans dist) — dist est ignoré par git, absent
+  # d'un worktree neuf, périmé sinon : le test construit donc d'abord le site du lot avant de lancer la suite.
   test: 'cd frontend && npx astro build && npm run test:scripts'
   build: 'cd frontend && npx astro build'
   # precheck: true = le contrôle préalable cherche si le lot est déjà livré, sur Sonnet.
