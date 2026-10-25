@@ -330,6 +330,16 @@ lots:
     finished: 2026-10-25
     notes:
       - { date: 2026-10-25, text: "Re-vérifié par le lead le 25-10 : astro build vert, node --test 129/129 (0 skip), raf check propre. Config seule : rien à livrer." }
+  - id: L37
+    title: "config cadence : retirer le build en double de orchestrate.test — cadence L333 joue build avant test, ligne de base comprise (lead 25-10)"
+    status: done
+    estimate: 0.05
+    created: 2026-10-25
+    started: 2026-10-25
+    review: { date: 2026-10-25, verdict: "conforme (lead : config d'une ligne, build puis test rejoués verts à la main)", commit: f4f02aee80ace64307d08ab9ce87ae85e4622d63 }
+    finished: 2026-10-25
+    notes:
+      - { date: 2026-10-25, text: "Re-vérifié par le lead le 25-10 : build puis test dans l'ordre de la porte, verts. Config seule : rien à livrer." }
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
