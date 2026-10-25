@@ -18,6 +18,13 @@ orchestrate:
     command: 'cd frontend && npx astro dev --port 4312 --host 127.0.0.1'
     url: http://127.0.0.1:4312
     timeout: 300
+  # Porte de tests de la vague (L36) : lancée par le programme après chaque étape d'écriture, depuis la racine.
+  # Commandes vérifiées vertes sur main le 2026-10-25 : test:scripts = 129 tests node --test des scripts (~200 s),
+  # astro build = 1532 pages en ~15 s. Le site n'a pas d'autre suite (pas de test de composants).
+  test: 'cd frontend && npm run test:scripts'
+  build: 'cd frontend && npx astro build'
+  # precheck: true = le contrôle préalable cherche si le lot est déjà livré, sur Sonnet.
+  precheck: true
 
 # Documentation qui suit le code (cadence docs.sync, L307 de cadence, 24-10) : raf check et la revue signalent un lot dont le code laisse sa doc en retard ; docs.articles = étude de cas du projet dans claude-code-codex (le bibliothécaire propose un lot là-bas).
 docs:
