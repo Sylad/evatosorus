@@ -322,11 +322,14 @@ lots:
     finished: 2026-10-24
   - id: L36
     title: "config cadence : porte de tests — orchestrate.test (la suite du projet s'il en a une, ex. node --test des scripts ; vérifiée verte sur main avant d'être déclarée ; s'il n'y a aucun test, le dire dans le commentaire et ne déclarer que build) et orchestrate.build (astro build, vérifié vert), dans cadence.yaml avec un commentaire ; precheck: true ; CLAUDE.md si la section cadence le décrit"
-    status: doing
+    status: done
     estimate: 0.1
     created: 2026-10-25
     started: 2026-10-25
-    review: { date: 2026-10-25, verdict: "conforme (1 note mineure : le décompte des tests qui lisent dist est faux dans le commentaire de cadence.yaml) — orchestré (vague 2026-10-25-2140, 1 passe(s) de correction)", commit: 60d4b731e5db0e096919fd96e548bcf8a184c8f6 }
+    review: { date: 2026-10-25, verdict: "conforme (revue Opus de la vague après 1 correction : build avant la suite ; mineur du commentaire corrigé par le lead, cadence.yaml seul)", commit: 60d4b731e5db0e096919fd96e548bcf8a184c8f6 }
+    finished: 2026-10-25
+    notes:
+      - { date: 2026-10-25, text: "Re-vérifié par le lead le 25-10 : astro build vert, node --test 129/129 (0 skip), raf check propre. Config seule : rien à livrer." }
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
