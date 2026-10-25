@@ -340,6 +340,14 @@ lots:
     finished: 2026-10-25
     notes:
       - { date: 2026-10-25, text: "Re-vérifié par le lead le 25-10 : build puis test dans l'ordre de la porte, verts. Config seule : rien à livrer." }
+  - id: L38
+    title: "config cadence : escalade en Fable avant de rendre un lot (orchestrate.escalation, cadence L337 / 1.12.0)"
+    status: done
+    estimate: 0.05
+    created: 2026-10-25
+    started: 2026-10-25
+    review: { date: 2026-10-25, verdict: "conforme (lead : clé de config d'une ligne, lue sans erreur par cadence orchestrate --dry-run 1.12)", commit: aa0f37c778e9100e03e7b5ff9113811bc0b7319d }
+    finished: 2026-10-25
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
