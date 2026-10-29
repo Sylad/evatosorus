@@ -369,6 +369,14 @@ lots:
     started: 2026-10-29
     review: { date: 2026-10-29, verdict: "compliant — orchestré (vague 2026-10-29-eva, 1 passe(s) de correction)", commit: cd9496e7a0ed204d297fa2abed5fec9d4d84250d }
     finished: 2026-10-29
+  - id: L41
+    title: Article evatosorus à rafraîchir
+    status: todo
+    estimate: 0.5
+    created: 2026-10-29
+    repos: [ { path: ../claude-code-codex, cite: evatosorus } ]
+    notes:
+      - { date: 2026-10-29, text: "Livraison b665a2f : titres publics livrés « Périodes : liste et fiche plus lisibles ». Article : ../claude-code-codex/frontend/src/pages/case-studies/evatosorus.astro. Sections à relire : (aucun titre trouvé : relire tout l'article). Réécrire ce que ces changements rendent faux ou incomplet, sans rien inventer ; les commits du dépôt ../claude-code-codex citent le lot et « evatosorus »." }
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
