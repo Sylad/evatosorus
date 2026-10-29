@@ -362,10 +362,11 @@ lots:
     created: 2026-10-29
   - id: L40
     title: "Test de la page Plan (scripts/plan-page.e2e.test.mjs, « dates de livraison en français ») : il compare la page à TOUS les lots livrés publiés alors que la page n'en montre que les RECENT_DONE derniers — rouge depuis que L3 a poussé hors de la page le dernier lot livré un 1er du mois (29-10) ; ne vérifier « 1er » que sur les lots affichés"
-    status: todo
+    status: doing
     estimate: 0.1
     quickwin: true
     created: 2026-10-29
+    started: 2026-10-29
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
