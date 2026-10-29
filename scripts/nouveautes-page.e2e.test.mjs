@@ -358,6 +358,8 @@ test('L27 : au toucher (390 px), « Copier le lien » est visible sans survol, c
 // ── L27 : pastille « nouveau » et séparateur « Déjà vu » (repris d'AetherWX news-badge) ──
 const SEEN_KEY = 'evato.news.seen-v1';
 const OLD_VISIT = { date: '2026-01-01', slugs: [], at: '2026-01-01T10:00:00.000Z' };
+// Pastille plafonnée à « 9+ » (lib/news-badge.ts, badgeLabel) : le texte lu, lui, garde le nombre exact.
+const badgeText = (n) => (n > 9 ? '9+' : String(n));
 const unseenText = (n) => (n === 1 ? '1 nouveauté non vue' : `${n} nouveautés non vues`);
 
 test('L27 : chaque page (accueil compris) porte l’index léger (slug + date) des nouveautés, sans leur texte', () => {
@@ -392,7 +394,7 @@ test('L27 : pastille — premier visiteur sans pastille ; après une visite anci
   await page.reload({ waitUntil: 'load' });
   const link = page.locator('#evato-sidebar a[href="/nouveautes/"]');
   await link.locator('.news-badge').waitFor({ state: 'visible' });
-  assert.equal((await link.locator('.news-badge').textContent()).trim(), String(n));
+  assert.equal((await link.locator('.news-badge').textContent()).trim(), badgeText(n));
   assert.equal(await link.locator('.news-badge').getAttribute('aria-hidden'), 'true');
   assert.match(await link.textContent(), new RegExp(unseenText(n)), 'texte pour lecteur d’écran absent');
   // La pastille ne grandit pas le lien (même hauteur que ses voisins, une seule ligne).
@@ -404,7 +406,7 @@ test('L27 : pastille — premier visiteur sans pastille ; après une visite anci
   await page.setViewportSize({ width: 390, height: 844 });
   const burger = page.locator('#evato-burger');
   assert.equal(await burger.getAttribute('aria-label'), `Ouvrir la navigation (${unseenText(n)})`);
-  assert.equal((await burger.locator('.news-badge').textContent()).trim(), String(n));
+  assert.equal((await burger.locator('.news-badge').textContent()).trim(), badgeText(n));
   await burger.click();
   assert.equal(await burger.getAttribute('aria-label'), 'Fermer la navigation');
   await link.locator('.news-badge').waitFor({ state: 'visible' });
@@ -501,7 +503,7 @@ test('L27 : accueil — pastille sur le lien Nouveautés (lecteur d’écran com
   await page.reload({ waitUntil: 'load' });
   const link = page.locator('.landing-secondary a[href="/nouveautes/"]');
   await link.locator('.news-badge').waitFor({ state: 'visible' });
-  assert.equal((await link.locator('.news-badge').textContent()).trim(), String(n));
+  assert.equal((await link.locator('.news-badge').textContent()).trim(), badgeText(n));
   assert.match(await link.textContent(), new RegExp(unseenText(n)));
   for (const href of ['/nouveautes/', '/plan-de-travail/']) {
     let reached = false;
