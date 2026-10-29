@@ -361,6 +361,7 @@ lots:
     visible: true
     created: 2026-10-29
     started: 2026-10-29
+    review: { date: 2026-10-29, verdict: "conforme — orchestré (vague 2026-10-29-ae1, 1 passe(s) de correction)", commit: 0dddf1808415a06be4ff40a582f30a56dca00554 }
   - id: L40
     title: "Test de la page Plan (scripts/plan-page.e2e.test.mjs, « dates de livraison en français ») : il compare la page à TOUS les lots livrés publiés alors que la page n'en montre que les RECENT_DONE derniers — rouge depuis que L3 a poussé hors de la page le dernier lot livré un 1er du mois (29-10) ; ne vérifier « 1er » que sur les lots affichés"
     status: done
