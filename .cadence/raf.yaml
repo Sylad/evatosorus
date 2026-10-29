@@ -395,12 +395,15 @@ lots:
     finished: 2026-10-29
   - id: L43
     title: "docs/qa/expectations.md:12 (/periodes/) : écrire « 145 Ma à l'ouverture, 252 Ma après Début, 66 Ma après Fin » au lieu de « 252 Ma au départ » (faux écart pour une QA), et l'en-tête :4 nomme les tests qui rejouent défilement, tri et naturalWidth — mineurs de la revue de L42 (29-10)"
-    status: doing
+    status: done
     estimate: 0.05
     quickwin: true
     created: 2026-10-29
     started: 2026-10-29
     review: { date: 2026-10-29, verdict: "compliant : le lot fait ce qu'il demande (readout reformulé, en-tête nommant les trois tests, R6 vérifiant l'existence des fichiers) ; 1 mineur : la couverture « défilement horizontal » de l'en-tête dépasse ce que mesurent les tests pour la ligne `*` à 390/1440 hors /periodes/ et /nouveautes/ — orchestré (vague 2026-10-29-ev43, 0 passe(s) de correction)", commit: 76ae1bbe16f28c6510cdd787c62fd13366b5f38d }
+    notes:
+      - { date: 2026-10-29, text: "Mineur de la revue gardé en note : l'en-tête :6 attribue le défilement horizontal à 390/1440 px de toutes les pages à reflow-320 et frise-etiquettes, qui ne mesurent que 320 px et /periodes/" }
+    finished: 2026-10-29
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
