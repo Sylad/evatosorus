@@ -1,7 +1,22 @@
 {
   "project": "evatosorus",
-  "generated": "2026-10-05 12:04",
+  "generated": "2026-10-29 11:45",
   "entries": [
+    {
+      "slug": "2026-10-29-le-voyage-temporel-est-plus-lisible-au-clavier-comme-au-tele",
+      "title": "Le Voyage temporel est plus lisible, au clavier comme au téléphone",
+      "date": "2026-10-29",
+      "lots": [
+        "L3"
+      ],
+      "captures": [
+        "captures/L3-voyage-temporel-390.png"
+      ],
+      "alts": [
+        "La frise du Voyage temporel sur téléphone : les noms Trias, Jurassique et Crétacé tiennent chacun dans leur bande"
+      ],
+      "html": "<p>Retouches sur la page <strong>Voyage temporel</strong> et sur les fiches d'ère.</p>\n<ul><li>Le texte rouille du <strong>Trias</strong> (dates et durée sur les cartes, nom sur la frise) est éclairci : il se lit aussi bien que ceux du Jurassique et du Crétacé.</li><li>Sur petit écran, <strong>« Jurassique »</strong> ne déborde plus de sa bande sur la frise, même à 320 px de large.</li><li>Le curseur de la frise annonce sa position avec l'ère (« 145 Ma — Jurassique »), et la grille d'espèces en dessous porte un nom pour les lecteurs d'écran.</li><li>Sur les fiches d'ère, le lien <strong>« ← Voyage temporel »</strong> est plus facile à toucher.</li></ul>"
+    },
     {
       "slug": "2026-10-05-carte-paleo-monde-tuiles-carto-api-key-required-vues-en-loca",
       "title": "Carte du monde ancien : un fond de carte fiable et des repères lisibles",
