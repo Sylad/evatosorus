@@ -199,7 +199,9 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
-    margin-bottom: 1.6rem;
+    /* L39 : l'étiquette du curseur (readout) déborde de 42 px au-dessus de l'axe ;
+       la marge la laisse libre au lieu de recouvrir l'indication d'ère. */
+    margin-bottom: 3.4rem;
   }
   .meso-timeline-title {
     font-size: 1.4rem;
@@ -268,10 +270,13 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
     letter-spacing: 0.18em;
     color: var(--color-evato-bone-muted);
     margin-top: 0.2rem;
+    white-space: nowrap;
   }
   @media (max-width: 720px) {
     /* « JURASSIQUE » doit tenir dans sa bande (104 px à 390) : interlettrage resserré. */
     .meso-band-label { font-size: 0.78rem; letter-spacing: 0.1em; }
+    /* L39 : « 252 — 201 Ma » doit tenir sur une ligne dans la bande du Trias (≈ 90 px à 390). */
+    .meso-band-range { font-size: 0.62rem; letter-spacing: 0.02em; }
   }
   @media (max-width: 360px) {
     /* Bande Jurassique de 83 px à 320. */
