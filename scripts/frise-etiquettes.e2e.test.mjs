@@ -1,6 +1,6 @@
 // L39 — Frise des Périodes : lisibilité des étiquettes. Lit frontend/dist ; skip sans playwright-core/Chromium.
 // R1 — l'étiquette du curseur (« 145 Ma ») ne recouvre ni le titre ni l'indication d'ère au-dessus de la frise,
-//      à 1440, 390 et 320 px, au départ comme aux deux extrémités.
+//      à 1440, 390 et 320 px, au départ comme aux deux extrémités ; elle reste dans l'écran (pas de défilement horizontal).
 // R2 — la plage de dates d'une bande (« 252 — 201 Ma ») tient sur une seule ligne et dans sa bande, à 1440, 390 et 320 px.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -21,9 +21,11 @@ test('R1 — l’étiquette du curseur ne recouvre pas le texte au-dessus de la 
       const m = await page.evaluate(() => {
         const box = (e) => { const r = e.getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top, bottom: r.bottom }; };
         const texts = [...document.querySelectorAll('.meso-timeline-title, .meso-timeline-hint')].filter((e) => !e.hidden);
-        return { readout: box(document.querySelector('[data-meso-readout]')), texts: texts.map((e) => ({ cls: e.className, text: e.textContent.trim(), box: box(e) })) };
+        return { vw: document.documentElement.clientWidth, sw: document.documentElement.scrollWidth, readout: box(document.querySelector('[data-meso-readout]')), texts: texts.map((e) => ({ cls: e.className, text: e.textContent.trim(), box: box(e) })) };
       });
       assert.ok(m.texts.length >= 2, `${w}px : titre et indication attendus`);
+      assert.ok(m.readout.left >= 0 && m.readout.right <= m.vw, `${w}px (${key ?? 'départ'}) : l'étiquette sort de l'écran (${m.readout.left}→${m.readout.right} pour ${m.vw})`);
+      assert.ok(m.sw <= m.vw, `${w}px (${key ?? 'départ'}) : défilement horizontal (${m.sw} > ${m.vw})`);
       for (const x of m.texts) assert.ok(!overlap(m.readout, x.box), `${w}px (${key ?? 'départ'}) : l'étiquette recouvre « ${x.text} »`);
     }
     await context.close();

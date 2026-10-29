@@ -119,6 +119,19 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
       return 'Crétacé';
     };
 
+    // L'étiquette est centrée sur le curseur ; aux extrémités de la frise elle sortirait de la
+    // fenêtre (tronquée, ou page élargie). On la décale juste assez pour qu'elle reste visible.
+    const keepReadoutOnScreen = () => {
+      // Géométrie finale (le `left` du curseur est animé : son rectangle courant serait périmé).
+      const ax = axis.getBoundingClientRect();
+      const x = ax.left + ax.width * ((TOTAL_MA_START - currentMa) / SPAN);
+      const half = readout.offsetWidth / 2;
+      const vw = document.documentElement.clientWidth;
+      const shift = x - half < 0 ? half - x : x + half > vw ? vw - half - x : 0;
+      readout.style.transform = 'translateX(calc(-50% + ' + shift + 'px))';
+    };
+    window.addEventListener('resize', keepReadoutOnScreen);
+
     const setMa = (ma) => {
       const clamped = Math.max(TOTAL_MA_END, Math.min(TOTAL_MA_START, Math.round(ma)));
       currentMa = clamped;
@@ -127,6 +140,7 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
       cursor.setAttribute('aria-valuenow', String(clamped));
       cursor.setAttribute('aria-valuetext', clamped + ' Ma — ' + periodOfMa(clamped));
       readout.textContent = clamped + ' Ma';
+      keepReadoutOnScreen();
       if (hintDefault && hint) {
         hintDefault.hidden = true;
         hint.hidden = false;
