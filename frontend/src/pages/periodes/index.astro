@@ -122,10 +122,12 @@ import { fitStyle, LS } from '../../lib/title-fit.mjs';
       font-family: var(--font-display);
       font-size: 0.7rem;
       letter-spacing: 0.22em;
-      color: var(--accent);
+      color: var(--accent-text);
       text-transform: uppercase;
     }
     .period-card {
+      /* Couleur d'ère éclaircie vers l'ivoire : le rouille du Trias pur fait 4,1:1 sur la carte. */
+      --accent-text: color-mix(in srgb, var(--accent) 60%, var(--color-evato-bone));
       container-type: inline-size;
     }
     .period-card h2 {
@@ -170,7 +172,7 @@ import { fitStyle, LS } from '../../lib/title-fit.mjs';
       font-size: 0.78rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--accent);
+      color: var(--accent-text);
     }
     .arrow {
       transition: transform 220ms ease;

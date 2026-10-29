@@ -78,7 +78,9 @@ const species = getSpeciesByPeriod(period.id).sort((a, b) => {
       text-transform: uppercase;
       color: var(--color-evato-bone-muted);
       text-decoration: none;
-      margin-bottom: 1.5rem;
+      /* Cible ≥ 24 px de haut (WCAG 2.5.8) : le lien seul en faisait 22. */
+      padding: 0.3rem 0;
+      margin-bottom: 1.2rem;
       display: inline-block;
     }
     .back-link:hover {
