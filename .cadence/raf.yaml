@@ -47,6 +47,7 @@ lots:
     estimate: 0.25
     created: 2026-09-28
     started: 2026-10-29
+    review: { date: 2026-10-29, verdict: "compliant after 0 fixes — 2 minor notes (Trias range wraps at 390 px; R1 contrast approximation on the translucent timeline) — orchestré (vague 2026-10-29-ux, 0 passe(s) de correction)", commit: 92e99cd4ff82d0e8a183a59b7a1d565654835a05 }
   - id: L4
     title: Revue UX — Films (liste + fiche)
     status: todo
