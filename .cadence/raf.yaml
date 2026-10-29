@@ -384,10 +384,11 @@ lots:
       - { date: 2026-10-29, text: "Livraison c097a51 : titres publics livrés « Frise des périodes : le curseur ne cache plus le nom de l'ère ». Article : ../claude-code-codex/frontend/src/pages/case-studies/evatosorus.astro. Sections à relire : (aucun titre trouvé : relire tout l'article). Réécrire ce que ces changements rendent faux ou incomplet, sans rien inventer ; les commits du dépôt ../claude-code-codex citent le lot et « evatosorus »." }
   - id: L42
     title: "Attentes QA d'evatosorus : écrire docs/qa/expectations.md (frise /periodes/ : étiquette du curseur sans recouvrement de l'ère et dans l'écran à 252 et 66 Ma, Trias sur 1 ligne à 390 ; .news-entry non vide sur /nouveautes/) — brouillon de la QA de L39 (29-10)"
-    status: todo
+    status: doing
     estimate: 0.1
     quickwin: true
     created: 2026-10-29
+    started: 2026-10-29
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
