@@ -384,12 +384,21 @@ lots:
       - { date: 2026-10-29, text: "Livraison c097a51 : titres publics livrés « Frise des périodes : le curseur ne cache plus le nom de l'ère ». Article : ../claude-code-codex/frontend/src/pages/case-studies/evatosorus.astro. Sections à relire : (aucun titre trouvé : relire tout l'article). Réécrire ce que ces changements rendent faux ou incomplet, sans rien inventer ; les commits du dépôt ../claude-code-codex citent le lot et « evatosorus »." }
   - id: L42
     title: "Attentes QA d'evatosorus : écrire docs/qa/expectations.md (frise /periodes/ : étiquette du curseur sans recouvrement de l'ère et dans l'écran à 252 et 66 Ma, Trias sur 1 ligne à 390 ; .news-entry non vide sur /nouveautes/) — brouillon de la QA de L39 (29-10)"
-    status: doing
+    status: done
     estimate: 0.1
     quickwin: true
     created: 2026-10-29
     started: 2026-10-29
     review: { date: 2026-10-29, verdict: "compliant (commit 847efa4, 0 bloquant, 0 majeur ; 2 notes mineures : « 252 Ma au départ » faux à l'ouverture, en-tête qui promet plus que le test ne rejoue) — orchestré (vague 2026-10-29-ew1, 0 passe(s) de correction)", commit: 847efa4617dce4efee5ea3d17783306fbced0311 }
+    notes:
+      - { date: 2026-10-29, text: "Mineurs de la revue : expectations.md:12 dit « 252 Ma au départ » alors que la page s'ouvre à 145 Ma (252 après Début) → lot ouvert ; l'en-tête :4 dit que tout est rejoué par qa-expectations.test.mjs alors que défilement horizontal, tri et naturalWidth le sont par d'autres tests. Porte instable le 29-10 : rouge (1 étape sur 2) puis verte au même sha f2eb950" }
+    finished: 2026-10-29
+  - id: L43
+    title: "docs/qa/expectations.md:12 (/periodes/) : écrire « 145 Ma à l'ouverture, 252 Ma après Début, 66 Ma après Fin » au lieu de « 252 Ma au départ » (faux écart pour une QA), et l'en-tête :4 nomme les tests qui rejouent défilement, tri et naturalWidth — mineurs de la revue de L42 (29-10)"
+    status: todo
+    estimate: 0.05
+    quickwin: true
+    created: 2026-10-29
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
