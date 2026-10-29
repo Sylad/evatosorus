@@ -356,12 +356,14 @@ lots:
   - id: L39
     title: "Frise des Périodes à 390 px : l'étiquette du curseur (« 145 MA ») recouvre le libellé de l'ère au-dessus (« 145 MA — JURASSIQUE »), déjà avant L3, et la plage « 252 — 201 Ma » du Trias passe sur deux lignes (40 px contre 20) — vu sur les captures de la revue UX de L3 (29-10)"
     public: "Frise des périodes : le curseur ne cache plus le nom de l'ère"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-29
     started: 2026-10-29
     review: { date: 2026-10-29, verdict: "conforme — orchestré (vague 2026-10-29-ae1, 1 passe(s) de correction)", commit: 0dddf1808415a06be4ff40a582f30a56dca00554 }
+    ux: { date: 2026-10-29, verdict: "compliant : à 390 px l'étiquette du curseur ne recouvre plus le libellé de l'ère (début 252 Ma et fin 66 Ma, captures regardées par le lead), plage du Trias sur une ligne, étiquette dans l'écran aux deux extrémités" }
+    finished: 2026-10-29
   - id: L40
     title: "Test de la page Plan (scripts/plan-page.e2e.test.mjs, « dates de livraison en français ») : il compare la page à TOUS les lots livrés publiés alors que la page n'en montre que les RECENT_DONE derniers — rouge depuis que L3 a poussé hors de la page le dernier lot livré un 1er du mois (29-10) ; ne vérifier « 1er » que sur les lots affichés"
     status: done
