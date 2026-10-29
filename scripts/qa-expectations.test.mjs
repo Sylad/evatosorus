@@ -35,6 +35,18 @@ test('R3 — la section /nouveautes/ nomme `.news-entry` non vide', () => {
   assert.match(b, /non vide/);
 });
 
+test('R6 — la ligne readout de /periodes/ donne 145 Ma à l’ouverture, 252 après Début, 66 après Fin (pas « 252 Ma au départ »), et l’en-tête nomme les tests qui rejouent défilement, tri et naturalWidth', () => {
+  const md = lire();
+  const b = sections(md).find((x) => x.startsWith('/periodes/')) ?? '';
+  assert.match(b, /145 Ma à l'ouverture, 252 Ma après Début, 66 Ma après Fin/);
+  assert.doesNotMatch(b, /252 Ma » au départ/);
+  const entete = md.split(/^## /m)[0];
+  for (const fichier of ['frise-etiquettes.e2e.test.mjs', 'nouveautes-page.e2e.test.mjs', 'reflow-320.e2e.test.mjs']) {
+    assert.ok(entete.includes(fichier), `l'en-tête ne nomme pas ${fichier}`);
+    assert.ok(existsSync(fileURLToPath(new URL(`./${fichier}`, import.meta.url))), `${fichier} n'existe pas`);
+  }
+});
+
 test('R4 — frise à 252 et 66 Ma : étiquette sans recouvrement de l’ère, dans l’écran ; Trias sur 1 ligne à 390', { timeout: 60_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;
