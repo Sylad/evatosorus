@@ -58,6 +58,7 @@ lots:
     estimate: 0.25
     created: 2026-09-28
     started: 2026-10-30
+    review: { date: 2026-10-30, verdict: "compliant — orchestré (vague 2026-10-30-2245-ev, 0 passe(s) de correction)", commit: f08b1b85eb5ec2f800c831fbea02385c2207bf2d }
   - id: L5
     title: Revue UX — Espèces (fiche)
     status: todo
