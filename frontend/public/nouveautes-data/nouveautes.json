@@ -1,6 +1,6 @@
 {
   "project": "evatosorus",
-  "generated": "2026-10-30 22:40",
+  "generated": "2026-10-30 22:49",
   "entries": [
     {
       "slug": "2026-10-30-les-fiches-de-films-sont-plus-faciles-a-toucher-et-a-lire",
@@ -15,7 +15,7 @@
       "alts": [
         "La fiche du film « Le Monde perdu : Jurassic Park » sur téléphone : lien de retour, boutons Bande-annonce et Wikipedia et liens film précédent / suivant plus hauts"
       ],
-      "html": "<p>Retouches sur la page <strong>Films</strong> et sur chaque fiche de film.</p>\n<ul><li>Sur une fiche, le lien « Tous les films », les boutons <strong>Bande-annonce</strong> et <strong>Lire sur Wikipedia</strong> et les liens vers le film précédent et suivant sont plus hauts : plus faciles à toucher au doigt.</li><li>Dans la liste, la durée et la note IMDb de chaque affiche sont écrites un peu plus grand.</li><li>Le bloc « Scène culte » est désormais un vrai titre de section de la fiche, ce qui aide la navigation des lecteurs d'écran.</li></ul>"
+      "html": "<p>Retouches sur la page <strong>Films</strong> et sur chaque fiche de film.</p>\n<ul><li>Sur une fiche, le lien « Tous les films », les boutons <strong>Bande-annonce</strong> et <strong>Lire sur Wikipedia</strong> et les liens vers le film précédent et suivant sont plus hauts : plus faciles à toucher au doigt.</li><li>Dans la liste, la durée et la note IMDb de chaque affiche sont écrites un peu plus grand.</li><li>Le bloc « Scène culte » est désormais un vrai titre de section de la fiche, ce qui aide la navigation des lecteurs d'écran.</li></ul>"
     },
     {
       "slug": "2026-10-29-frise-des-periodes-le-curseur-ne-cache-plus-le-nom-de-l-ere",
