@@ -44,7 +44,7 @@ const next = idx < FILMS.length - 1 ? FILMS[idx + 1] : null;
 
         {film.iconicScene && (
           <div class="film-iconic">
-            <h3>Scène culte</h3>
+            <h2>Scène culte</h2>
             <p>{film.iconicScene}</p>
           </div>
         )}
@@ -126,8 +126,10 @@ const next = idx < FILMS.length - 1 ? FILMS[idx + 1] : null;
       text-transform: uppercase;
       color: var(--color-evato-bone-muted);
       text-decoration: none;
-      margin-bottom: 1.5rem;
-      display: inline-block;
+      margin-bottom: 1rem;
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px; /* cible tactile, WCAG 2.5.5 */
     }
     .back-link:hover { color: var(--color-evato-amber); }
 
@@ -189,7 +191,7 @@ const next = idx < FILMS.length - 1 ? FILMS[idx + 1] : null;
       padding: 1rem 1.2rem;
       margin: 1.5rem 0;
     }
-    .film-iconic h3 {
+    .film-iconic h2 {
       font-family: var(--font-display);
       font-size: 0.7rem;
       letter-spacing: 0.32em;
@@ -209,6 +211,9 @@ const next = idx < FILMS.length - 1 ? FILMS[idx + 1] : null;
       margin-top: 1.5rem;
     }
     .film-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px; /* cible tactile, WCAG 2.5.5 */
       padding: 0.5rem 1rem;
       border: 1px solid rgba(212, 165, 94, 0.4);
       border-radius: 4px;
@@ -279,6 +284,9 @@ const next = idx < FILMS.length - 1 ? FILMS[idx + 1] : null;
       border-top: 1px solid rgba(212, 165, 94, 0.18);
     }
     .film-nav-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px; /* cible tactile, WCAG 2.5.5 */
       font-family: var(--font-display);
       font-size: 0.78rem;
       letter-spacing: 0.18em;
