@@ -78,6 +78,7 @@ lots:
     estimate: 0.25
     created: 2026-09-28
     started: 2026-10-31
+    review: { date: 2026-10-31, verdict: "conforme : pastilles de parcours à 44 px et textes à 12,25 px mesurés à 1440 et 390 px, R1–R4 verts seuls (4/4), nouveauté et JSON à jour (26/26), aucun constat — orchestré (vague 2026-10-31-1955-eva, 1 passe(s) de correction)", commit: 877c7ca00afcf1501b303bc60a6002af566a8be4 }
   - id: L7
     title: Revue UX — Vidéos
     status: todo
