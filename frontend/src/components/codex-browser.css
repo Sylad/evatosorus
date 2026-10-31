@@ -70,6 +70,16 @@
   color: var(--color-evato-bone-muted);
 }
 
+/* Écran étroit : l'indicateur a sa ligne, les 4 boutons restent groupés dessous. */
+@media (max-width: 400px) {
+  .codex-filters .page-indicator {
+    order: -1;
+    flex-basis: 100%;
+    text-align: center;
+    padding: 0;
+  }
+}
+
 .codex-filters .page-indicator strong {
   color: var(--color-evato-amber-bright);
   font-weight: 700;

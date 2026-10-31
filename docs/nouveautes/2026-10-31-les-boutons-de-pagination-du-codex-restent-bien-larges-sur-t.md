@@ -6,4 +6,4 @@ lots: [L45]
 captures: [{ file: captures/pagination-codex-390.png, alt: "Les quatre boutons de pagination du codex, carrés et bien larges, sur un écran de téléphone" }]
 # nocapture: raison, quand une capture n'a pas de sens
 ---
-Dans le codex, les boutons de pagination (première page, précédente, suivante, dernière) ne sont plus écrasés sur un écran de téléphone : ils gardent 44 px de large et de haut, à toutes les largeurs d'écran, ce qui les rend faciles à toucher. Sur un écran étroit, la pagination passe sur deux lignes plutôt que de réduire les boutons ou de déborder.
+Dans le codex, les boutons de pagination (première page, précédente, suivante, dernière) ne sont plus écrasés sur un écran de téléphone : ils gardent 44 px de large et de haut, à toutes les largeurs d'écran, ce qui les rend faciles à toucher. Sur un écran étroit, l’indicateur « Page X sur Y » prend sa propre ligne et les quatre boutons restent groupés dessous, plutôt que d’être réduits ou coupés en deux.
