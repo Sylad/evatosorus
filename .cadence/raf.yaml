@@ -109,6 +109,7 @@ lots:
     created: 2026-09-28
   - id: L12
     title: "Revue UX — Gabarit commun : navigation, en-tête, pied, rendu téléphone"
+    public: Menu et « Copier le lien » plus faciles à toucher, chiffres plus lisibles
     status: done
     visible: true
     estimate: 0.25
