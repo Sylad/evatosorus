@@ -93,12 +93,14 @@ lots:
     finished: 2026-10-31
   - id: L8
     title: Revue UX — Comprendre
-    status: doing
+    status: done
     visible: true
     estimate: 0.25
     created: 2026-09-28
     started: 2026-10-31
     review: { date: 2026-10-31, verdict: "conforme — lien « Explorer le voyage temporel » passé de 43,75 à 48,1 px de haut (2,75rem × 17,5 px), testé à 1440 et 390 px ; police minimale 12,25 px, titres h1 puis h2 sans saut, aucun défilement horizontal, anneau de focus visible ; aucun écart. — orchestré (vague 2026-10-31-2130-eva, 1 passe(s) de correction)", commit: 68ba64e2791929bac64e42d596bc1e0edbe0d42b }
+    ux: { date: 2026-10-31, verdict: "conforme — lien « Explorer le voyage temporel » à 48 px de haut, anneau de focus visible (capture 1440 regardée par le lead), titres sans saut, police ≥ 12,25 px" }
+    finished: 2026-10-31
   - id: L9
     title: Revue UX — Codex
     status: todo
