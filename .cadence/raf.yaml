@@ -83,12 +83,14 @@ lots:
     finished: 2026-10-31
   - id: L7
     title: Revue UX — Vidéos
-    status: doing
+    status: done
     visible: true
     estimate: 0.25
     created: 2026-09-28
     started: 2026-10-31
     review: { date: 2026-10-31, verdict: "conforme, avec 2 notes mineures : la nouveauté ne mentionne pas le correctif de contraste et sa capture est antérieure au halo du chapeau ; le helper parcourt est dupliqué dans 4 fichiers de test — orchestré (vague 2026-10-31-2045-eva, 2 passe(s) de correction)", commit: 3934e972d7ebd2d6da5aef2a8ceb224f822c817d }
+    ux: { date: 2026-10-31, verdict: "conforme — contraste du texte des cartes relevé (rouille #c75131 4,1:1 → #e0805f ≈ 6–7:1, jade éclairci), chapeau lisible sur l'image ; capture d'avant correctif mesurée par le lead (4,3:1), captures r2 d'après correctif regardées" }
+    finished: 2026-10-31
   - id: L8
     title: Revue UX — Comprendre
     status: todo
