@@ -113,6 +113,8 @@ lots:
     visible: true
     estimate: 0.25
     created: 2026-09-28
+    notes:
+      - { date: 2026-10-31, text: "QA 31-10 (45d066e) : boutons « Copier le lien » de /nouveautes/ à 31 px de haut à 390 px (cible tactile), et les 3 chiffres-clés de l'accueil à 11,9 px (sous 12 px) — à traiter avec le gabarit commun" }
   - id: L13
     title: Page Nouveautés branchée sur cadence news (raf news → page), signature commune des apps
     status: done
