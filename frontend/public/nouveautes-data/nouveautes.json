@@ -1,7 +1,22 @@
 {
   "project": "evatosorus",
-  "generated": "2026-10-31 20:04",
+  "generated": "2026-10-31 20:36",
   "entries": [
+    {
+      "slug": "2026-10-31-les-chaines-video-sont-plus-faciles-a-lire",
+      "title": "Les chaînes vidéo sont plus faciles à lire",
+      "date": "2026-10-31",
+      "lots": [
+        "L7"
+      ],
+      "captures": [
+        "captures/L7-videos-390.png"
+      ],
+      "alts": [
+        "La page Vidéos sur téléphone : la première carte de chaîne, avec sa pastille de langue plus lisible"
+      ],
+      "html": "<p>Retouche sur la page des vidéos.</p>\n<ul><li>La pastille de langue (English, Français) et l'étiquette « à voir » de chaque chaîne sont écrites un peu plus grand.</li></ul>"
+    },
     {
       "slug": "2026-10-31-les-vitrines-sont-plus-faciles-a-toucher-et-a-lire",
       "title": "Les vitrines sont plus faciles à toucher et à lire",
