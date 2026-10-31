@@ -422,8 +422,10 @@ const speciesInsights = [
       text-transform: uppercase;
       color: var(--color-evato-bone-muted);
       text-decoration: none;
-      margin-bottom: 1.5rem;
-      display: inline-block;
+      margin-bottom: 1rem;
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px; /* cible tactile, WCAG 2.5.5 */
     }
     .back-link:hover { color: var(--color-evato-amber); }
 
@@ -557,7 +559,7 @@ const speciesInsights = [
       border-bottom: 1px dashed rgba(212, 165, 94, 0.12);
     }
     .detail-stats dd:last-child { border-bottom: 0; }
-    .detail-stats a { color: var(--color-evato-amber); text-decoration: underline; text-decoration-color: rgba(212, 165, 94, 0.3); }
+    .detail-stats a { display: inline-flex; align-items: center; min-height: 44px; /* cible tactile, WCAG 2.5.5 */ color: var(--color-evato-amber); text-decoration: underline; text-decoration-color: rgba(212, 165, 94, 0.3); }
 
     .detail-blurb {
       max-width: 70ch;
@@ -582,7 +584,7 @@ const speciesInsights = [
       margin: 0 0 0.45rem;
       color: var(--color-evato-amber);
       font-family: var(--font-display);
-      font-size: 0.66rem;
+      font-size: 0.7rem; /* 12 px : pas de texte plus petit */
       letter-spacing: 0.24em;
       text-transform: uppercase;
     }
@@ -645,7 +647,7 @@ const speciesInsights = [
     .insight-grid span {
       color: #9bc9a6;
       font-family: var(--font-display);
-      font-size: 0.62rem;
+      font-size: 0.7rem; /* 12 px : pas de texte plus petit */
       letter-spacing: 0.18em;
       text-transform: uppercase;
     }
@@ -666,6 +668,9 @@ const speciesInsights = [
       font-size: 0.95rem;
     }
     .external a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px; /* cible tactile, WCAG 2.5.5 */
       color: var(--color-evato-amber);
       text-decoration: underline;
       text-decoration-color: rgba(212, 165, 94, 0.3);
