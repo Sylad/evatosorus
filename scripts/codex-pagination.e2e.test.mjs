@@ -1,12 +1,13 @@
 // L45 — Pagination du codex. Lit frontend/dist ; skip sans playwright-core/Chromium.
-// R1 — les 4 boutons de pagination font au moins 44 px de large ET de haut, à 1440, 390, 360 et 320 px.
-// R3 — la pagination garde ses 4 boutons groupés : une seule ligne à 1440 px, deux lignes à 390 px et moins (indicateur seul, puis les 4 boutons ensemble).
+// R1 — les 4 boutons de pagination font au moins 44 px de large ET de haut, à 1440, 430, 412, 390, 360 et 320 px.
+// R3 — la pagination garde ses 4 boutons groupés : une seule ligne à 1440 px, deux lignes à 430 px et moins (indicateur seul, puis les 4 boutons ensemble).
 // R2 — la pagination ne fait pas défiler la page horizontalement et reste dans la fenêtre, à ces mêmes largeurs.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { setupBrowser } from './lib/e2e-dist.mjs';
 
-const WIDTHS = [1440, 390, 360, 320];
+const WIDTHS = [1440, 430, 412, 390, 360, 320];
+const SEUIL_ETROIT = 480; // doit suivre le max-width de la media query de codex-browser.css
 
 async function parcourt(t, fn) {
   const env = await setupBrowser(t);
@@ -55,7 +56,7 @@ test('R3 — les 4 boutons restent sur une même ligne, l\'indicateur seul sur l
       indic: (() => { const r = document.querySelector('.pagination .page-indicator').getBoundingClientRect(); return Math.round(r.top + r.height / 2); })(),
     }));
     assert.equal(new Set(m.boutons).size, 1, `${ou} : les 4 boutons sont répartis sur plusieurs lignes (${m.boutons})`);
-    if (w <= 400) assert.notEqual(m.indic, m.boutons[0], `${ou} : l'indicateur doit avoir sa propre ligne`);
+    if (w <= SEUIL_ETROIT) assert.notEqual(m.indic, m.boutons[0], `${ou} : l'indicateur doit avoir sa propre ligne`);
     else assert.equal(m.indic, m.boutons[0], `${ou} : une seule ligne attendue`);
   });
 });
