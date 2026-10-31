@@ -1,7 +1,22 @@
 {
   "project": "evatosorus",
-  "generated": "2026-10-31 22:15",
+  "generated": "2026-10-31 22:37",
   "entries": [
+    {
+      "slug": "2026-10-31-les-boutons-de-pagination-du-codex-restent-bien-larges-sur-t",
+      "title": "Les boutons de pagination du codex restent bien larges sur téléphone",
+      "date": "2026-10-31",
+      "lots": [
+        "L45"
+      ],
+      "captures": [
+        "captures/pagination-codex-390.png"
+      ],
+      "alts": [
+        "Les quatre boutons de pagination du codex, carrés et bien larges, sur un écran de téléphone"
+      ],
+      "html": "<p>Dans le codex, les boutons de pagination (première page, précédente, suivante, dernière) ne sont plus écrasés sur un écran de téléphone : ils gardent 44 px de large et de haut, à toutes les largeurs d'écran, ce qui les rend faciles à toucher. Sur un écran étroit, la pagination passe sur deux lignes plutôt que de réduire les boutons ou de déborder.</p>"
+    },
     {
       "slug": "2026-10-31-le-codex-est-plus-facile-a-toucher-et-a-lire",
       "title": "Le codex est plus facile à toucher et à lire",
