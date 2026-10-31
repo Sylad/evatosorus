@@ -103,12 +103,14 @@ lots:
     finished: 2026-10-31
   - id: L9
     title: Revue UX — Codex
-    status: doing
+    status: done
     visible: true
     estimate: 0.25
     created: 2026-09-28
     started: 2026-10-31
     review: { date: 2026-10-31, verdict: "compliant — orchestré (vague 2026-10-31-2205-eva, 0 passe(s) de correction)", commit: bc06647c3599560e6439331c376a5055a2bf666f }
+    ux: { date: 2026-10-31, verdict: "conforme — filtres en pastilles et boutons de pagination à 44 px, texte ≥ 12 px, titre h2 (capture filtres 390 regardée par le lead)" }
+    finished: 2026-10-31
   - id: L10
     title: Revue UX — Carte
     status: todo
