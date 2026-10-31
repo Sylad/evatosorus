@@ -7,4 +7,4 @@ captures: [{ file: captures/L7-videos-390.png, alt: "La page Vidéos sur télép
 ---
 Retouche sur la page des vidéos.
 
-- La pastille de langue (English, Français) et l'étiquette « à voir » de chaque chaîne sont écrites un peu plus grand.
+- La pastille de langue (English, Français) et l'étiquette « à voir » de chaque chaîne sont écrites un peu plus grand.
