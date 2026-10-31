@@ -88,6 +88,7 @@ lots:
     estimate: 0.25
     created: 2026-09-28
     started: 2026-10-31
+    review: { date: 2026-10-31, verdict: "conforme, avec 2 notes mineures : la nouveauté ne mentionne pas le correctif de contraste et sa capture est antérieure au halo du chapeau ; le helper parcourt est dupliqué dans 4 fichiers de test — orchestré (vague 2026-10-31-2045-eva, 2 passe(s) de correction)", commit: 3934e972d7ebd2d6da5aef2a8ceb224f822c817d }
   - id: L8
     title: Revue UX — Comprendre
     status: todo
