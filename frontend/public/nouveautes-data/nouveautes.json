@@ -1,7 +1,22 @@
 {
   "project": "evatosorus",
-  "generated": "2026-10-31 21:38",
+  "generated": "2026-10-31 22:11",
   "entries": [
+    {
+      "slug": "2026-10-31-le-codex-est-plus-facile-a-toucher-et-a-lire",
+      "title": "Le codex est plus facile à toucher et à lire",
+      "date": "2026-10-31",
+      "lots": [
+        "L9"
+      ],
+      "captures": [
+        "captures/L9-codex-filtres-390.png"
+      ],
+      "alts": [
+        "Les filtres du codex sur téléphone : champ de recherche, choix de période et de régime, liste des groupes et boutons de page plus hauts, faciles à toucher"
+      ],
+      "html": "<p>Retouches sur la page du codex.</p>\n<ul><li>La recherche, les choix de période et de régime, la liste des groupes et les boutons de changement de page sont plus hauts : plus faciles à toucher au doigt.</li><li>Le compteur, les intitulés des filtres, la pastille de période, l'étiquette « silhouette » et la taille des cartes sont écrits un peu plus grand.</li><li>Les lecteurs d'écran annoncent la liste des espèces comme une section, avant les fiches.</li></ul>"
+    },
     {
       "slug": "2026-10-31-la-page-comprendre-un-lien-plus-facile-a-toucher",
       "title": "La page Comprendre : un lien plus facile à toucher",
