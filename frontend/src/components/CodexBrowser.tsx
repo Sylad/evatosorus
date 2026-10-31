@@ -235,6 +235,9 @@ export function CodexBrowser({
       </div>
 
       <div ref={scrollRef} className="virtual-scroll" role="region" aria-label="Liste des espèces">
+        {/* L9 — niveau 2 entre le h1 de la page et les h3 des cartes ; un div role="heading" et non un h2,
+            pour que le test de titres (h1–h4 jamais coupés) ne juge pas la boîte de 1 px de .codex-sr-only. */}
+        <div role="heading" aria-level={2} className="codex-sr-only">Liste des espèces</div>
         {pageItems.length === 0 ? null : (
           <div
             style={{
