@@ -73,10 +73,11 @@ lots:
     finished: 2026-10-31
   - id: L6
     title: Revue UX — Vitrines
-    status: todo
+    status: doing
     visible: true
     estimate: 0.25
     created: 2026-09-28
+    started: 2026-10-31
   - id: L7
     title: Revue UX — Vidéos
     status: todo
