@@ -63,12 +63,14 @@ lots:
     finished: 2026-10-30
   - id: L5
     title: Revue UX — Espèces (fiche)
-    status: doing
+    status: done
     visible: true
     estimate: 0.25
     created: 2026-09-28
     started: 2026-10-31
     review: { date: 2026-10-31, verdict: "conforme : 0 bloquant, 0 majeur, 2 notes mineures (scroll-padding sans test et appliqué aussi au bureau ; référence WCAG 2.5.5 au lieu de 2.5.8) — orchestré (vague 2026-10-31-1350-ev, 0 passe(s) de correction)", commit: 1abcdbd15053ed16603087ab4e7d4c5fa11f8053 }
+    ux: { date: 2026-10-31, verdict: "conforme (ux-reviewer de la vague ; capture 390 regardée par le lead : fiche lisible, légendes et crédits visibles, cibles agrandies) — 2 notes mineures : scroll-padding-top sans test et appliqué aussi au bureau ; commentaires qui citent WCAG 2.5.5 au lieu de 2.5.8" }
+    finished: 2026-10-31
   - id: L6
     title: Revue UX — Vitrines
     status: todo
