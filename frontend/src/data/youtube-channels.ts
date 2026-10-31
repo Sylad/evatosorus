@@ -155,3 +155,13 @@ export const ACCENT_HEX: Record<YouTubeChannel['accent'], string> = {
   rust: '#c75131',
   bone: '#b8a78f',
 };
+
+// Teinte du TEXTE posé sur les cartes (langue, abonnés, « à voir », appel à l'action) :
+// le rouille #c75131 ne fait que 4,1:1 sur le fond des cartes et le jade #5e8f6e tombe
+// sous 4,5:1 au pire pixel (WCAG 1.4.3) ; ils sont éclaircis pour le texte, bordures et
+// avatar gardent ACCENT_HEX.
+export const ACCENT_TEXT_HEX: Record<YouTubeChannel['accent'], string> = {
+  ...ACCENT_HEX,
+  jade: '#79ae8a',
+  rust: '#e0805f',
+};

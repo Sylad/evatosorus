@@ -1,6 +1,6 @@
 ---
 import CodexLayout from '../layouts/CodexLayout.astro';
-import { YOUTUBE_CHANNELS, LANGUAGE_LABELS, ACCENT_HEX } from '../data/youtube-channels';
+import { YOUTUBE_CHANNELS, LANGUAGE_LABELS, ACCENT_HEX, ACCENT_TEXT_HEX } from '../data/youtube-channels';
 ---
 <CodexLayout
   title="Vidéos — Evatosorus"
@@ -22,7 +22,7 @@ import { YOUTUBE_CHANNELS, LANGUAGE_LABELS, ACCENT_HEX } from '../data/youtube-c
     {YOUTUBE_CHANNELS.map((c) => {
       const initials = c.name.split(/\s+/).slice(0, 2).map((w) => w[0]).join('');
       return (
-        <a href={c.url} target="_blank" rel="noopener noreferrer" class="channel-card" style={`--accent:${ACCENT_HEX[c.accent]}`}>
+        <a href={c.url} target="_blank" rel="noopener noreferrer" class="channel-card" style={`--accent:${ACCENT_HEX[c.accent]};--accent-text:${ACCENT_TEXT_HEX[c.accent]}`}>
           <div class="channel-head">
             <div class="channel-avatar" aria-hidden="true">{initials}</div>
             <div class="channel-id">
@@ -83,6 +83,13 @@ import { YOUTUBE_CHANNELS, LANGUAGE_LABELS, ACCENT_HEX } from '../data/youtube-c
       color: var(--color-evato-bone-muted);
       font-size: 1.05rem;
       line-height: 1.6;
+      /* Posé sur l'image de fond (éclair clair) : même halo serré que les sur-titres, ≥ 4,5:1 au pire pixel. */
+      text-shadow:
+        0 0 1px #000,
+        0 0 2px #000,
+        0 0 3px rgba(0, 0, 0, 0.9),
+        0 0 6px rgba(0, 0, 0, 0.7),
+        0 1px 3px rgba(0, 0, 0, 0.85);
     }
     .channels-grid {
       display: grid;
@@ -163,7 +170,7 @@ import { YOUTUBE_CHANNELS, LANGUAGE_LABELS, ACCENT_HEX } from '../data/youtube-c
       padding: 0.25rem 0.55rem;
       border-radius: 999px;
       background: rgba(13, 10, 6, 0.7);
-      color: var(--accent);
+      color: var(--accent-text);
       border: 1px solid var(--accent);
     }
     .channel-stats {
@@ -178,7 +185,7 @@ import { YOUTUBE_CHANNELS, LANGUAGE_LABELS, ACCENT_HEX } from '../data/youtube-c
       font-family: var(--font-display);
       font-size: 0.78rem;
       letter-spacing: 0.18em;
-      color: var(--accent);
+      color: var(--accent-text);
     }
     .topics {
       display: flex;
@@ -216,7 +223,7 @@ import { YOUTUBE_CHANNELS, LANGUAGE_LABELS, ACCENT_HEX } from '../data/youtube-c
       font-size: 0.7rem; /* 12 px : pas de texte plus petit */
       letter-spacing: 0.32em;
       text-transform: uppercase;
-      color: var(--accent);
+      color: var(--accent-text);
     }
     .featured-title {
       font-style: italic;
@@ -233,7 +240,7 @@ import { YOUTUBE_CHANNELS, LANGUAGE_LABELS, ACCENT_HEX } from '../data/youtube-c
       font-size: 0.72rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--accent);
+      color: var(--accent-text);
       position: relative;
       z-index: 1;
     }
