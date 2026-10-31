@@ -421,6 +421,11 @@ lots:
     notes:
       - { date: 2026-10-29, text: "Mineur de la revue gardé en note : l'en-tête :6 attribue le défilement horizontal à 390/1440 px de toutes les pages à reflow-320 et frise-etiquettes, qui ne mesurent que 320 px et /periodes/" }
     finished: 2026-10-29
+  - id: L44
+    title: "Test instable sous charge : scripts/drawer-keyboard.e2e.test.mjs (« tiroir fermé hors de l'ordre Tab, focus dans le tiroir à l'ouverture… ») rouge dans la porte du 31-10 avec trois vagues en parallèle sur la machine, vert 3/3 seul — attentes à rendre déterministes (attendre l'état du tiroir plutôt qu'un délai)"
+    status: todo
+    estimate: 0.25
+    created: 2026-10-31
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
