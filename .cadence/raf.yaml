@@ -109,7 +109,7 @@ lots:
     created: 2026-09-28
   - id: L12
     title: "Revue UX — Gabarit commun : navigation, en-tête, pied, rendu téléphone"
-    status: doing
+    status: done
     visible: true
     estimate: 0.25
     created: 2026-09-28
@@ -117,6 +117,8 @@ lots:
       - { date: 2026-10-31, text: "QA 31-10 (45d066e) : boutons « Copier le lien » de /nouveautes/ à 31 px de haut à 390 px (cible tactile), et les 3 chiffres-clés de l'accueil à 11,9 px (sous 12 px) — à traiter avec le gabarit commun" }
     started: 2026-10-31
     review: { date: 2026-10-31, verdict: "compliant (0 bloquant, 0 majeur, 1 mineur) — commit f244324 relu et mesuré à 1440 et 390 px : « Copier le lien » 48,1 px à 390 px (30,6 px à 1440), liens du tiroir 47,3 px, chiffres-clés 13,1 px, sans défilement horizontal. — orchestré (vague 2026-10-31-1430-ev, 0 passe(s) de correction)", commit: f24432463e586005f424c9c575f82e5deaeb363f }
+    ux: { date: 2026-10-31, verdict: "conforme (ux-reviewer : « Copier le lien » 48 px à 390, liens du tiroir 47 px, chiffres-clés 13 px, sans défilement horizontal ; tiroir à 390 regardé par le lead : liens espacés, page courante marquée) — 1 note mineure sur un commentaire de code" }
+    finished: 2026-10-31
   - id: L13
     title: Page Nouveautés branchée sur cadence news (raf news → page), signature commune des apps
     status: done
