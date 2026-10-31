@@ -179,7 +179,7 @@ const pngSize = (rel: string) => {
       box-shadow: 0 0 0 1px var(--color-evato-amber-bright), 0 12px 24px -12px rgba(0, 0, 0, 0.6);
     }
     /* L27 (revue UX) — bouton « Copier le lien » : visible sans survol, cible ≥ 24 px
-       au bureau et ≥ 44 px au toucher ; le retour remplace le libellé dans une case de
+       au bureau et ≥ 44 px au toucher ou sous 1024 px (le téléphone n'annonce pas toujours « pointer: coarse ») ; le retour remplace le libellé dans une case de
        largeur fixe (celle du plus long). */
     .news-copy {
       display: inline-flex;
@@ -206,7 +206,7 @@ const pngSize = (rel: string) => {
       outline: 2px solid var(--color-evato-amber-bright);
       outline-offset: 2px;
     }
-    @media (pointer: coarse) {
+    @media (pointer: coarse), (max-width: 1023px) {
       .news-copy { min-height: 2.75rem; min-width: 2.75rem; }
     }
     .news-copy-icon {
