@@ -68,6 +68,7 @@ lots:
     estimate: 0.25
     created: 2026-09-28
     started: 2026-10-31
+    review: { date: 2026-10-31, verdict: "conforme : 0 bloquant, 0 majeur, 2 notes mineures (scroll-padding sans test et appliqué aussi au bureau ; référence WCAG 2.5.5 au lieu de 2.5.8) — orchestré (vague 2026-10-31-1350-ev, 0 passe(s) de correction)", commit: 1abcdbd15053ed16603087ab4e7d4c5fa11f8053 }
   - id: L6
     title: Revue UX — Vitrines
     status: todo
