@@ -1,7 +1,22 @@
 {
   "project": "evatosorus",
-  "generated": "2026-10-31 14:22",
+  "generated": "2026-10-31 20:04",
   "entries": [
+    {
+      "slug": "2026-10-31-les-vitrines-sont-plus-faciles-a-toucher-et-a-lire",
+      "title": "Les vitrines sont plus faciles à toucher et à lire",
+      "date": "2026-10-31",
+      "lots": [
+        "L6"
+      ],
+      "captures": [
+        "captures/L6-vitrines-parcours-390.png"
+      ],
+      "alts": [
+        "Les parcours de visite des vitrines sur téléphone : les noms d'espèces sont des pastilles plus hautes, faciles à toucher"
+      ],
+      "html": "<p>Retouches sur la page des espèces vitrines.</p>\n<ul><li>Les pastilles des quatre parcours de visite (Prédateurs, Géants herbivores, Mer et ciel, Étrangetés) sont plus hautes : plus faciles à toucher au doigt.</li><li>La pastille de période (Crétacé, Jurassique…), les étiquettes de groupe et de régime et le texte « Ouvrir la fiche » de chaque carte sont écrits un peu plus grand.</li></ul>"
+    },
     {
       "slug": "2026-10-31-les-boutons-copier-le-lien-et-le-menu-sont-plus-faciles-a-to",
       "title": "Le menu et les boutons « Copier le lien » sont plus faciles à toucher, les chiffres de l’accueil plus lisibles",
