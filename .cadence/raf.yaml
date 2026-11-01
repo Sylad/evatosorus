@@ -468,6 +468,7 @@ lots:
     visible: true
     created: 2026-11-01
     started: 2026-11-01
+    review: { date: 2026-11-01, verdict: "compliant — orchestré (vague 2026-11-01-0925-mix, 0 passe(s) de correction + passe des mineurs)", commit: 8c6f9ab35890a311646af7cd957016793944bcda }
   - id: L47
     title: "Codex : une <img> au src vide (naturalWidth 0) sur /codex/ à toutes les largeurs — la localiser et la retirer ; ajouter une section /codex/ à docs/qa/expectations.md (pagination 4 boutons 44×44, indicateur) — QA de L45 du 01-11"
     status: todo
