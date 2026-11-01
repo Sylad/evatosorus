@@ -5,8 +5,9 @@ Ce que le visiteur anonyme doit trouver sur https://evatosorus.pages.dev. Brouil
 pas d'API, donc aucune ligne `api:`. Les mesures de la frise et des entrées de Nouveautés sont rejouées à chaque
 build par `scripts/qa-expectations.test.mjs` (`cd frontend && npm run test:scripts`) ; le défilement horizontal l'est par
 `scripts/reflow-320.e2e.test.mjs` et `scripts/frise-etiquettes.e2e.test.mjs`, l'ordre antichronologique et `naturalWidth`
-des images par `scripts/nouveautes-page.e2e.test.mjs`. Non couvert ici : l'accueil,
-le codex, les fiches d'espèces, la carte, `/films/`, `/about/` et `/plan-de-travail/` (leurs tests vivent dans `scripts/`).
+des images par `scripts/nouveautes-page.e2e.test.mjs`. la pagination du codex par
+`scripts/codex-pagination.e2e.test.mjs` et l'absence d'`<img>` sans `src` par `scripts/codex-img.e2e.test.mjs`. Non couvert ici : l'accueil,
+les fiches d'espèces, la carte, `/films/`, `/about/` et `/plan-de-travail/` (leurs tests vivent dans `scripts/`).
 
 ## *
 - never: défilement horizontal de la page (`scrollWidth` ≤ `clientWidth`) à 390 et à 1440 px
@@ -21,3 +22,8 @@ le codex, les fiches d'espèces, la carte, `/films/`, `/about/` et `/plan-de-tra
 - shows: au moins une entrée `.news-entry` (`article` avec son `h2`), en ordre antichronologique
 - shows: chaque `.news-entry` non vide (texte rendu > 0 caractère) à 390 et à 1440 px
 - never: entrée sans texte, ni image cassée (`naturalWidth` > 0 pour toute `img` chargée)
+
+## /codex/
+- shows: la pagination (`.pagination`) avec ses 4 boutons (`.page-btn` : première, précédente, suivante, dernière page) d'au moins 44×44 px, et l'indicateur de page (`.page-indicator`, « Page 1 sur N ») ; à 430 px et moins, l'indicateur seul sur sa ligne puis les 4 boutons groupés sur une autre
+- never: `<img>` sans `src` (donc `naturalWidth` 0) dans la page, à 1440, 390 et 320 px — la visionneuse n'insère son `<img>` qu'à l'ouverture
+- never: pagination qui sort de la fenêtre ou fait défiler la page horizontalement (rejoué par `scripts/codex-pagination.e2e.test.mjs`)

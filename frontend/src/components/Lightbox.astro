@@ -17,7 +17,6 @@
     </svg>
   </button>
   <figure class="evato-lightbox__figure">
-    <img class="evato-lightbox__img" alt="" />
     <figcaption class="evato-lightbox__caption"></figcaption>
   </figure>
 </dialog>
@@ -27,10 +26,13 @@
     if (typeof window === 'undefined') return;
     const dialog = document.getElementById('evato-lightbox');
     if (!dialog) return;
-    const img = dialog.querySelector('.evato-lightbox__img');
+    const figure = dialog.querySelector('.evato-lightbox__figure');
     const cap = dialog.querySelector('.evato-lightbox__caption');
     const closeBtn = dialog.querySelector('.evato-lightbox__close');
-    if (!img || !cap || !closeBtn) return;
+    if (!figure || !cap || !closeBtn) return;
+    // L'<img> n'existe que pendant l'ouverture : au repos, une <img> sans src
+    // serait comptée cassée (naturalWidth 0) sur toutes les pages.
+    let img = null;
 
     const matchTarget = (el) => {
       if (!(el instanceof Element)) return null;
@@ -50,6 +52,11 @@
     };
 
     const open = (src, alt) => {
+      if (!img) {
+        img = document.createElement('img');
+        img.className = 'evato-lightbox__img';
+        figure.insertBefore(img, cap);
+      }
       img.setAttribute('src', src);
       img.setAttribute('alt', alt || '');
       cap.textContent = alt || '';
@@ -67,7 +74,7 @@
       } else {
         dialog.removeAttribute('open');
       }
-      img.removeAttribute('src');
+      if (img) { img.remove(); img = null; }
       document.documentElement.classList.remove('evato-lightbox-open');
     };
 

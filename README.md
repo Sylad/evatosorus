@@ -68,7 +68,7 @@ evatosorus/
 │   └── package.json
 ├── scripts/
 │   └── import-paleobiodb.mjs      # enrichit avec ~1500 espèces PBDB
-├── docs/                          # essais éditoriaux ; qa/expectations.md = attendus lus par la QA (mesures rejouées par scripts/qa-expectations.test.mjs)
+├── docs/                          # essais éditoriaux ; qa/expectations.md = attendus lus par la QA (mesures rejouées par scripts/qa-expectations.test.mjs, codex-pagination.e2e.test.mjs et codex-img.e2e.test.mjs)
 ├── README.md
 ├── HOW-IT-WORKS.md
 ├── DEPLOY.md
