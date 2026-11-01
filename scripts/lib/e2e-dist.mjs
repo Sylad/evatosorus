@@ -28,7 +28,9 @@ function serveDist() {
 }
 
 // Renvoie { browser, base } ou null (test passé en skip) ; ferme tout en fin de test.
-export async function setupBrowser(t) {
+// { scrollbar: true } : lance Chromium sans --hide-scrollbars (barre de défilement classique,
+// qui réduit la largeur disponible comme sur un navigateur de bureau).
+export async function setupBrowser(t, { scrollbar = false } = {}) {
   let chromium;
   try {
     const require = createRequire(new URL('../../frontend/package.json', import.meta.url));
@@ -39,7 +41,7 @@ export async function setupBrowser(t) {
   }
   let browser;
   try {
-    browser = await chromium.launch();
+    browser = await chromium.launch(scrollbar ? { ignoreDefaultArgs: ['--hide-scrollbars'] } : {});
   } catch (e) {
     t.skip(`Chromium indisponible (${String(e.message).split('\n')[0]})`);
     return null;

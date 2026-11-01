@@ -10,13 +10,16 @@ import { setupBrowser } from './lib/e2e-dist.mjs';
 const WIDTHS = [1440, 491, 490, 484, 481, 430, 412, 390, 360, 320];
 const SEUIL_ETROIT = 490; // doit suivre le max-width de la media query de codex-browser.css
 
+// Barre de défilement classique de 17 px (Windows) : Playwright la masque par défaut, et sans elle
+// « Dernière page » tient sur la ligne jusqu'à 470 px — le défaut de L46 n'apparaît pas.
 async function parcourt(t, fn) {
-  const env = await setupBrowser(t);
+  const env = await setupBrowser(t, { scrollbar: true });
   if (!env) return;
   for (const w of WIDTHS) {
     const context = await env.browser.newContext({ viewport: { width: w, height: 844 }, reducedMotion: 'reduce' });
     const page = await context.newPage();
     await page.goto(`${env.base}/codex/`, { waitUntil: 'load' });
+    await page.addStyleTag({ content: '::-webkit-scrollbar{width:17px}' });
     await page.waitForSelector('.pagination .page-btn');
     await fn(page, `${w}px`, w);
     await page.click('.pagination [aria-label="Dernière page"]');
