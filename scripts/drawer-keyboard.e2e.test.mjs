@@ -37,8 +37,10 @@ async function axNames(page) {
 }
 
 const isOpen = (page) => page.evaluate(() => document.documentElement.getAttribute('data-drawer-open') === 'true');
-const waitClosed = (page) => page.waitForFunction(() => !document.documentElement.hasAttribute('data-drawer-open'));
-const waitSettled = (page) => page.waitForTimeout(350); // glissement 250 ms
+// Tiroir au repos : état attendu et plus aucune transition CSS en cours (le glissement dure
+// 250 ms, bien davantage sous charge) — on attend l'état, pas un délai.
+const waitClosed = (page) => page.waitForFunction(() => !document.documentElement.hasAttribute('data-drawer-open') && document.getAnimations().length === 0);
+const waitSettled = (page) => page.waitForFunction(() => document.documentElement.getAttribute('data-drawer-open') === 'true' && document.getAnimations().length === 0);
 
 test('téléphone : tiroir fermé hors de l\'ordre Tab, focus dans le tiroir à l\'ouverture, page inert, retour au bouton', { timeout: 300_000 }, async (t) => {
   const env = await setupBrowser(t);
@@ -121,7 +123,6 @@ test('téléphone : tiroir fermé hors de l\'ordre Tab, focus dans le tiroir à 
       await page.mouse.click(width - 10, 700);
       await waitClosed(page);
       assert.equal(await focusWhere(page), 'burger', `${where} : le voile ne rend pas le focus au bouton`);
-      await waitSettled(page);
       // Fermé à nouveau : les liens du tiroir sont hors de l'ordre Tab.
       await page.keyboard.press('Tab');
       assert.notEqual(await focusWhere(page), 'sidebar', `${where} : tiroir refermé encore dans l'ordre Tab`);
@@ -196,13 +197,15 @@ test('téléphone : un lien du tiroir ouvert dans un nouvel onglet ne ferme pas 
       await page.keyboard.press('Enter');
       await waitSettled(page);
     }
+    // L'ouverture du nouvel onglet prouve que l'action a été traitée par la page.
+    const opened = context.waitForEvent('page');
     if (how === 'Control+Enter') {
       await link.focus();
       await page.keyboard.press('Control+Enter');
     } else {
       await link.click({ button: how === 'clic du milieu' ? 'middle' : 'left', modifiers: how === 'Control+clic' ? ['Control'] : [] });
     }
-    await page.waitForTimeout(400);
+    await opened;
     assert.equal(new URL(page.url()).pathname, '/codex/', `${how} : la page a changé`);
     assert.ok(await isOpen(page), `${how} : le tiroir s'est fermé`);
     assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('href')), '/vitrines/', `${how} : focus perdu`);
