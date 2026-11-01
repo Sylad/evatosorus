@@ -47,6 +47,11 @@ test('R6 — la ligne readout de /periodes/ donne 145 Ma à l’ouverture, 252 a
   }
 });
 
+test('R7 — l’en-tête de expectations.md n’a pas de point suivi d’une minuscule (phrase coupée)', () => {
+  const entete = lire().split(/^## /m)[0];
+  assert.doesNotMatch(entete, /\. [a-zà-ÿ]/, 'point suivi d’une minuscule dans l’en-tête');
+});
+
 test('R4 — frise à 252 et 66 Ma : étiquette sans recouvrement de l’ère, dans l’écran ; Trias sur 1 ligne à 390', { timeout: 60_000 }, async (t) => {
   const env = await setupBrowser(t);
   if (!env) return;

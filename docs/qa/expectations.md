@@ -5,7 +5,7 @@ Ce que le visiteur anonyme doit trouver sur https://evatosorus.pages.dev. Brouil
 pas d'API, donc aucune ligne `api:`. Les mesures de la frise et des entrées de Nouveautés sont rejouées à chaque
 build par `scripts/qa-expectations.test.mjs` (`cd frontend && npm run test:scripts`) ; le défilement horizontal l'est par
 `scripts/reflow-320.e2e.test.mjs` et `scripts/frise-etiquettes.e2e.test.mjs`, l'ordre antichronologique et `naturalWidth`
-des images par `scripts/nouveautes-page.e2e.test.mjs`. la pagination du codex par
+des images par `scripts/nouveautes-page.e2e.test.mjs`, la pagination du codex par
 `scripts/codex-pagination.e2e.test.mjs` et l'absence d'`<img>` sans `src` par `scripts/codex-img.e2e.test.mjs`. Non couvert ici : l'accueil,
 les fiches d'espèces, la carte, `/films/`, `/about/` et `/plan-de-travail/` (leurs tests vivent dans `scripts/`).
 
