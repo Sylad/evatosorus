@@ -1,7 +1,22 @@
 {
   "project": "evatosorus",
-  "generated": "2026-10-31 23:13",
+  "generated": "2026-11-01 09:52",
   "entries": [
+    {
+      "slug": "2026-11-01-pagination-du-codex-derniere-page-reste-groupee-avec-les-aut",
+      "title": "Pagination du codex : « Dernière page » reste groupée avec les autres boutons",
+      "date": "2026-11-01",
+      "lots": [
+        "L46"
+      ],
+      "captures": [
+        "captures/pagination-codex-484.png"
+      ],
+      "alts": [
+        "Sur la dernière page du codex à 484 px de large, l'indicateur « Page 26 sur 26 » est seul sur sa ligne et les quatre boutons de pagination sont groupés dessous"
+      ],
+      "html": "<p>Sur la dernière page du codex, avec un écran d’environ 481 à 490 px de large (téléphone en largeur, petite fenêtre), le bouton « Dernière page » ne se retrouve plus seul sur une deuxième ligne. L’indicateur « Page 26 sur 26 » a sa propre ligne et les quatre boutons restent groupés dessous, comme sur les écrans plus étroits.</p>"
+    },
     {
       "slug": "2026-10-31-les-boutons-de-pagination-du-codex-restent-bien-larges-sur-t",
       "title": "Les boutons de pagination du codex restent bien larges sur téléphone",
