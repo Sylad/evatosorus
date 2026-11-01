@@ -449,12 +449,20 @@ lots:
     created: 2026-10-31
   - id: L45
     title: "Codex : à 390 px les boutons de pagination sont écrasés à 34 px de large (objectif 44 × 44 de L9 non atteint en largeur, mesuré par la QA du 31-10) — 44 px minimum dans les deux sens à toutes les largeurs, avec le test qui mesure la largeur"
-    status: doing
+    status: done
     estimate: 0.1
     visible: true
     created: 2026-10-31
     started: 2026-10-31
     review: { date: 2026-11-01, verdict: "conforme — 0 bloquant, 0 majeur, 2 mineurs (bande 481–484 px avec page à deux chiffres : « Dernière page » passe seul à la ligne, et R3 ne le voit pas ; sous-tâche proposée) — orchestré (vague 2026-10-31-2235-eva, 3 passe(s) de correction)", commit: f63984333a813fe43719d8775bebc78e3278019c }
+    ux: { date: 2026-11-01, verdict: "conforme — boutons 44 × 44 de 320 à 1440 px, indicateur seul sur sa ligne ≤ 480 px, 4 boutons groupés (captures 390/1440 du 01-11 regardées par le lead) ; mineur : bande 481–484 px avec page à deux chiffres, « Dernière page » seule à la ligne → lot de suite" }
+    finished: 2026-11-01
+  - id: L46
+    title: "Pagination du codex : à 481–484 px avec une page à deux chiffres (« Page 26 sur 26 », indicateur 163,6 px) « Dernière page » passe seule à la ligne — seuil de codex-browser.css ≥ 490 px, R3 mesuré sur la dernière page et à seuil + 1 px (mineur de la revue UX de L45)"
+    status: todo
+    estimate: 1
+    visible: true
+    created: 2026-11-01
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
