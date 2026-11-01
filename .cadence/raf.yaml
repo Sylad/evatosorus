@@ -471,9 +471,10 @@ lots:
     review: { date: 2026-11-01, verdict: "compliant — orchestré (vague 2026-11-01-0925-mix, 0 passe(s) de correction + passe des mineurs)", commit: 8c6f9ab35890a311646af7cd957016793944bcda }
   - id: L47
     title: "Codex : une <img> au src vide (naturalWidth 0) sur /codex/ à toutes les largeurs — la localiser et la retirer ; ajouter une section /codex/ à docs/qa/expectations.md (pagination 4 boutons 44×44, indicateur) — QA de L45 du 01-11"
-    status: todo
+    status: doing
     estimate: 1
     created: 2026-11-01
+    started: 2026-11-01
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
