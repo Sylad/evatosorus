@@ -463,10 +463,11 @@ lots:
     finished: 2026-11-01
   - id: L46
     title: "Pagination du codex : à 481–484 px avec une page à deux chiffres (« Page 26 sur 26 », indicateur 163,6 px) « Dernière page » passe seule à la ligne — seuil de codex-browser.css ≥ 490 px, R3 mesuré sur la dernière page et à seuil + 1 px (mineur de la revue UX de L45)"
-    status: todo
+    status: doing
     estimate: 1
     visible: true
     created: 2026-11-01
+    started: 2026-11-01
   - id: L47
     title: "Codex : une <img> au src vide (naturalWidth 0) sur /codex/ à toutes les largeurs — la localiser et la retirer ; ajouter une section /codex/ à docs/qa/expectations.md (pagination 4 boutons 44×44, indicateur) — QA de L45 du 01-11"
     status: todo
