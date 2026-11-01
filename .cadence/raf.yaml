@@ -449,6 +449,7 @@ lots:
     estimate: 0.25
     created: 2026-10-31
     started: 2026-11-01
+    review: { date: 2026-11-01, verdict: "conforme : 0 bloquant, 0 majeur, 1 mineur (note) — orchestré (vague 2026-11-01-0900-eva, 0 passe(s) de correction)", commit: d85a0fcf40d84c1ce4ae153574cd3bf95075dc06 }
   - id: L45
     title: "Codex : à 390 px les boutons de pagination sont écrasés à 34 px de large (objectif 44 × 44 de L9 non atteint en largeur, mesuré par la QA du 31-10) — 44 px minimum dans les deux sens à toutes les largeurs, avec le test qui mesure la largeur"
     status: done
