@@ -454,6 +454,7 @@ lots:
     visible: true
     created: 2026-10-31
     started: 2026-10-31
+    review: { date: 2026-11-01, verdict: "conforme — 0 bloquant, 0 majeur, 2 mineurs (bande 481–484 px avec page à deux chiffres : « Dernière page » passe seul à la ligne, et R3 ne le voit pas ; sous-tâche proposée) — orchestré (vague 2026-10-31-2235-eva, 3 passe(s) de correction)", commit: f63984333a813fe43719d8775bebc78e3278019c }
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
