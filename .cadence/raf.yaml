@@ -463,19 +463,24 @@ lots:
     finished: 2026-11-01
   - id: L46
     title: "Pagination du codex : à 481–484 px avec une page à deux chiffres (« Page 26 sur 26 », indicateur 163,6 px) « Dernière page » passe seule à la ligne — seuil de codex-browser.css ≥ 490 px, R3 mesuré sur la dernière page et à seuil + 1 px (mineur de la revue UX de L45)"
-    status: doing
+    status: done
     estimate: 1
     visible: true
     created: 2026-11-01
     started: 2026-11-01
     review: { date: 2026-11-01, verdict: "compliant — orchestré (vague 2026-11-01-0925-mix, 0 passe(s) de correction + passe des mineurs)", commit: 8c6f9ab35890a311646af7cd957016793944bcda }
+    ux: { date: 2026-11-01, verdict: "conforme — défaut de L45 corrigé de 320 à 1440 px sur la première et la dernière page (captures 484 et 491 px regardées par le lead) ; mineur en note : seuil en px fragile avec une police par défaut de 20 px" }
+    notes:
+      - { date: 2026-11-01, text: "mineur UX : seuil max-width 490px en px ; avec une police par défaut de 20 px (indicateur 187 px) « Dernière page » repasse seule à la ligne — un seuil en em le suivrait" }
+    finished: 2026-11-01
   - id: L47
     title: "Codex : une <img> au src vide (naturalWidth 0) sur /codex/ à toutes les largeurs — la localiser et la retirer ; ajouter une section /codex/ à docs/qa/expectations.md (pagination 4 boutons 44×44, indicateur) — QA de L45 du 01-11"
-    status: doing
+    status: done
     estimate: 1
     created: 2026-11-01
     started: 2026-11-01
     review: { date: 2026-11-01, verdict: "conforme (1 note mineure : R7 ne voit pas une phrase coupée en fin de ligne) — orchestré (vague 2026-11-01-0925-mix, 0 passe(s) de correction + passe des mineurs)", commit: 85dccfd90db1f91fc49c4c1a979e3f2974a2fa54 }
+    finished: 2026-11-01
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
