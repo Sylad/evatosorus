@@ -473,6 +473,7 @@ lots:
     ux: { date: 2026-11-01, verdict: "conforme — défaut de L45 corrigé de 320 à 1440 px sur la première et la dernière page (captures 484 et 491 px regardées par le lead) ; mineur en note : seuil en px fragile avec une police par défaut de 20 px" }
     notes:
       - { date: 2026-11-01, text: "mineur UX : seuil max-width 490px en px ; avec une police par défaut de 20 px (indicateur 187 px) « Dernière page » repasse seule à la ligne — un seuil en em le suivrait" }
+      - { date: 2026-11-01, text: "QA du 01-11 verte ; docs/qa/expectations.md section /codex/ dit encore 430 px pour la pagination empilée : mettre 490 px au prochain lot qui touche le codex" }
     finished: 2026-11-01
   - id: L47
     title: "Codex : une <img> au src vide (naturalWidth 0) sur /codex/ à toutes les largeurs — la localiser et la retirer ; ajouter une section /codex/ à docs/qa/expectations.md (pagination 4 boutons 44×44, indicateur) — QA de L45 du 01-11"
