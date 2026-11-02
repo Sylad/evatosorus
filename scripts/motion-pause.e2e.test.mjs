@@ -4,6 +4,7 @@
 // R3 — la pause est mémorisée : après rechargement la page repart en pause et le bouton est enfoncé.
 // R4 — en prefers-reduced-motion, les vidéos sont figées d'office et le bouton reste masqué (comme l'accueil).
 // R5 — le bouton reste une cible d'au moins 44 px (WCAG 2.5.8) à 1440 et 390 px.
+// R6 — le bouton reste cliquable à 320 px : rien ne le recouvre (le burger de navigation, en haut à droite, inclus).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { setupBrowser } from './lib/e2e-dist.mjs';
@@ -89,5 +90,24 @@ test('R5 — le bouton fait au moins 44 px, à 1440 et 390 px', { timeout: 60_00
       assert.ok(b && b.width >= 44 && b.height >= 44, `${p} ${w}px : ${JSON.stringify(b)}`);
       await context.close();
     }
+  }
+});
+
+test('R6 — à 320 px, le bouton n\'est recouvert par rien et son clic bascule la pause', { timeout: 90_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  for (const p of ['about', 'films', 'codex', 'especes/tyrannosaurus-rex']) {
+    const context = await env.browser.newContext({ viewport: { width: 320, height: 568 } });
+    const page = await context.newPage();
+    await page.goto(`${env.base}/${p}/`, { waitUntil: 'load' });
+    const dessus = await page.evaluate(() => {
+      const r = document.getElementById('evato-motion-toggle').getBoundingClientRect();
+      const el = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+      return el && el.closest('#evato-motion-toggle') ? 'bouton' : (el?.id || el?.className || 'autre');
+    });
+    assert.equal(dessus, 'bouton', `${p} 320px : recouvert par ${dessus}`);
+    await page.click('#evato-motion-toggle', { timeout: 5000 });
+    assert.equal(await page.getAttribute('#evato-motion-toggle', 'aria-pressed'), 'true', `${p} 320px`);
+    await context.close();
   }
 });
