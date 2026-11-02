@@ -1,7 +1,9 @@
 ---
 /**
- * Bouton Pause / Lecture des animations de l'accueil (WCAG 2.2.2) — vidéo de
- * fond, crâne SMIL (svg.pauseAnimations()), poussière, pulsation du logo.
+ * Bouton Pause / Lecture des animations (WCAG 2.2.2) — vidéo de fond, crâne
+ * SMIL (svg.pauseAnimations()), poussière, pulsation du logo sur l'accueil ;
+ * hors accueil, les <video data-pausable> (bandeaux, vitrines, galerie des
+ * fiches), figées par pause() et relancées par play().
  * Rond 44×44 en bas à droite (en haut à droite sous 360 px), jumeau visuel du bouton d'ambiance sonore ; il en
  * prend la place quand celui-ci est masqué (pas de fichier audio), sinon il se
  * range à sa gauche. Choix mémorisé (src/lib/motion.ts). Masqué en
@@ -31,8 +33,13 @@ import { HAS_AMBIENT_AUDIO } from '../lib/ambient-audio';
 
   const btn = document.getElementById('evato-motion-toggle');
   const skulls = () => Array.from(document.querySelectorAll<SVGSVGElement>('svg.evato-skull'));
+  const videos = () => Array.from(document.querySelectorAll<HTMLVideoElement>('video[data-pausable]'));
   const apply = (paused: boolean) => {
     document.documentElement.dataset.motion = paused ? 'paused' : 'running';
+    for (const v of videos()) {
+      if (paused) v.pause();
+      else void v.play().catch(() => { /* lecture refusée par le navigateur : la vidéo reste sur son image */ });
+    }
     for (const s of skulls()) {
       if (paused) s.pauseAnimations();
       else s.unpauseAnimations();

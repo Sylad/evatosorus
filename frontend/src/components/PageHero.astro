@@ -10,10 +10,12 @@ interface Props {
   eyebrow?: string;
   title: string;
 }
+import MotionToggle from './MotionToggle.astro';
 const { videoSrc, poster = '/hero-trex.jpg', eyebrow, title } = Astro.props;
 ---
+<MotionToggle />
 <div class="page-hero">
-  <video autoplay loop muted playsinline preload="auto" poster={poster}>
+  <video data-pausable autoplay loop muted playsinline preload="auto" poster={poster}>
     <source src={videoSrc} type="video/mp4" />
     <img src={poster} alt="" />
   </video>

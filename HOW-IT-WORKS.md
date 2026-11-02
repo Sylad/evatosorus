@@ -46,6 +46,10 @@ Reproduit le pattern Eywa avec deux couches :
 Pas de R3F ici. R3F était overkill pour des particles. Si on ajoute un
 species 3D viewer plus tard, là on bascule sur R3F.
 
+## Pause des vidéos (WCAG 2.2.2)
+
+`MotionToggle.astro` (bouton rond Pause/Lecture) est monté sur l'accueil et sur toutes les pages à vidéo automatique : `PageHero` (codex, périodes, carte), about, films, vitrines, fiches espèces. Hors accueil il fige/relance les `<video data-pausable>` (`pause()` / `play()`) ; tout nouveau `<video autoplay>` hors accueil doit porter `data-pausable` et sa page `<MotionToggle />`. Choix mémorisé dans `localStorage` (`src/lib/motion.ts`) et partagé entre pages ; en `prefers-reduced-motion` les vidéos sont figées d'office et le bouton masqué. Test : `scripts/motion-pause.e2e.test.mjs`.
+
 ## La carte paléo-monde
 
 Leaflet + tuiles Esri World Dark Gray Base (gratuit, sans clé ; attribution Esri, HERE, Garmin, © OpenStreetMap contributors).

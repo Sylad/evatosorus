@@ -1,5 +1,6 @@
 ---
 import CodexLayout from '../layouts/CodexLayout.astro';
+import MotionToggle from '../components/MotionToggle.astro';
 import { SPECIES_INDEX } from '../data/species';
 import { formatCount } from '../lib/format-count.mjs';
 ---
@@ -8,6 +9,7 @@ import { formatCount } from '../lib/format-count.mjs';
   description="Pourquoi ce site, pour qui, comment c'est fait."
   active="about"
 >
+  <MotionToggle />
   <article class="about">
     <header>
       <p class="codex-eyebrow">à propos</p>
@@ -20,7 +22,7 @@ import { formatCount } from '../lib/format-count.mjs';
     </header>
 
     <figure class="about-hero">
-      <video autoplay loop muted playsinline preload="auto" poster="/hero-trex.jpg">
+      <video data-pausable autoplay loop muted playsinline preload="auto" poster="/hero-trex.jpg">
         <source src="/hero-trex-3.mp4" type="video/mp4" />
         <img src="/hero-trex.jpg" alt="" />
       </video>

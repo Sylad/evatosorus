@@ -1,6 +1,7 @@
 ---
 import { fitStyle, LS } from '../lib/title-fit.mjs';
 import CodexLayout from '../layouts/CodexLayout.astro';
+import MotionToggle from '../components/MotionToggle.astro';
 import { formatCount } from '../lib/format-count.mjs';
 import { SPECIES, getSpeciesVideos, TAXON_GROUP_LABELS, DIET_LABELS } from '../data/species';
 
@@ -94,8 +95,9 @@ const visitPaths = [
   description="Les dinosaures et créatures préhistoriques les plus iconiques d'Evatosorus, avec scènes de vie et animations."
   active="vitrines"
 >
+  <MotionToggle />
   <section class="vitrine-hero" aria-labelledby="vitrine-title">
-    <video autoplay loop muted playsinline preload="auto" poster="/species-life/tyrannosaurus-rex-openart-20260528.jpg">
+    <video data-pausable autoplay loop muted playsinline preload="auto" poster="/species-life/tyrannosaurus-rex-openart-20260528.jpg">
       <source src="/tyrannosaurus-rex-openart-20260528b-1.mp4" type="video/mp4" />
       <img src="/species-life/tyrannosaurus-rex-openart-20260528.jpg" alt="" />
     </video>
@@ -146,6 +148,7 @@ const visitPaths = [
         <div class="vitrine-media">
           {species.videos[0] ? (
             <video
+              data-pausable
               src={species.videos[index % species.videos.length]}
               poster={species.lifeRestorationUrl ?? species.imageUrl}
               autoplay

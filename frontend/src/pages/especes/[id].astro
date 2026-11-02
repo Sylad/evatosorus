@@ -1,5 +1,6 @@
 ---
 import CodexLayout from '../../layouts/CodexLayout.astro';
+import MotionToggle from '../../components/MotionToggle.astro';
 import { SPECIES, getSpeciesById, getSpeciesVideos, TAXON_GROUP_LABELS, DIET_LABELS, DIET_ICONS } from '../../data/species';
 import { PERIODS_BY_ID } from '../../data/periods';
 import { formatDecimal, formatMass, formatMassLong } from '../../lib/format-count.mjs';
@@ -235,6 +236,7 @@ const speciesInsights = [
   description={s.blurb ?? `${s.name}, un ${TAXON_GROUP_LABELS[s.taxonGroup] ?? ''} du ${period?.name ?? 'Mésozoïque'}.`}
   active="codex"
 >
+  <MotionToggle />
   <a href="/codex/" class="back-link">← Codex</a>
 
   <article class="species-detail">
@@ -338,6 +340,7 @@ const speciesInsights = [
         <div class="videos-grid">
           {videos.map((src) => (
             <video
+              data-pausable
               src={src}
               autoplay
               muted
