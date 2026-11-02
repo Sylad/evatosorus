@@ -31,6 +31,10 @@ test('R1 — chaque page à vidéo automatique a le bouton Pause et des vidéos 
     assert.equal(await page.locator('#evato-motion-toggle').count(), 1, `${p} : un seul bouton Pause`);
     assert.equal(await page.locator('#evato-motion-toggle').isVisible(), true, `${p} : bouton visible`);
     assert.ok((await etat(page)).length > 0, `${p} : vidéos data-pausable attendues`);
+    await attendJoue(page);
+    await page.waitForTimeout(500);
+    const lecture = await etat(page);
+    assert.ok(lecture.some((x) => !x), `${p} : au moins une vidéo joue au départ`);
     await context.close();
   }
 });
@@ -110,4 +114,34 @@ test('R6 — à 320 px, le bouton n\'est recouvert par rien et son clic bascule 
     assert.equal(await page.getAttribute('#evato-motion-toggle', 'aria-pressed'), 'true', `${p} 320px`);
     await context.close();
   }
+});
+
+test('R7 — accueil à 320 px : le bouton reste en haut à droite, sans recouvrir « À propos »', { timeout: 60_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const context = await env.browser.newContext({ viewport: { width: 320, height: 568 } });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/`, { waitUntil: 'load' });
+  const b = await page.locator('#evato-motion-toggle').boundingBox();
+  assert.ok(b && b.y < 100, `bouton en haut : ${JSON.stringify(b)}`);
+  const dessus = await page.evaluate(() => {
+    const r = document.getElementById('evato-motion-toggle').getBoundingClientRect();
+    const el = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+    return el && el.closest('#evato-motion-toggle') ? 'bouton' : 'autre';
+  });
+  assert.equal(dessus, 'bouton');
+  await context.close();
+});
+
+test('R8 — pages internes : la pause fige aussi l\'animation du fond .codex-bg', { timeout: 60_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const { context, page } = await ouvre(env, 'films');
+  const etatFond = () => page.evaluate(() => getComputedStyle(document.querySelector('.codex-bg')).animationPlayState);
+  assert.equal(await etatFond(), 'running');
+  await page.click('#evato-motion-toggle');
+  assert.equal(await etatFond(), 'paused');
+  await page.click('#evato-motion-toggle');
+  assert.equal(await etatFond(), 'running');
+  await context.close();
 });

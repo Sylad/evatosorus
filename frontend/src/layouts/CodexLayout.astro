@@ -214,6 +214,7 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
       0%, 100% { transform: scale(1.04); }
       50%      { transform: scale(1.10); }
     }
+    :global(html[data-motion='paused']) .codex-bg { animation-play-state: paused; }
     @media (prefers-reduced-motion: reduce) {
       .codex-bg { animation: none; }
     }
