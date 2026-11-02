@@ -236,7 +236,7 @@ const speciesInsights = [
   description={s.blurb ?? `${s.name}, un ${TAXON_GROUP_LABELS[s.taxonGroup] ?? ''} du ${period?.name ?? 'Mésozoïque'}.`}
   active="codex"
 >
-  <MotionToggle />
+  {videos.length > 0 && <MotionToggle />}
   <a href="/codex/" class="back-link">← Codex</a>
 
   <article class="species-detail">

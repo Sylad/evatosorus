@@ -1,19 +1,20 @@
 {
   "project": "evatosorus",
-  "generated": "2026-11-02 08:31",
+  "generated": "2026-11-02 09:14",
   "entries": [
     {
       "slug": "2026-11-02-les-videos-des-pages-se-mettent-en-pause",
       "title": "Les vidéos de toutes les pages se mettent en pause",
       "date": "2026-11-02",
       "lots": [
-        "L16"
+        "L16",
+        "L48"
       ],
       "captures": [
         "captures/L16-films-pause-telephone.png",
         "captures/L16-films-pause-bureau.png"
       ],
-      "html": "<p>Le bouton rond <strong>Pause</strong>, jusqu'ici réservé à l'accueil, existe maintenant sur toutes les pages qui lancent une vidéo toute seule : À propos, Films, Espèces vitrines, Codex, Périodes, Carte et les fiches d'espèces (galerie vidéo).</p>\n<ul><li>Un clic fige <strong>toutes</strong> les vidéos de la page, un second les relance ; le choix est partagé avec l'accueil et mémorisé à la visite suivante.</li><li>Si l'appareil demande moins d'animations, les vidéos restent figées et le bouton n'est pas affiché.</li></ul>"
+      "html": "<p>Le bouton rond <strong>Pause</strong>, jusqu'ici réservé à l'accueil, existe maintenant sur toutes les pages qui lancent une vidéo toute seule : À propos, Films, Espèces vitrines, Codex, Périodes, Carte et les fiches d'espèces (galerie vidéo).</p>\n<ul><li>Un clic fige <strong>toutes</strong> les vidéos de la page, un second les relance ; le choix est partagé avec l'accueil et mémorisé à la visite suivante.</li><li>Si l'appareil demande moins d'animations, les vidéos restent figées et le bouton n'est pas affiché.</li><li>Le bouton n'apparaît que sur les fiches d'espèces qui ont une galerie vidéo (43 sur 1511) ; ailleurs, sur les pages sans bouton, le fond de la page ne respire plus : il reste fixe.</li></ul>"
     },
     {
       "slug": "2026-11-01-pagination-du-codex-derniere-page-reste-groupee-avec-les-aut",

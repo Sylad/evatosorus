@@ -145,3 +145,30 @@ test('R8 — pages internes : la pause fige aussi l\'animation du fond .codex-bg
   assert.equal(await etatFond(), 'running');
   await context.close();
 });
+
+const fondAnime = (page) => page.evaluate(() => getComputedStyle(document.querySelector('.codex-bg')).animationName !== 'none');
+
+test('R9 — une fiche espèce sans galerie vidéo n\'a pas de bouton Pause, et son fond .codex-bg reste fixe', { timeout: 60_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const sans = await ouvre(env, 'especes/aardonyx-celestae');
+  assert.equal(await sans.page.locator('video').count(), 0, 'fiche témoin sans vidéo');
+  assert.equal(await sans.page.locator('#evato-motion-toggle').count(), 0, 'aucun bouton Pause');
+  assert.equal(await fondAnime(sans.page), false, 'fond fixe sans bouton pour le figer');
+  await sans.context.close();
+  const avec = await ouvre(env, 'especes/tyrannosaurus-rex');
+  assert.equal(await avec.page.locator('#evato-motion-toggle').count(), 1, 'fiche à vidéos : bouton présent');
+  assert.equal(await fondAnime(avec.page), true, 'fond animé quand le bouton peut le figer');
+  await avec.context.close();
+});
+
+test('R10 — toute page CodexLayout sans bouton Pause a un fond .codex-bg fixe', { timeout: 120_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  for (const p of ['films/jurassic-park-1993', 'plan-de-travail', 'nouveautes', 'videos', 'comprendre', 'periodes/cretace']) {
+    const { context, page } = await ouvre(env, p);
+    assert.equal(await page.locator('#evato-motion-toggle').count(), 0, `${p} : pas de bouton`);
+    assert.equal(await fondAnime(page), false, `${p} : fond fixe`);
+    await context.close();
+  }
+});

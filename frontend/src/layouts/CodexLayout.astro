@@ -207,16 +207,19 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
         url('/hero-trex.jpg') center 25% / cover no-repeat;
       filter: blur(1.5px) saturate(1.15) brightness(0.92) contrast(1.06);
       opacity: 0.78;
-      animation: codex-bg-breathe 24s ease-in-out infinite;
       transform-origin: center;
     }
     @keyframes codex-bg-breathe {
       0%, 100% { transform: scale(1.04); }
       50%      { transform: scale(1.10); }
     }
+    /* Le fond ne respire que si la page porte le bouton Pause : MotionToggle pose
+       data-motion sur <html> (running ou paused). Sans bouton pour le figer (WCAG 2.2.2),
+       le fond reste fixe. */
+    :global(html[data-motion]) .codex-bg { animation: codex-bg-breathe 24s ease-in-out infinite; }
     :global(html[data-motion='paused']) .codex-bg { animation-play-state: paused; }
     @media (prefers-reduced-motion: reduce) {
-      .codex-bg { animation: none; }
+      :global(html[data-motion]) .codex-bg { animation: none; }
     }
     /* Voile minimaliste : laisse l'image respirer pleinement, juste assez
        de noir pour la sidebar et la lisibilité du contenu. */
