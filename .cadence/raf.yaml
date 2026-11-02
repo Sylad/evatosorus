@@ -172,9 +172,10 @@ lots:
     finished: 2026-10-01
   - id: L16
     title: Bouton pause des vidéos automatiques hors accueil (about, vitrines, films, fiches espèces, PageHero) — WCAG 2.2.2, même mécanisme que l'accueil
-    status: todo
+    status: doing
     estimate: 0.5
     created: 2026-10-01
+    started: 2026-11-02
   - id: L17
     title: Retirer les traces du déploiement NAS (docker-compose, scripts, doc, page À propos) — prod = dark-blue (k3s) ou Cloudflare Pages ; NAS = médias et sauvegardes
     status: done
