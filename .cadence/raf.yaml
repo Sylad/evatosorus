@@ -176,6 +176,7 @@ lots:
     estimate: 0.5
     created: 2026-10-01
     started: 2026-11-02
+    review: { date: 2026-11-02, verdict: "conforme : les constats mineurs sont corrigés (burger sous 360 px, R1 qui vérifie la lecture, accueil à 320 px, .codex-bg figé), et motion-pause.e2e passe ses 8 tests sur 8 sans skip ; 1 note mineure hors périmètre (.codex-bg toujours animé sur les 6 pages CodexLayout sans bouton) — orchestré (vague 2026-11-02-0855-eva, 1 passe(s) de correction + passe des mineurs)", commit: 6e5ab0feb0efa89ab0884f6f16afac53fcf6df30 }
   - id: L17
     title: Retirer les traces du déploiement NAS (docker-compose, scripts, doc, page À propos) — prod = dark-blue (k3s) ou Cloudflare Pages ; NAS = médias et sauvegardes
     status: done
