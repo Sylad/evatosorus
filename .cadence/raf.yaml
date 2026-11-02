@@ -488,9 +488,10 @@ lots:
     finished: 2026-11-01
   - id: L48
     title: "Bouton Pause (L16) affiché sur les 1468 fiches espèces sans galerie vidéo (sur 1511), où il ne fige rien : monter MotionToggle seulement si videos.length > 0 ; et six pages CodexLayout sans MotionToggle gardent .codex-bg animé — mesure de la revue de L16 (02-11)"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-11-02
+    started: 2026-11-02
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
