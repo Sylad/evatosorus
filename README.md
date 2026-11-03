@@ -45,7 +45,7 @@ assume la collab humain × Claude Code × openart.ai.
 evatosorus/
 ├── frontend/                      # site Astro
 │   ├── src/
-│   │   ├── pages/                 # routes : / · /codex · /periodes · /carte · /about
+│   │   ├── pages/                 # routes : / · /codex · /periodes · /carte · /about · 404.astro (servie en 404 par Cloudflare Pages)
 │   │   │   ├── index.astro        # landing cinématique 75s loop
 │   │   │   ├── codex.astro        # grid filtrable
 │   │   │   ├── periodes/[id].astro

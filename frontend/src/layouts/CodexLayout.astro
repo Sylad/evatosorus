@@ -6,7 +6,7 @@ import NewsBadge from '../components/NewsBadge.astro';
 interface Props {
   title?: string;
   description?: string;
-  active?: 'vitrines' | 'codex' | 'comprendre' | 'periodes' | 'carte' | 'films' | 'videos' | 'nouveautes' | 'plan' | 'about' | 'home';
+  active?: 'vitrines' | 'codex' | 'comprendre' | 'periodes' | 'carte' | 'films' | 'videos' | 'nouveautes' | 'plan' | 'about' | 'home' | 'none';
 }
 
 const { title, description, active = 'home' } = Astro.props;

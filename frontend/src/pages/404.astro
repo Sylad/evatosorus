@@ -1,0 +1,65 @@
+---
+// L49 — Cloudflare Pages sert ce fichier (dist/404.html) avec le statut 404 pour toute adresse inconnue ;
+// sans lui, il retombe sur l'accueil en 200.
+import CodexLayout from '../layouts/CodexLayout.astro';
+---
+<CodexLayout
+  title="Page introuvable (404) — Evatosorus"
+  description="Cette adresse n'existe pas sur Evatosorus."
+  active="none"
+>
+  <article class="notfound">
+    <p class="codex-eyebrow">page introuvable</p>
+    <h1>404 — Cette page a disparu</h1>
+    <p class="lede">
+      Comme beaucoup d'espèces du Mésozoïque, l'adresse que vous cherchez n'a laissé aucun fossile.
+      Reprenez la piste depuis l'accueil, ou explorez le codex.
+    </p>
+    <p class="notfound-links">
+      <a href="/">Retour à l'accueil</a>
+      <a href="/codex/">Parcourir le codex</a>
+    </p>
+  </article>
+
+  <style>
+    .notfound {
+      max-width: 70ch;
+    }
+    .codex-eyebrow {
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      letter-spacing: 0.32em;
+      color: var(--color-evato-amber);
+      text-transform: uppercase;
+      margin: 0 0 0.4rem;
+      text-shadow: 0 0 2px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.85);
+    }
+    .notfound h1 {
+      font-size: clamp(2rem, 6vw, 2.6rem);
+      margin: 0 0 0.8rem;
+      overflow-wrap: anywhere;
+    }
+    .lede {
+      font-size: 1.2rem;
+      line-height: 1.7;
+      color: var(--color-evato-bone);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+      margin: 0 0 1.5rem;
+    }
+    .notfound-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .notfound-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0 1.1rem;
+      background: rgba(20, 14, 8, 0.92);
+      border-left: 3px solid var(--color-evato-amber);
+      border-radius: 4px;
+      color: var(--color-evato-bone);
+    }
+  </style>
+</CodexLayout>
