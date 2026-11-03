@@ -497,6 +497,7 @@ lots:
   - id: L49
     title: "Page 404 pour les URL inconnues : une adresse inexistante sert l'accueil avec un statut 200 (QA de L48, 03-11) — ajouter frontend/src/pages/404.astro (Cloudflare Pages la sert avec le statut 404)"
     status: doing
+    visible: true
     estimate: 0.25
     created: 2026-11-03
     started: 2026-11-03
