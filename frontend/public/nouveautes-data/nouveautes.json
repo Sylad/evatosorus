@@ -1,7 +1,22 @@
 {
   "project": "evatosorus",
-  "generated": "2026-11-02 09:14",
+  "generated": "2026-11-03 15:29",
   "entries": [
+    {
+      "slug": "2026-11-03-une-vraie-page-introuvable-pour-les-adresses-inconnues",
+      "title": "Une vraie page « introuvable » pour les adresses inconnues",
+      "date": "2026-11-03",
+      "lots": [
+        "L49"
+      ],
+      "captures": [
+        "captures/L49-page-introuvable-bureau.png"
+      ],
+      "alts": [
+        "La page « 404 — Cette page a disparu » sur ordinateur : un clin d'œil paléontologique et deux boutons, « Retour à l'accueil » et « Parcourir le codex »"
+      ],
+      "html": "<p>Quand on tape une adresse qui n'existe pas, le site affiche maintenant une vraie page « <strong>404 — Cette page a disparu</strong> », avec un petit clin d'œil de paléontologue. Avant, on retombait sur l'accueil sans comprendre ce qui s'était passé.</p>\n<ul><li>Deux boutons pour repartir : <strong>Retour à l'accueil</strong> et <strong>Parcourir le codex</strong>.</li><li>Les moteurs de recherche savent désormais que l'adresse n'existe pas.</li></ul>"
+    },
     {
       "slug": "2026-11-02-les-videos-des-pages-se-mettent-en-pause",
       "title": "Les vidéos de toutes les pages se mettent en pause",
