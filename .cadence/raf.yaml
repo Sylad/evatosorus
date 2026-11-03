@@ -496,9 +496,10 @@ lots:
     finished: 2026-11-03
   - id: L49
     title: "Page 404 pour les URL inconnues : une adresse inexistante sert l'accueil avec un statut 200 (QA de L48, 03-11) — ajouter frontend/src/pages/404.astro (Cloudflare Pages la sert avec le statut 404)"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-11-03
+    started: 2026-11-03
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
