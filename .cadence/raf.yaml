@@ -494,6 +494,11 @@ lots:
     started: 2026-11-02
     review: { date: 2026-11-03, verdict: "conforme (0 constat bloquant ou majeur ; 1 note mineure : l'en-tête du fichier de test ne liste pas R7 à R10) — orchestré (vague 2026-11-03-0820-eva, 0 passe(s) de correction)", commit: 1660b40c0120d9bc2420598ab2f81cf52dcc84fb }
     finished: 2026-11-03
+  - id: L49
+    title: "Page 404 pour les URL inconnues : une adresse inexistante sert l'accueil avec un statut 200 (QA de L48, 03-11) — ajouter frontend/src/pages/404.astro (Cloudflare Pages la sert avec le statut 404)"
+    status: todo
+    estimate: 0.25
+    created: 2026-11-03
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
