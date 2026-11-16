@@ -503,7 +503,7 @@ lots:
     estimate: 0.25
     created: 2026-11-03
     started: 2026-11-03
-    review: { date: 2026-11-03, verdict: "conforme — orchestré (vague 2026-11-03-1510-eva, 1 passe(s) de correction)", commit: 2a2fcbb80636a6b234a8e4193ba6bccb4cd77627 }
+    review: { date: 2026-11-16, verdict: "conforme : le commit venu après la revue (Nouveautés, page introuvable) est documentaire ; non vérifié : vrai statut 404 servi par Cloudflare Pages en prod, build frais", commit: a951682431c0306955eadf367508d38542b06e50 }
     ux: { date: 2026-11-03, verdict: "conforme : captures 1440 et 390 px regardées par le lead — titre 404 lisible, deux sorties (accueil, codex), aucun lien de navigation actif à tort, texte lisible sur le fond ; revue UX sans réserve" }
     finished: 2026-11-03
 acknowledged:
