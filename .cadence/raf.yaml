@@ -506,6 +506,12 @@ lots:
     review: { date: 2026-11-16, verdict: "conforme : le commit venu après la revue (Nouveautés, page introuvable) est documentaire ; non vérifié : vrai statut 404 servi par Cloudflare Pages en prod, build frais", commit: a951682431c0306955eadf367508d38542b06e50 }
     ux: { date: 2026-11-03, verdict: "conforme : captures 1440 et 390 px regardées par le lead — titre 404 lisible, deux sorties (accueil, codex), aucun lien de navigation actif à tort, texte lisible sur le fond ; revue UX sans réserve" }
     finished: 2026-11-03
+  - id: L50
+    title: "Mise à jour mensuelle des technos et dépendances (D-1 du registre parent) : versions mineures et correctifs, majeures proposées à part ; noter chaque régression trouvée et sa correction"
+    status: todo
+    estimate: 0.5
+    every: 30
+    created: 2026-11-16
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
