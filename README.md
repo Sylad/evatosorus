@@ -21,7 +21,7 @@ assume la collab humain × Claude Code × openart.ai.
 
 ## Stack
 
-- **Astro 6** + **React 19** (composants interactifs : filtres, carte)
+- **Astro 7** + **React 19** (composants interactifs : filtres, carte)
 - **Tailwind 4** (palette ambre fossile / jade fougère / rust terre rouge)
 - **Leaflet** + tuiles Esri World Dark Gray Base (carte paléo-monde)
 - **Cinzel** + **Crimson Text** (typographies lapidaires + lecture serif)
@@ -79,7 +79,7 @@ evatosorus/
 
 ```bash
 cd frontend
-nvm use         # Node 22
+nvm use         # Node 22.23 (Astro 7 exige ≥ 22.23.4)
 npm install
 npm run dev     # http://localhost:4321
 ```

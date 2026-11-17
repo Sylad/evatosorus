@@ -33,7 +33,7 @@ commit poussé (voir `cadence.yaml`).
    | Build command | `cd frontend && npm install && npm run build` |
    | Build output directory | `frontend/dist` |
    | Root directory | (vide) |
-   | Node version | `22` (var d'env `NODE_VERSION=22`) |
+   | Node version | `22` (var d'env `NODE_VERSION=22`) — doit résoudre en ≥ 22.23.4, sinon Astro 7 refuse de construire ; mettre `22.23` si le build tombe sur une 22 plus ancienne |
 
 4. **Variables d'environnement** : aucune.
 

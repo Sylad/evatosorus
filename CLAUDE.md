@@ -6,9 +6,9 @@
 
 | | |
 |---|---|
-| Stack | Astro 6 + R3F + GSAP + Tailwind 4 (reproduit pattern Eywa) |
+| Stack | Astro 7 + R3F + GSAP + Tailwind 4 (reproduit pattern Eywa) |
 | Backend | **AUCUN** — build statique pur, données figées au build |
-| Déploiement | Cloudflare Pages (https://evatosorus.pages.dev). Build : `cd frontend && npm install && npm run build`, output `frontend/dist`, NODE_VERSION=22 |
+| Déploiement | Cloudflare Pages (https://evatosorus.pages.dev). Build : `cd frontend && npm install && npm run build`, output `frontend/dist`, NODE_VERSION=22 (Astro 7 exige Node ≥ 22.23.4) |
 | Pages | 1527 pages (1 landing + 1 codex + 4 périodes + 1511 espèces + 7 films + 1 carte + 1 about). Dist ~27 MB |
 
 ## Public + ton
@@ -63,7 +63,7 @@ Avant de modifier le seed, `git -C ~/projects/developpeur/evatosorus log --oneli
 
 ## Versions épinglées
 
-`frontend/package.json` override : `"vite": "7.3.8"`, `"astro": "6.4.8"` épinglés. Sinon tailwind+rolldown crash sur tsconfigPaths. **Ne pas bumper aveuglément** — vérifier que le combo build encore avant.
+`frontend/package.json` : `"astro": "7.4.12"` épinglé et override `"vite": "8.3.8"` (la version qu'astro 7 résout ; l'épinglage datait du crash tailwind+rolldown sur tsconfigPaths en vite 7, absent en vite 8). **Ne pas bumper aveuglément** — vérifier que le combo build encore avant. Astro 7 refuse de démarrer sous Node < 22.23.4 (`engines` et `.nvmrc` suivent).
 
 `playwright-core` est épinglé sur la version dont le Chromium est installé dans `~/.cache/ms-playwright` (1.65.1 → chromium 1255) : sinon les tests e2e de `npm run test:scripts` passent en skip sans échouer (vécu jusqu'au 2026-11-17 : 99 tests sur 194 sautés avec 1.63.0). Mises à jour mensuelles : `docs/technos/`.
 
