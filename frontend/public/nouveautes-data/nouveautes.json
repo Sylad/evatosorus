@@ -1,7 +1,22 @@
 {
   "project": "evatosorus",
-  "generated": "2026-11-03 15:29",
+  "generated": "2026-11-17 15:04",
   "entries": [
+    {
+      "slug": "2026-11-17-chaque-capture-decrite-pour-les-lecteurs-d-ecran",
+      "title": "Nouveautés : chaque capture décrite pour les lecteurs d'écran",
+      "date": "2026-11-17",
+      "lots": [
+        "L26"
+      ],
+      "captures": [
+        "captures/L26-visionneuse-telephone.png"
+      ],
+      "alts": [
+        "La visionneuse ouverte sur téléphone : la capture de la page 404 en grand, et sous elle sa description complète en légende, sur quatre lignes"
+      ],
+      "html": "<p>Chaque capture de cette page porte maintenant une <strong>description de ce qu'elle montre</strong>. Un lecteur d'écran la lit à voix haute, et elle s'affiche aussi en légende quand on ouvre la capture en grand.</p>\n<ul><li>La légende s'affiche <strong>en entier</strong>, sur téléphone comme sur grand écran, même après avoir tourné ou redimensionné l'écran.</li><li>Avant, une capture n'était annoncée que par le titre de son entrée, sans dire ce qu'on y voyait.</li></ul>"
+    },
     {
       "slug": "2026-11-03-une-vraie-page-introuvable-pour-les-adresses-inconnues",
       "title": "Une vraie page « introuvable » pour les adresses inconnues",
