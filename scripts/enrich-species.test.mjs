@@ -6,6 +6,7 @@ import {
   classifyTaxonGroupFromChain,
   dietFromGroup,
   cleanBlurb,
+  singularUnderTwo,
   buildImageCredit,
   fillIfEmpty,
 } from './lib/enrich-pure.mjs';
@@ -46,6 +47,16 @@ test('cleanBlurb: enlève préambule llama et guillemets', () => {
   assert.equal(cleanBlurb(raw), 'Le Stegosaurus est un dinosaure. Il vivait au Jurassique.');
   assert.equal(cleanBlurb('"Un texte entre guillemets."'), 'Un texte entre guillemets.');
   assert.equal(cleanBlurb(''), '');
+});
+
+test('cleanBlurb: unité au singulier sous 2 (« 1,5 tonne », Labocania)', () => {
+  const raw = 'Il mesurait entre 9 et 10 mètres de long et pesait environ 1,5 tonnes.';
+  assert.equal(cleanBlurb(raw), 'Il mesurait entre 9 et 10 mètres de long et pesait environ 1,5 tonne.');
+  assert.equal(singularUnderTwo('0,8 mètres, 1 tonnes, 1\u00a0kilomètres'), '0,8 mètre, 1 tonne, 1\u00a0kilomètre');
+  // 2 et plus, 11 ou 21, 1 000 : pluriel conservé.
+  for (const t of ['2 tonnes', '2,5 tonnes', '11 tonnes', '21 mètres', '1 000 tonnes', '11,5 tonnes', '1,5 tonneaux']) {
+    assert.equal(singularUnderTwo(t), t);
+  }
 });
 
 test('buildImageCredit: licence présente → crédit, absente → null', () => {

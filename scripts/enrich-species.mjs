@@ -13,7 +13,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  classifyTaxonGroupFromChain, dietFromGroup, buildImageCredit, fillIfEmpty,
+  classifyTaxonGroupFromChain, dietFromGroup, buildImageCredit, fillIfEmpty, cleanBlurb,
 } from './lib/enrich-pure.mjs';
 import {
   sleep, THROTTLE_MS, parseWikipediaUrl, qidFromWikipedia, qidFromSearch, makeEntityGetter,
@@ -61,7 +61,8 @@ const stats = { seen: 0, enriched: 0, images: 0, blurbs: 0, groupsFixed: 0, diet
 // Calcule l'enrichissement d'une espèce (cache si présent).
 async function computeEnrichment(s) {
   const cached = readCache(s.id);
-  if (cached) { stats.cached++; return cached; }
+  // Le cache peut dater d'avant une règle de cleanBlurb (« 1,5 tonnes ») : on le repasse.
+  if (cached) { stats.cached++; if (cached.blurb) cached.blurb = cleanBlurb(cached.blurb); return cached; }
 
   const patch = {};
   const wp = parseWikipediaUrl(s.wikipediaUrl);

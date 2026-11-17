@@ -76,7 +76,7 @@ Les 24 ids du seed sont **skippés** (seed wins au runtime, déjà curées — o
 
 - **Cache/checkpoint par espèce** : `frontend/scripts/.cache/enrich/<id>.json` (gitignored). Au démarrage, si le cache existe et est complet, on le réutilise → le batch (plusieurs heures) est **resumable** sans tout refaire. Les images déjà présentes dans `/public/species/` ne sont pas re-téléchargées.
 - **Merge préservant** : on ne remplit QUE les champs vides/absents d'une entrée. On ne touche jamais une entrée du seed curé. On ne réécrit pas une valeur existante.
-- **Fallback gracieux** : pas de QID, pas d'`extract`, ou pas d'image libre → on enrichit ce qu'on peut, le reste reste vide, la fiche tombe sur la silhouette par groupe (`silhouettes-by-group.json`, déjà géré par `[id].astro`). **Aucune exception ne crashe le batch** — chaque espèce est isolée dans un try/catch, l'erreur est loggée et comptée.
+- **Fallback gracieux** : pas de QID, pas d'`extract`, ou pas d'image libre → on enrichit ce qu'on peut, le reste reste vide, la fiche tombe sur la silhouette par groupe (`/silhouettes/group-<taxonGroup>.png`, déjà géré par `SpeciesCard.astro` et `CodexBrowser.tsx`). **Aucune exception ne crashe le batch** — chaque espèce est isolée dans un try/catch, l'erreur est loggée et comptée.
 - **Politesse API Wikimedia** : `User-Agent` explicite (contact), throttle entre requêtes (~150-250ms), retry léger sur 429/5xx.
 - **Rapport final** : compteurs `enrichies / images téléchargées / blurbs générés / taxonGroup corrigés / skippées (no-data) / erreurs`, + chemin du JSON écrit.
 

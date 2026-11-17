@@ -72,7 +72,16 @@ export function cleanBlurb(raw) {
   text = text.replace(/^(?:voici|voilà|bien sûr|d'accord)[^:]{0,80}:\s*/i, '');
   // Strip wrapping quotes (droites, courbes, guillemets français).
   text = text.replace(/^["«»“”‘’']+\s*/, '').replace(/\s*["«»“”‘’']+$/, '').trim();
-  return text;
+  return singularUnderTwo(text);
+}
+
+// En français, l'unité reste au singulier sous 2 : « 1,5 tonne », « 0,8 mètre ».
+// Ollama écrit souvent « 1,5 tonnes » (Labocania, revue L22) ; sans cette règle,
+// chaque `npm run enrich:species` le réintroduisait.
+const UNDER_TWO_PLURAL_RE = /(?<![\d,.])((?:[01],\d+|1)[\s\u00a0\u202f]+)(tonne|mètre|centimètre|kilomètre|kilogramme|kilo|gramme)s\b/gi;
+
+export function singularUnderTwo(text) {
+  return String(text ?? '').replace(UNDER_TWO_PLURAL_RE, '$1$2');
 }
 
 export function buildImageCredit(extmetadata) {

@@ -61,7 +61,7 @@ evatosorus/
 │   │   │   ├── species.types.ts   # schéma Zod-ready
 │   │   │   ├── species.seed.ts    # 24 stars curées à la main
 │   │   │   ├── species.ts         # merge seed + import
-│   │   │   └── generated/         # output PBDB (gitignored)
+│   │   │   └── generated/         # output PBDB + enrichissement (versionné, lu au build)
 │   │   ├── layouts/               # BaseLayout + CodexLayout (sidebar)
 │   │   └── styles/global.css      # @theme tokens + amber-word hover
 │   ├── astro.config.mjs
@@ -116,6 +116,7 @@ node ../scripts/enrich-species.mjs --ids abelisaurus-comahuensis
 - **Offline** : tourne en local, écrit le JSON + `public/species/*.jpg` committés. Le build Cloudflare ne fait aucun appel réseau.
 - **Resumable** : cache par espèce dans `scripts/.cache/enrich/` (gitignored). Relancer reprend où ça s'est arrêté.
 - **Préservant** : ne remplit que les champs vides/placeholder, ne touche jamais le seed curé.
+- **Typographie** : `cleanBlurb` remet l'unité au singulier sous 2 (« 1,5 tonne », pas « 1,5 tonnes »), y compris sur un blurb relu depuis le cache.
 - Prérequis : Ollama avec `llama3.1:8b` (override `OLLAMA_BASE_URL` / `OLLAMA_MODEL`). Run de réf. : 1422/1479 enrichies, 976 images, 0 erreur.
 
 ### Propositions Ollama
