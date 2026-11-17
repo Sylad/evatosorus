@@ -328,6 +328,7 @@ lots:
     status: done
     estimate: 0.5
     visible: true
+    delivered: { date: 2026-11-17, sha: 05dd6cde96eab7c91cc21a55cc66201ddf05e7bf }
     created: 2026-10-02
     started: 2026-11-17
     review: { date: 2026-11-17, verdict: "conforme : césure U+00AD hors du nom accessible, de la recherche et de <title> ; une seule taille de titre par grille de 320 à 1440 ; aucune couleur ajoutée ; 13/13 ; note : commentaire title-fit.mjs:55 cite FLOOR_REM", commit: 6d72e24b0148a4c3399ebceca2244a71e6b28931 }
