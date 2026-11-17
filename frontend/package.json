@@ -17,28 +17,28 @@
     "test:scripts": "node --test ../scripts/*.test.mjs"
   },
   "dependencies": {
-    "@astrojs/mdx": "^5.0.4",
-    "@astrojs/react": "^5.0.4",
-    "@tailwindcss/vite": "^4.2.4",
-    "@tanstack/react-virtual": "^3.13.26",
+    "@astrojs/mdx": "^5.0.6",
+    "@astrojs/react": "^5.0.7",
+    "@tailwindcss/vite": "^4.3.5",
+    "@tanstack/react-virtual": "^3.14.26",
     "@types/leaflet.markercluster": "^1.5.6",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "astro": "6.2.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "astro": "6.4.8",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "react-leaflet": "^5.0.0",
-    "tailwindcss": "^4.2.4",
+    "tailwindcss": "^4.3.5",
     "yaml": "^2.9.1"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260503.1",
-    "@types/leaflet": "^1.9.20",
-    "playwright-core": "1.63.0"
+    "@cloudflare/workers-types": "^4.20260702.1",
+    "@types/leaflet": "^1.9.22",
+    "playwright-core": "1.65.1"
   },
   "overrides": {
-    "vite": "7.3.2"
+    "vite": "7.3.8"
   }
 }

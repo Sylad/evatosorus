@@ -63,7 +63,9 @@ Avant de modifier le seed, `git -C ~/projects/developpeur/evatosorus log --oneli
 
 ## Versions épinglées
 
-`frontend/package.json` override : `"vite": "7.3.2"`, `"astro": "6.2.1"` épinglés. Sinon tailwind+rolldown crash sur tsconfigPaths. **Ne pas bumper aveuglément** — vérifier que le combo build encore avant.
+`frontend/package.json` override : `"vite": "7.3.8"`, `"astro": "6.4.8"` épinglés. Sinon tailwind+rolldown crash sur tsconfigPaths. **Ne pas bumper aveuglément** — vérifier que le combo build encore avant.
+
+`playwright-core` est épinglé sur la version dont le Chromium est installé dans `~/.cache/ms-playwright` (1.65.1 → chromium 1255) : sinon les tests e2e de `npm run test:scripts` passent en skip sans échouer (vécu jusqu'au 2026-11-17 : 99 tests sur 194 sautés avec 1.63.0). Mises à jour mensuelles : `docs/technos/`.
 
 ## Sections livrées (V1, 2026-05-06)
 

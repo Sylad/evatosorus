@@ -158,7 +158,7 @@ nettoyer manuellement après validation.
 
 ## Stack précise
 
-- Astro 6.2 · React 19.2 · Tailwind 4.2 · Leaflet 1.9
+- Astro 6.4 · React 19.3 · Tailwind 4.3 · Leaflet 1.9
 - Cinzel + Crimson Text (Google Fonts)
 - Node 22 (engines.node)
 - Cloudflare Pages (build statique, edge CDN)
