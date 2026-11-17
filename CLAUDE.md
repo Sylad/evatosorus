@@ -98,3 +98,15 @@ dans `docs/nouveautes/captures/`). Après tout ajout ou modification d'une entr�
 `cd frontend && npm run news` (= `cadence news build` vers `frontend/public/nouveautes-data/`) et
 **commiter le résultat** : Cloudflare Pages construit sans cadence, la page lit ce JSON au build.
 `npm run test:scripts` échoue si le JSON versionné n'est plus à jour.
+
+Chaque capture se déclare **avec son texte alternatif** (WCAG 1.1.1, L26) dans l'en-tête de l'entrée :
+
+```yaml
+captures: [{ file: captures/L28-plan-de-travail-telephone.png, alt: "La page Plan de travail sur téléphone : titre « Ce qui se prépare », puis la section En cours avec deux travaux" }]
+```
+
+L'`alt` décrit ce que montre l'image, écrit en la regardant : **au moins 30 caractères**, différent
+du titre de l'entrée et des autres captures, et il ne commence pas par « capture », « image » ou
+« screenshot ». Il sert aussi de légende dans la visionneuse. L'ancienne forme `captures: [captures/x.png]`
+ne suffit plus : **le build échoue** sur une capture sans `alt` (`nouveautes.astro`), et
+`npm run test:scripts` sur un `alt` trop court, égal au titre ou commençant par « capture ».

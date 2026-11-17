@@ -56,6 +56,18 @@ test('chaque capture citée est servie depuis public/nouveautes-data/', () => {
 // L26 — WCAG 1.1.1 : chaque capture porte un texte alternatif qui la décrit (champ `alt`
 // de l'en-tête, `{ file: …, alt: "…" }`), distinct du titre de l'entrée et des autres
 // captures. Sans lui, la page refuse de se construire.
+// Revue L26 : la règle ci-dessous fait échouer le build ; CLAUDE.md, que suit la session
+// qui ajoute une nouveauté, doit donner le format et les exigences de l'alt.
+test('CLAUDE.md § Nouveautés documente captures: [{ file, alt }] et les exigences de l’alt', () => {
+  const md = readFileSync(new URL('../CLAUDE.md', import.meta.url), 'utf8');
+  const sec = md.slice(md.indexOf('**Nouveautés**'));
+  assert.ok(md.includes('**Nouveautés**'), 'section Nouveautés absente');
+  assert.match(sec, /captures: \[\{ file: [^,]+, alt: "[^"]{30,}" \}\]/, 'format captures: [{ file: …, alt: "…" }] absent');
+  for (const rule of [/30 caractères/, /différent\s+du titre/, /capture/, /build échoue/]) {
+    assert.match(sec, rule, `exigence absente : ${rule}`);
+  }
+});
+
 test('chaque capture a son texte alternatif, propre et descriptif', () => {
   for (const e of readJson().entries) {
     assert.ok(Array.isArray(e.alts), `${e.slug} : aucun alt (captures: [{ file: …, alt: "…" }])`);

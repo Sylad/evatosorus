@@ -1,6 +1,6 @@
 ---
 /*
-  Lightbox plein écran — vanilla, ~80 lignes JS, zero dep.
+  Lightbox plein écran — vanilla, ~100 lignes JS, zero dep.
 
   Usage : tout `<img>` à l'intérieur d'un wrapper `[data-lightbox]` (ou portant
   directement l'attribut `data-lightbox`) déclenche l'overlay au clic.
@@ -51,6 +51,20 @@
       return null;
     };
 
+    // L'image prend la hauteur que la légende laisse : une légende de plusieurs
+    // lignes n'est plus coupée par la figure (overflow: hidden). Recalculé quand la
+    // légende change de hauteur (écran tourné, fenêtre redimensionnée, police chargée),
+    // pas seulement à l'ouverture (revue L26).
+    const syncCapH = () => {
+      const h = cap.style.display === 'none' ? 0 : cap.offsetHeight;
+      figure.style.setProperty('--evato-cap-h', `${h}px`);
+    };
+    if (typeof ResizeObserver === 'function') {
+      new ResizeObserver(() => { if (dialog.open) syncCapH(); }).observe(cap);
+    } else {
+      window.addEventListener('resize', () => { if (dialog.open) syncCapH(); });
+    }
+
     const open = (src, alt) => {
       if (!img) {
         img = document.createElement('img');
@@ -70,9 +84,7 @@
         dialog.setAttribute('open', '');
       }
       document.documentElement.classList.add('evato-lightbox-open');
-      // L'image prend la hauteur que la légende laisse : une légende de plusieurs
-      // lignes n'est plus coupée par la figure (overflow: hidden).
-      figure.style.setProperty('--evato-cap-h', `${alt ? cap.offsetHeight : 0}px`);
+      syncCapH();
     };
     const close = () => {
       if (typeof dialog.close === 'function' && dialog.open) {

@@ -245,6 +245,41 @@ test('L26 : visionneuse 320/390/1440 px — la légende la plus longue se lit en
   }
 });
 
+// Revue L26 : la hauteur de la légende (--evato-cap-h) était mesurée à l'ouverture
+// seulement. Visionneuse ouverte au téléphone puis écran tourné (ou fenêtre élargie) :
+// la légende change de hauteur et doit rester lisible en entier, sous l'image.
+test('L26 : visionneuse ouverte puis redimensionnée — la légende suit et reste lisible', { timeout: 90_000 }, async (t) => {
+  const env = await setup(t);
+  if (!env) return;
+  const longest = DATA.entries.flatMap((e) => e.captures.map((c, i) => ({ c, alt: e.alts[i] })))
+    .sort((a, b) => b.alt.length - a.alt.length)[0];
+  for (const [from, to] of [[{ width: 1440, height: 900 }, { width: 320, height: 640 }], [{ width: 320, height: 640 }, { width: 640, height: 320 }], [{ width: 390, height: 844 }, { width: 1440, height: 900 }]]) {
+    const context = await env.browser.newContext({ viewport: from, reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+    const img = page.locator(`.news-capture img[src="/nouveautes-data/${longest.c}"]`);
+    await img.scrollIntoViewIfNeeded();
+    await img.click();
+    await page.waitForFunction(() => document.querySelector('.evato-lightbox__img')?.complete);
+    await page.setViewportSize(to);
+    // Deux images d'animation : le temps que resize soit traité et la mise en page refaite.
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+    const m = await page.evaluate(() => {
+      const fig = document.querySelector('.evato-lightbox__figure');
+      const cap = document.querySelector('.evato-lightbox__caption');
+      const c = cap.getBoundingClientRect();
+      const f = fig.getBoundingClientRect();
+      const i = document.querySelector('.evato-lightbox__img').getBoundingClientRect();
+      return { capH: cap.offsetHeight, varH: parseFloat(fig.style.getPropertyValue('--evato-cap-h')), hidden: cap.scrollHeight - cap.clientHeight, capTop: c.top, capBottom: c.bottom, figBottom: f.bottom, vh: innerHeight, imgBottom: i.bottom, imgH: i.height };
+    });
+    const label = `${from.width}×${from.height} → ${to.width}×${to.height}`;
+    assert.equal(m.varH, m.capH, `${label} : --evato-cap-h pas recalculé (${JSON.stringify(m)})`);
+    assert.ok(m.capBottom <= m.figBottom + 1 && m.figBottom <= m.vh + 1, `${label} : légende coupée par la figure ou hors de l'écran (${JSON.stringify(m)})`);
+    assert.ok(m.imgBottom <= m.capTop + 1 && m.imgH > 0, `${label} : image sous la légende (${JSON.stringify(m)})`);
+    await context.close();
+  }
+});
+
 test('320 px, captures pas encore chargées : la place est réservée aux bonnes proportions', { timeout: 60_000 }, async (t) => {
   const env = await setup(t);
   if (!env) return;
