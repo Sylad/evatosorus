@@ -338,6 +338,7 @@ lots:
     title: "Nettoyage récurrent des fichiers de travail devenus inutiles (consigne Sylvain 02-10) : dossier tmp partagé, documents périmés, scripts jetables, captures non référencées, fichiers générés orphelins — lister avant de supprimer, ne rien effacer hors tmp sans l'avoir regardé ; à refaire à chaque clôture de vague. Aussi : l'enrichissement des espèces (npm run enrich:species) peut réintroduire « 1,5 tonnes » sur Labocania"
     status: done
     estimate: 0.25
+    delivered: { date: 2026-11-17, sha: c2f684f21021e3a14b4fde03ba5687883f3668cb }
     created: 2026-10-02
     started: 2026-11-17
     review: { date: 2026-11-17, verdict: "conforme (relu par le lead) : 3 fichiers périmés retirés après examen un par un (plan openart exécuté, plan d'enrichissement exécuté, JSON généré orphelin), gardés ceux qui servent ; « 1,5 tonne » au singulier, testé ; joué sur mini-blue (D-10)", commit: d142d2aecf3f9462beec8c12743c33a61d224ea0 }
