@@ -325,11 +325,14 @@ lots:
   - id: L30
     title: "Titres : plancher de 1,5rem pour le titre d'une fiche espèce, avec césure douce posée au build dans les noms qui ne tiennent pas (environ 77 à 320 px, dont Micropachycephalosaurus aujourd'hui plus petit que son nom scientifique) ; taille uniforme par grille de vitrines (20,7 à 28,8 px aujourd'hui) — revue UX du 02-10"
     public: "Des titres de fiches plus grands sur les petits téléphones"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-10-02
     started: 2026-11-17
+    review: { date: 2026-11-17, verdict: "conforme : césure U+00AD hors du nom accessible, de la recherche et de <title> ; une seule taille de titre par grille de 320 à 1440 ; aucune couleur ajoutée ; 13/13 ; note : commentaire title-fit.mjs:55 cite FLOOR_REM", commit: 6d72e24b0148a4c3399ebceca2244a71e6b28931 }
+    ux: { date: 2026-11-17, verdict: "conforme (lead, captures avant/après 320 px regardées) : le titre de Micropachycephalosaurus passe au-dessus du nom scientifique, coupé proprement en Micropachyce-/phalosaurus" }
+    finished: 2026-11-17
   - id: L31
     title: "Nettoyage récurrent des fichiers de travail devenus inutiles (consigne Sylvain 02-10) : dossier tmp partagé, documents périmés, scripts jetables, captures non référencées, fichiers générés orphelins — lister avant de supprimer, ne rien effacer hors tmp sans l'avoir regardé ; à refaire à chaque clôture de vague. Aussi : l'enrichissement des espèces (npm run enrich:species) peut réintroduire « 1,5 tonnes » sur Labocania"
     status: todo
