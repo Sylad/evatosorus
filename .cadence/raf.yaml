@@ -336,9 +336,10 @@ lots:
     finished: 2026-11-17
   - id: L31
     title: "Nettoyage récurrent des fichiers de travail devenus inutiles (consigne Sylvain 02-10) : dossier tmp partagé, documents périmés, scripts jetables, captures non référencées, fichiers générés orphelins — lister avant de supprimer, ne rien effacer hors tmp sans l'avoir regardé ; à refaire à chaque clôture de vague. Aussi : l'enrichissement des espèces (npm run enrich:species) peut réintroduire « 1,5 tonnes » sur Labocania"
-    status: todo
+    status: doing
     estimate: 0.25
     created: 2026-10-02
+    started: 2026-11-17
   - id: L32
     title: "Couleurs de période recopiées hors periods.ts : légende de carte.astro:109-111, SpeciesCard.astro:12, CodexBrowser.tsx:300 → importées de periods.ts, test de source unique étendu (relevé en revue L24)"
     status: todo
