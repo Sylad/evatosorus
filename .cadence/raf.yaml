@@ -283,6 +283,7 @@ lots:
     status: done
     estimate: 0.25
     visible: true
+    delivered: { date: 2026-11-17, sha: 1012198824fe6f0ba8ba71cc8eb9cb0c7e446133 }
     created: 2026-10-01
     started: 2026-11-17
     review: { date: 2026-11-17, verdict: "conforme : seconde revue — CLAUDE.md documente captures {file, alt} et l'alt obligatoire ; légende de la visionneuse recalculée au redimensionnement, testée ; 33/33 tests ciblés après build", commit: 78af8bb0424e955740246fb6563f60fd5627ea3a }
