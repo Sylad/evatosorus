@@ -325,10 +325,11 @@ lots:
   - id: L30
     title: "Titres : plancher de 1,5rem pour le titre d'une fiche espèce, avec césure douce posée au build dans les noms qui ne tiennent pas (environ 77 à 320 px, dont Micropachycephalosaurus aujourd'hui plus petit que son nom scientifique) ; taille uniforme par grille de vitrines (20,7 à 28,8 px aujourd'hui) — revue UX du 02-10"
     public: "Des titres de fiches plus grands sur les petits téléphones"
-    status: todo
+    status: doing
     estimate: 0.5
     visible: true
     created: 2026-10-02
+    started: 2026-11-17
   - id: L31
     title: "Nettoyage récurrent des fichiers de travail devenus inutiles (consigne Sylvain 02-10) : dossier tmp partagé, documents périmés, scripts jetables, captures non référencées, fichiers générés orphelins — lister avant de supprimer, ne rien effacer hors tmp sans l'avoir regardé ; à refaire à chaque clôture de vague. Aussi : l'enrichissement des espèces (npm run enrich:species) peut réintroduire « 1,5 tonnes » sur Labocania"
     status: todo
