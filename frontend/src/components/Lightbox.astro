@@ -61,12 +61,18 @@
       img.setAttribute('alt', alt || '');
       cap.textContent = alt || '';
       cap.style.display = alt ? '' : 'none';
+      // L26 : une description (texte alternatif des Nouveautés) est une phrase, lue
+      // en casse normale ; un nom court (espèce, film) garde les capitales espacées.
+      cap.classList.toggle('is-long', (alt || '').length > 60);
       if (typeof dialog.showModal === 'function' && !dialog.open) {
         try { dialog.showModal(); } catch (_) { dialog.setAttribute('open', ''); }
       } else {
         dialog.setAttribute('open', '');
       }
       document.documentElement.classList.add('evato-lightbox-open');
+      // L'image prend la hauteur que la légende laisse : une légende de plusieurs
+      // lignes n'est plus coupée par la figure (overflow: hidden).
+      figure.style.setProperty('--evato-cap-h', `${alt ? cap.offsetHeight : 0}px`);
     };
     const close = () => {
       if (typeof dialog.close === 'function' && dialog.open) {
@@ -143,7 +149,7 @@
   .evato-lightbox__img {
     display: block;
     max-width: 100%;
-    max-height: calc(92vh - 2.5rem);
+    max-height: calc(92vh - 0.6rem - var(--evato-cap-h, 2.5rem));
     width: auto;
     height: auto;
     object-fit: contain;
@@ -161,6 +167,18 @@
     background: rgba(13, 10, 6, 0.85);
     width: 100%;
     border-top: 1px solid rgba(212, 165, 94, 0.18);
+    max-height: 40vh;
+    overflow-y: auto;
+    flex: none;
+  }
+  .evato-lightbox__caption.is-long {
+    font-family: var(--font-body, serif);
+    font-size: 1rem;
+    line-height: 1.45;
+    letter-spacing: normal;
+    text-transform: none;
+    /* Lignes de 70 caractères au plus, sans raccourcir la bande ni son filet. */
+    padding-inline: max(1rem, calc((100% - 70ch) / 2));
   }
   .evato-lightbox__close {
     position: fixed;

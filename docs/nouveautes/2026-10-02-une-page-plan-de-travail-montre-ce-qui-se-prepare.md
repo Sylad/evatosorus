@@ -3,7 +3,7 @@ title: Une page Plan de travail montre ce qui se prépare
 date: 2026-10-02
 created: 2026-10-02T08:48+02:00
 lots: [L28]
-captures: [captures/L28-plan-de-travail-telephone.png]
+captures: [{ file: captures/L28-plan-de-travail-telephone.png, alt: "La page Plan de travail sur téléphone : titre « Ce qui se prépare », le résumé « 2 travaux en cours · 6 prévus · 3 livrés », puis la section En cours avec deux travaux et leur état écrit en toutes lettres" }]
 ---
 Une nouvelle page, **Plan de travail**, montre où en est le site : les travaux en cours, ceux qui sont prévus et ceux qui viennent d'être livrés.
 

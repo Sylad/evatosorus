@@ -19,6 +19,8 @@ interface NewsEntry {
   date: string;
   lots: string[];
   captures: string[];
+  /** Texte alternatif de chaque capture, dans l'ordre de `captures` (champ `alt` des sources). */
+  alts?: string[];
   html: string;
 }
 
@@ -85,9 +87,14 @@ const pngSize = (rel: string) => {
                 <div class="news-captures" data-lightbox>
                   {e.captures.map((c, i) => {
                     const { width, height } = pngSize(c);
-                    const alt = e.captures.length > 1
-                      ? `Capture d'écran ${i + 1} sur ${e.captures.length} : ${e.title}`
-                      : `Capture d'écran : ${e.title}`;
+                    // WCAG 1.1.1 : chaque capture décrit ce qu'elle montre (champ `alt` de
+                    // docs/nouveautes/*.md). Pas de repli sur le titre : une capture sans
+                    // description fait échouer le build plutôt que d'être annoncée à vide.
+                    // cadence rend les espaces des guillemets ordinaires dans `alts` : on
+                    // remet l'espace fine insécable (U+202F) pour que « et » ne restent pas
+                    // seuls en bout de ligne dans la légende de la visionneuse.
+                    const alt = e.alts?.[i]?.trim().replace(/« /g, '«\u202F').replace(/ »/g, '\u202F»');
+                    if (!alt) throw new Error(`Nouveautés : capture ${c} de ${e.slug} sans texte alternatif (champ alt dans docs/nouveautes/)`);
                     return (
                       <a
                         href={`${BASE}/${c}`}

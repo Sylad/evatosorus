@@ -3,7 +3,7 @@ title: Le codex se lit mieux — compteur et pied de page
 date: 2026-10-01
 created: 2026-10-01T21:30+02:00
 lots: [L19, L20]
-captures: [captures/L19-compteur-du-codex.png, captures/L20-pied-du-menu-lisible.png]
+captures: [{ file: captures/L19-compteur-du-codex.png, alt: "Le compteur du codex : « 1 501 – 1 511 sur 1 511 », sur une seule ligne avec un vrai tiret" }, { file: captures/L20-pied-du-menu-lisible.png, alt: "Le menu du téléphone ouvert : sous les rubriques, la mention « 252 → 66 Ma — Plus de 1 500 espèces, 3 ères, 1 supercontinent » en beige plus marqué" }]
 ---
 Deux retouches de lisibilité dans le codex des espèces.
 

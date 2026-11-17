@@ -3,7 +3,7 @@ title: Une page Nouveautés pour suivre ce qui change sur le site
 date: 2026-10-01
 created: 2026-10-01T21:57+02:00
 lots: [L13]
-captures: [captures/L13-page-nouveautes-telephone.png]
+captures: [{ file: captures/L13-page-nouveautes-telephone.png, alt: "La page Nouveautés sur téléphone : titre « Ce qui a changé », puis la première entrée datée du 1er octobre 2026 avec son titre et son texte" }]
 ---
 Une nouvelle rubrique, **Nouveautés**, raconte ce qui change sur Evatosorus, la nouveauté la plus récente en haut.
 

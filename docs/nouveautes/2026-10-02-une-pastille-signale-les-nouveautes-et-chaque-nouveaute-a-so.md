@@ -3,7 +3,7 @@ title: Une pastille signale les nouveautés, et chaque nouveauté a son lien
 date: 2026-10-02
 created: 2026-10-02T08:47+02:00
 lots: [L27]
-captures: [captures/L27-pastille-copier-le-lien-telephone.png]
+captures: [{ file: captures/L27-pastille-copier-le-lien-telephone.png, alt: "La page Nouveautés sur téléphone : le bandeau « 4 nouveautés depuis votre dernière visite », puis une entrée marquée « Nouveau » à côté de sa date, avec son bouton « Copier le lien »" }]
 ---
 Vous voyez maintenant d'un coup d'œil s'il y a du nouveau depuis votre dernière visite, et vous pouvez partager une nouveauté précise.
 

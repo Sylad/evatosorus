@@ -3,7 +3,7 @@ title: Une page d'accueil plus claire, plus légère et qu'on peut mettre en pau
 date: 2026-10-01
 created: 2026-10-01T19:16+02:00
 lots: [L2]
-captures: [captures/L2-accueil-telephone.png, captures/L2-accueil-bureau.png]
+captures: [{ file: captures/L2-accueil-telephone.png, alt: "L'accueil sur téléphone : le crâne doré et le titre Evatosorus, puis tout de suite les boutons « Explorer le codex » (plein) et « Espèces vitrines », les six autres rubriques en deux colonnes, la citation, les chiffres et le bouton rond Pause en bas à droite" }, { file: captures/L2-accueil-bureau.png, alt: "L'accueil sur ordinateur : crâne doré et titre devant un dinosaure en forêt, les boutons « Explorer le codex » et « Espèces vitrines » côte à côte, six rubriques sur deux lignes, la citation et les chiffres 1511 espèces, 20 scènes animées, 3 ères" }]
 ---
 La page d'accueil a été revue pour qu'on trouve plus vite son chemin, surtout au téléphone.
 

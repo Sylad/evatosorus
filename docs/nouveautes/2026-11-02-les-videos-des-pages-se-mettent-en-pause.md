@@ -3,7 +3,7 @@ title: Les vidéos de toutes les pages se mettent en pause
 date: 2026-11-02
 created: 2026-11-02T09:00+01:00
 lots: [L16, L48]
-captures: [captures/L16-films-pause-telephone.png, captures/L16-films-pause-bureau.png]
+captures: [{ file: captures/L16-films-pause-telephone.png, alt: "La page Films sur téléphone, vidéos figées : le bandeau « La saga Jurassic Park » et, en bas à droite, le bouton rond qui montre l'icône Lecture pour les relancer" }, { file: captures/L16-films-pause-bureau.png, alt: "La page Films sur ordinateur, vidéos figées : le bandeau « La saga Jurassic Park », les affiches des films et, en bas à droite, le bouton rond qui montre l'icône Lecture pour les relancer" }]
 ---
 Le bouton rond **Pause**, jusqu'ici réservé à l'accueil, existe maintenant sur toutes les pages qui lancent une vidéo toute seule : À propos, Films, Espèces vitrines, Codex, Périodes, Carte et les fiches d'espèces (galerie vidéo).
 

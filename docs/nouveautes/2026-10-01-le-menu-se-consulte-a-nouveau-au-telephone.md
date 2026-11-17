@@ -3,7 +3,7 @@ title: Le menu se consulte à nouveau au téléphone
 date: 2026-10-01
 created: 2026-10-01T20:45+02:00
 lots: [L18]
-captures: [captures/L18-menu-telephone.png]
+captures: [{ file: captures/L18-menu-telephone.png, alt: "Le menu du téléphone ouvert, net et au premier plan : logo, rubriques d'Accueil à À propos avec Codex en surbrillance, et la croix de fermeture en haut à droite" }]
 ---
 Au téléphone, le menu s'affichait derrière un voile sombre sur la plupart des pages, dont le codex et les fiches d'espèces : il paraissait flou et ses liens ne répondaient plus.
 

@@ -53,6 +53,23 @@ test('chaque capture citée est servie depuis public/nouveautes-data/', () => {
   }
 });
 
+// L26 — WCAG 1.1.1 : chaque capture porte un texte alternatif qui la décrit (champ `alt`
+// de l'en-tête, `{ file: …, alt: "…" }`), distinct du titre de l'entrée et des autres
+// captures. Sans lui, la page refuse de se construire.
+test('chaque capture a son texte alternatif, propre et descriptif', () => {
+  for (const e of readJson().entries) {
+    assert.ok(Array.isArray(e.alts), `${e.slug} : aucun alt (captures: [{ file: …, alt: "…" }])`);
+    assert.equal(e.alts.length, e.captures.length, `${e.slug} : un alt par capture`);
+    e.alts.forEach((a, i) => {
+      const alt = a.trim();
+      assert.ok(alt.length >= 30, `${e.slug} : alt de ${e.captures[i]} trop court (« ${alt} »)`);
+      assert.notEqual(alt, e.title.trim(), `${e.slug} : alt identique au titre`);
+      assert.doesNotMatch(alt, /^(capture|image|screenshot)\b/i, `${e.slug} : l'alt décrit le contenu, pas « capture d'écran »`);
+    });
+    assert.equal(new Set(e.alts).size, e.alts.length, `${e.slug} : deux captures avec le même alt`);
+  }
+});
+
 test('pas de page index.html de cadence sous /nouveautes-data/ (doublon non habillé de /nouveautes/)', () => {
   assert.ok(!existsSync(join(DATA, 'index.html')));
 });

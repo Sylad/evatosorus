@@ -29,6 +29,10 @@
         "captures/L16-films-pause-telephone.png",
         "captures/L16-films-pause-bureau.png"
       ],
+      "alts": [
+        "La page Films sur téléphone, vidéos figées : le bandeau « La saga Jurassic Park » et, en bas à droite, le bouton rond qui montre l'icône Lecture pour les relancer",
+        "La page Films sur ordinateur, vidéos figées : le bandeau « La saga Jurassic Park », les affiches des films et, en bas à droite, le bouton rond qui montre l'icône Lecture pour les relancer"
+      ],
       "html": "<p>Le bouton rond <strong>Pause</strong>, jusqu'ici réservé à l'accueil, existe maintenant sur toutes les pages qui lancent une vidéo toute seule : À propos, Films, Espèces vitrines, Codex, Périodes, Carte et les fiches d'espèces (galerie vidéo).</p>\n<ul><li>Un clic fige <strong>toutes</strong> les vidéos de la page, un second les relance ; le choix est partagé avec l'accueil et mémorisé à la visite suivante.</li><li>Si l'appareil demande moins d'animations, les vidéos restent figées et le bouton n'est pas affiché.</li><li>Le bouton n'apparaît que sur les fiches d'espèces qui ont une galerie vidéo (43 sur 1511) ; ailleurs, sur les pages sans bouton, le fond de la page ne respire plus : il reste fixe.</li></ul>"
     },
     {
@@ -226,6 +230,11 @@
         "captures/L21-codex-aucun-resultat.png",
         "captures/L23-menu-telephone-clavier.png"
       ],
+      "alts": [
+        "Le bandeau de la carte paléo-monde : le sur-titre « Carte paléo-monde » sur un fond sombre, lisible devant l'image du dinosaure, au-dessus du titre « Où ont vécu les dinosaures ? »",
+        "Le codex après la recherche « licorne » : « 0 espèce », le message « Aucune espèce ne correspond à licorne » et le bouton « Afficher toutes les espèces »",
+        "Le menu du téléphone ouvert au clavier : la rubrique Codex porte un contour blanc qui montre le focus, la croix de fermeture est en haut à droite"
+      ],
       "html": "<p>Quatre améliorations de lisibilité et d'accessibilité, surtout sensibles sur un petit écran.</p>\n<ul><li><strong>Plus de défilement sur le côté au téléphone</strong> : le codex, les vitrines, la page À propos et les fiches d'espèces tiennent dans la largeur de l'écran. Les titres s'ajustent à leur mot le plus long au lieu d'être coupés ou de déborder.</li><li><strong>Des nombres à la française</strong> : « 201,4 → 192,9 Ma », des notes de films avec une virgule, et les petits animaux pesés en kilogrammes plutôt qu'en « 0 t ».</li><li><strong>Le menu du téléphone se pilote au clavier</strong> : il prend le focus à l'ouverture, la page derrière est mise en pause, et Échap le referme.</li><li><strong>Des sur-titres lisibles sur les images et les vidéos</strong> : ceux des bandeaux ont maintenant un fond sombre, ceux des fiches un halo renforcé.</li><li><strong>Le codex répond clairement quand une recherche ne donne rien</strong>, avec un bouton pour réafficher toutes les espèces.</li></ul>"
     },
     {
@@ -237,6 +246,9 @@
       ],
       "captures": [
         "captures/L28-plan-de-travail-telephone.png"
+      ],
+      "alts": [
+        "La page Plan de travail sur téléphone : titre « Ce qui se prépare », le résumé « 2 travaux en cours · 6 prévus · 3 livrés », puis la section En cours avec deux travaux et leur état écrit en toutes lettres"
       ],
       "html": "<p>Une nouvelle page, <strong>Plan de travail</strong>, montre où en est le site : les travaux en cours, ceux qui sont prévus et ceux qui viennent d'être livrés.</p>\n<ul><li>Elle se trouve dans le menu, juste après <strong>Nouveautés</strong>, et sur la page d'accueil.</li><li>Chaque travail indique son état en toutes lettres, avec sa date de livraison quand il est terminé.</li><li>La page est remise à jour à chaque publication du site.</li></ul>"
     },
@@ -250,6 +262,9 @@
       "captures": [
         "captures/L27-pastille-copier-le-lien-telephone.png"
       ],
+      "alts": [
+        "La page Nouveautés sur téléphone : le bandeau « 4 nouveautés depuis votre dernière visite », puis une entrée marquée « Nouveau » à côté de sa date, avec son bouton « Copier le lien »"
+      ],
       "html": "<p>Vous voyez maintenant d'un coup d'œil s'il y a du nouveau depuis votre dernière visite, et vous pouvez partager une nouveauté précise.</p>\n<ul><li>Une <strong>pastille</strong> avec le nombre de nouveautés non vues apparaît à côté du lien <strong>Nouveautés</strong> : dans le menu, sur le bouton du menu au téléphone et sur la page d'accueil. Elle disparaît dès que vous ouvrez la page.</li><li>Sur la page, les entrées que vous n'avez pas encore vues portent la mention <strong>Nouveau</strong>, et une ligne « Déjà vu lors de votre visite du… » marque l'endroit où vous vous étiez arrêté.</li><li>Chaque nouveauté a un bouton <strong>Copier le lien</strong> : le lien ouvre la page directement sur cette nouveauté.</li><li>La page d'accueil donne maintenant accès aux <strong>Nouveautés</strong> et au <strong>Plan de travail</strong>.</li><li>Rien n'est envoyé à un serveur : la trace de votre dernière visite reste dans votre navigateur.</li></ul>"
     },
     {
@@ -261,6 +276,9 @@
       ],
       "captures": [
         "captures/L13-page-nouveautes-telephone.png"
+      ],
+      "alts": [
+        "La page Nouveautés sur téléphone : titre « Ce qui a changé », puis la première entrée datée du 1er octobre 2026 avec son titre et son texte"
       ],
       "html": "<p>Une nouvelle rubrique, <strong>Nouveautés</strong>, raconte ce qui change sur Evatosorus, la nouveauté la plus récente en haut.</p>\n<ul><li>Elle se trouve dans le menu, juste avant <strong>À propos</strong>, sur ordinateur comme dans le menu du téléphone.</li><li>Chaque nouveauté porte sa date, un court texte et une ou plusieurs captures d'écran. Touchez ou cliquez une capture pour la voir en grand, ou ouvrez-la au clavier avec Entrée ; Échap la referme.</li><li>Le texte d'introduction des pages <strong>Nouveautés</strong> et <strong>À propos</strong> est plus marqué, pour rester lisible même quand l'image de fond s'éclaire derrière lui.</li></ul>"
     },
@@ -276,6 +294,10 @@
         "captures/L19-compteur-du-codex.png",
         "captures/L20-pied-du-menu-lisible.png"
       ],
+      "alts": [
+        "Le compteur du codex : « 1 501 – 1 511 sur 1 511 », sur une seule ligne avec un vrai tiret",
+        "Le menu du téléphone ouvert : sous les rubriques, la mention « 252 → 66 Ma — Plus de 1 500 espèces, 3 ères, 1 supercontinent » en beige plus marqué"
+      ],
       "html": "<p>Deux retouches de lisibilité dans le codex des espèces.</p>\n<ul><li>Le compteur sépare désormais ses bornes par un vrai tiret : <strong>« 1 501 – 1 511 sur 1 511 »</strong>, sans jamais se couper en fin de ligne.</li><li>La mention en bas du menu latéral (<strong>« 252 → 66 Ma »</strong>) était trop pâle pour être lue confortablement. Elle est plus marquée tout en gardant son beige discret, aussi bien sur ordinateur que dans le menu du téléphone.</li></ul>"
     },
     {
@@ -287,6 +309,9 @@
       ],
       "captures": [
         "captures/L18-menu-telephone.png"
+      ],
+      "alts": [
+        "Le menu du téléphone ouvert, net et au premier plan : logo, rubriques d'Accueil à À propos avec Codex en surbrillance, et la croix de fermeture en haut à droite"
       ],
       "html": "<p>Au téléphone, le menu s'affichait derrière un voile sombre sur la plupart des pages, dont le codex et les fiches d'espèces : il paraissait flou et ses liens ne répondaient plus.</p>\n<ul><li>Le menu s'ouvre de nouveau <strong>net, au premier plan</strong>, et chaque rubrique se touche normalement, y compris sur la <strong>carte paléo-monde</strong>, qui ne vient plus se dessiner par-dessus.</li><li>Pour le refermer, touchez la <strong>croix</strong> en haut à droite ou la zone assombrie à côté, ou appuyez sur Échap avec un clavier.</li><li>Sur ordinateur, rien ne change.</li></ul>"
     },
@@ -300,6 +325,10 @@
       "captures": [
         "captures/L2-accueil-telephone.png",
         "captures/L2-accueil-bureau.png"
+      ],
+      "alts": [
+        "L'accueil sur téléphone : le crâne doré et le titre Evatosorus, puis tout de suite les boutons « Explorer le codex » (plein) et « Espèces vitrines », les six autres rubriques en deux colonnes, la citation, les chiffres et le bouton rond Pause en bas à droite",
+        "L'accueil sur ordinateur : crâne doré et titre devant un dinosaure en forêt, les boutons « Explorer le codex » et « Espèces vitrines » côte à côte, six rubriques sur deux lignes, la citation et les chiffres 1511 espèces, 20 scènes animées, 3 ères"
       ],
       "html": "<p>La page d'accueil a été revue pour qu'on trouve plus vite son chemin, surtout au téléphone.</p>\n<ul><li><strong>Au téléphone</strong>, le crâne est plus petit et les deux portes d'entrée sont visibles tout de suite, sans faire défiler : <strong>Explorer le codex</strong> (le bouton plein) et <strong>Espèces vitrines</strong>. Les autres rubriques suivent en deux colonnes, la citation « Avant nous, il y a eu eux » et les chiffres passent juste en dessous.</li><li>La rubrique <strong>Comprendre</strong> apparaît enfin sur l'accueil, dans le même ordre que le menu des autres pages.</li><li>Les boutons restent <strong>bien lisibles</strong> quelle que soit l'image de la vidéo qui défile derrière.</li><li>Le sous-titre « codex mésozoïque » sous le logo se lit maintenant au téléphone, et les mots de l'accroche et de la citation respirent mieux.</li><li>Les rubriques portent le même nom partout, sur l'accueil comme dans le menu : <strong>Carte paléo-monde</strong>, <strong>Vidéos</strong>.</li><li>Un bouton rond <strong>Pause</strong>, en bas à droite (en haut à droite sur les très petits écrans), arrête la vidéo de fond, le crâne lumineux et la poussière ; le site s'en souvient à la visite suivante. Si l'appareil demande moins d'animations, l'accueil affiche directement une image fixe.</li><li>La page est <strong>beaucoup plus légère</strong> : environ 1,5 Mo au premier affichage au lieu de 11,5 Mo, car une seule vidéo se charge à la fois.</li><li>Les <strong>lettres gravées</strong> du site (Cinzel pour les titres, Crimson Text pour le texte) s'affichent désormais partout, au lieu d'une police de remplacement.</li><li>Le bouton d'ambiance sonore est masqué tant que le son n'est pas prêt : il reviendra avec le vrai enregistrement.</li></ul>"
     }

@@ -33,10 +33,14 @@ test('une entrée par nouveauté, dans l’ordre du JSON (la plus récente en ha
     const block = page.slice(start, page.indexOf('</article>', start));
     assert.ok(block.includes(`<time datetime="${e.date}"`), `${e.slug} : date absente`);
     assert.ok(block.includes(e.html.slice(0, 60)), `${e.slug} : texte absent`);
-    for (const c of e.captures) {
+    e.captures.forEach((c, i) => {
       assert.ok(block.includes(`src="/nouveautes-data/${c}"`), `${e.slug} : capture ${c} absente`);
+      // L26 : le texte alternatif servi est celui de la source (WCAG 1.1.1).
+      const img = block.match(new RegExp(`<img [^>]*src="/nouveautes-data/${c.replace(/[.]/g, '\\.')}"[^>]*>`))?.[0] ?? '';
+      const alt = img.match(/alt="([^"]*)"/)?.[1]?.replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&');
+      assert.equal(alt, e.alts[i].replace(/« /g, '«\u202F').replace(/ »/g, '\u202F»'), `${e.slug} : alt de ${c}`);
       assert.ok(existsSync(join(DIST, 'nouveautes-data', c)), `${c} non servie`);
-    }
+    });
     assert.match(block, /<img [^>]*width="\d+"[^>]*height="\d+"/, `${e.slug} : dimensions des captures absentes`);
   }
 });
@@ -207,6 +211,40 @@ test('visionneuse : Entrée sur une capture l’ouvre, Échap la ferme ; clic su
 
 // Revue UX L13 : avant leur chargement, les captures doivent déjà occuper leur place
 // (sinon 2×2 px puis saut de mise en page de plusieurs centaines de px à 320 px).
+// L26 : la description de chaque capture sert aussi de légende dans la visionneuse. La
+// plus longue doit s'y lire en entier (ni coupée par la figure, ni hors de l'écran) et
+// l'image reste visible au-dessus.
+test('L26 : visionneuse 320/390/1440 px — la légende la plus longue se lit en entier sous l’image', { timeout: 90_000 }, async (t) => {
+  const env = await setup(t);
+  if (!env) return;
+  const longest = DATA.entries.flatMap((e) => e.captures.map((c, i) => ({ c, alt: e.alts[i] })))
+    .sort((a, b) => b.alt.length - a.alt.length)[0];
+  for (const width of [320, 390, 1440]) {
+    const context = await env.browser.newContext({ viewport: { width, height: width > 1000 ? 900 : 640 }, reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    await page.goto(`${env.base}/nouveautes/`, { waitUntil: 'load' });
+    const img = page.locator(`.news-capture img[src="/nouveautes-data/${longest.c}"]`);
+    await img.scrollIntoViewIfNeeded();
+    await img.click();
+    await page.waitForFunction(() => document.getElementById('evato-lightbox').hasAttribute('open'));
+    await page.waitForFunction(() => document.querySelector('.evato-lightbox__img')?.complete);
+    const m = await page.evaluate(() => {
+      const fig = document.querySelector('.evato-lightbox__figure').getBoundingClientRect();
+      const cap = document.querySelector('.evato-lightbox__caption');
+      const c = cap.getBoundingClientRect();
+      const i = document.querySelector('.evato-lightbox__img').getBoundingClientRect();
+      return { text: cap.textContent, hidden: cap.scrollHeight - cap.clientHeight, capBottom: c.bottom, figBottom: fig.bottom, vh: innerHeight, imgH: i.height, imgBottom: i.bottom, capTop: c.top, tt: getComputedStyle(cap).textTransform };
+    });
+    assert.equal(m.text.replace(/\u202F/g, ' '), longest.alt, `${width}px : légende`);
+    assert.equal(m.tt, 'none', `${width}px : une description se lit en casse normale`);
+    assert.ok(m.hidden <= 1 || m.capBottom <= m.vh, `${width}px : légende tronquée`);
+    assert.ok(m.capBottom <= m.figBottom + 1 && m.figBottom <= m.vh + 1, `${width}px : légende hors de la figure ou de l'écran (${JSON.stringify(m)})`);
+    assert.ok(m.hidden <= 1, `${width}px : ${m.hidden}px de légende à faire défiler`);
+    assert.ok(m.imgH >= 120 && m.imgBottom <= m.capTop + 1, `${width}px : image écrasée ou sous la légende (${JSON.stringify(m)})`);
+    await context.close();
+  }
+});
+
 test('320 px, captures pas encore chargées : la place est réservée aux bonnes proportions', { timeout: 60_000 }, async (t) => {
   const env = await setup(t);
   if (!env) return;

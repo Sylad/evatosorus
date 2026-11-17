@@ -3,7 +3,7 @@ title: Un site plus lisible et plus facile à parcourir au téléphone
 date: 2026-10-02
 created: 2026-10-02T19:07+02:00
 lots: [L21, L22, L23, L25]
-captures: [captures/L25-bandeau-carte-sur-titre.png, captures/L21-codex-aucun-resultat.png, captures/L23-menu-telephone-clavier.png]
+captures: [{ file: captures/L25-bandeau-carte-sur-titre.png, alt: "Le bandeau de la carte paléo-monde : le sur-titre « Carte paléo-monde » sur un fond sombre, lisible devant l'image du dinosaure, au-dessus du titre « Où ont vécu les dinosaures ? »" }, { file: captures/L21-codex-aucun-resultat.png, alt: "Le codex après la recherche « licorne » : « 0 espèce », le message « Aucune espèce ne correspond à licorne » et le bouton « Afficher toutes les espèces »" }, { file: captures/L23-menu-telephone-clavier.png, alt: "Le menu du téléphone ouvert au clavier : la rubrique Codex porte un contour blanc qui montre le focus, la croix de fermeture est en haut à droite" }]
 ---
 Quatre améliorations de lisibilité et d'accessibilité, surtout sensibles sur un petit écran.
 
