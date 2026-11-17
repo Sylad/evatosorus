@@ -280,12 +280,14 @@ lots:
   - id: L26
     title: "Nouveautés : textes alternatifs décrivant chaque capture (WCAG 1.1.1) — dépend d'un champ alt dans cadence news"
     public: "Nouveautés : chaque capture décrite pour les lecteurs d'écran"
-    status: doing
+    status: done
     estimate: 0.25
     visible: true
     created: 2026-10-01
     started: 2026-11-17
     review: { date: 2026-11-17, verdict: "conforme : seconde revue — CLAUDE.md documente captures {file, alt} et l'alt obligatoire ; légende de la visionneuse recalculée au redimensionnement, testée ; 33/33 tests ciblés après build", commit: 78af8bb0424e955740246fb6563f60fd5627ea3a }
+    ux: { date: 2026-11-17, verdict: "conforme (lead, captures regardées) : 26/26 alt descriptifs et distincts, légende entière de 320 à 1440 px et après redimensionnement, contraste 10,3:1, clavier et focus corrects ; note : à 1440 px une capture portrait avec longue légende flotte dans un cadre large (borner la légende à 70ch, effort S)" }
+    finished: 2026-11-17
   - id: L27
     title: "Nouveautés : pastille « nouveau » (entrées non vues depuis la dernière visite, localStorage) + lien permanent par entrée /nouveautes#<slug> — modèle AetherWX news-badge/news-anchor et claude-code-codex L13"
     public: "Nouveautés : une pastille pour ce qui est nouveau, un lien par entrée"
