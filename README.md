@@ -84,6 +84,10 @@ npm install
 npm run dev     # http://localhost:4321
 ```
 
+Sans `nvm use` (shell non interactif, porte de tests de `cadence.yaml`) :
+`scripts/avec-node.sh <commande>` lance la commande avec la Node de `.nvmrc`,
+par exemple `cd frontend && ../scripts/avec-node.sh npx astro build`.
+
 ## Enrichir les données depuis PaleoBioDB
 
 ```bash

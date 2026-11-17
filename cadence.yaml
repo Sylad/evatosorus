@@ -12,7 +12,8 @@ deliver:
   verifyTimeout: 1200
 
 # Revue UX automatique des vagues (cadence orchestrate) : le programme lance l'app depuis la racine,
-# sonde l'URL puis tue le groupe. Node 22 (.nvmrc) : le Node par défaut de la machine est trop ancien pour Astro 6.
+# sonde l'URL puis tue le groupe. Node de .nvmrc via scripts/avec-node.sh : la Node par défaut de la machine
+# (22.22.3) est trop ancienne pour Astro 7 (≥ 22.23.4, L51) ; même lanceur pour test et build.
 orchestrate:
   # Un test de la porte lit le plan (plan publié / page Plan) : verify --gate rejoue sous des commits de plan seuls (cadence L450, 30-10).
   gate: { readsPlan: true }
@@ -20,7 +21,7 @@ orchestrate:
   # une correction et une revue neuve en Fable (règle du lead depuis le 17-10, oubliée deux fois à la main).
   escalation: { model: fable }
   ux:
-    command: 'cd frontend && npx astro dev --port 4312 --host 127.0.0.1'
+    command: 'cd frontend && ../scripts/avec-node.sh npx astro dev --port 4312 --host 127.0.0.1'
     url: http://127.0.0.1:4312
     timeout: 300
   # Porte de tests de la vague (L36) : lancée par le programme après chaque étape d'écriture, depuis la racine.
@@ -30,8 +31,8 @@ orchestrate:
   # species-decimals s'ignore seul sans dist) — dist est ignoré par git, absent d'un worktree neuf.
   # L37 (25-10) : cadence joue maintenant `build` AVANT `test`, ligne de base comprise (cadence L333) — le build
   # n'est plus répété ici ; les tests qui lisent frontend/dist le trouvent construit par la porte `build`.
-  test: 'cd frontend && npm run test:scripts'
-  build: 'cd frontend && npx astro build'
+  test: 'cd frontend && ../scripts/avec-node.sh npm run test:scripts'
+  build: 'cd frontend && ../scripts/avec-node.sh npx astro build'
   # precheck: true = le contrôle préalable cherche si le lot est déjà livré, sur Sonnet.
   precheck: true
 
