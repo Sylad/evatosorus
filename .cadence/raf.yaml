@@ -280,10 +280,11 @@ lots:
   - id: L26
     title: "Nouveautés : textes alternatifs décrivant chaque capture (WCAG 1.1.1) — dépend d'un champ alt dans cadence news"
     public: "Nouveautés : chaque capture décrite pour les lecteurs d'écran"
-    status: todo
+    status: doing
     estimate: 0.25
     visible: true
     created: 2026-10-01
+    started: 2026-11-17
   - id: L27
     title: "Nouveautés : pastille « nouveau » (entrées non vues depuis la dernière visite, localStorage) + lien permanent par entrée /nouveautes#<slug> — modèle AetherWX news-badge/news-anchor et claude-code-codex L13"
     public: "Nouveautés : une pastille pour ce qui est nouveau, un lien par entrée"
