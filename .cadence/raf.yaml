@@ -285,6 +285,7 @@ lots:
     visible: true
     created: 2026-10-01
     started: 2026-11-17
+    review: { date: 2026-11-17, verdict: "conforme : seconde revue — CLAUDE.md documente captures {file, alt} et l'alt obligatoire ; légende de la visionneuse recalculée au redimensionnement, testée ; 33/33 tests ciblés après build", commit: 78af8bb0424e955740246fb6563f60fd5627ea3a }
   - id: L27
     title: "Nouveautés : pastille « nouveau » (entrées non vues depuis la dernière visite, localStorage) + lien permanent par entrée /nouveautes#<slug> — modèle AetherWX news-badge/news-anchor et claude-code-codex L13"
     public: "Nouveautés : une pastille pour ce qui est nouveau, un lien par entrée"
