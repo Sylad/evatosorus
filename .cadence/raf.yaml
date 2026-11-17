@@ -511,6 +511,7 @@ lots:
     status: done
     estimate: 0.5
     every: 30
+    delivered: { date: 2026-11-17, sha: b63121a29eea5ac931c26ad815c23888863f7e69 }
     created: 2026-11-16
     started: 2026-11-17
     review: { date: 2026-11-17, verdict: "conforme : 0 bloquant ; aucune majeure directe ; 194/194 tests sans saut, Chromium réellement lancé ; non vérifié : build Cloudflare Pages", commit: 9066661c3205402562ac9a2c1b6bf265143c4d87 }
