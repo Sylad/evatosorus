@@ -1,5 +1,5 @@
 ---
-import { fitStyle, LS } from '../lib/title-fit.mjs';
+import { fitStyle, longestWordEm, LS } from '../lib/title-fit.mjs';
 import CodexLayout from '../layouts/CodexLayout.astro';
 import MotionToggle from '../components/MotionToggle.astro';
 import { formatCount } from '../lib/format-count.mjs';
@@ -35,6 +35,10 @@ const featuredSpecies = showcaseIds
     ...species!,
     videos: getSpeciesVideos(species!.id),
   }));
+
+// L30 : une seule taille de titre pour toute la grille — celle du nom le plus large
+// (--word-em posé sur la grille, hérité par chaque carte, toutes de même largeur).
+const gridWordEm = Math.max(...featuredSpecies.map((sp) => longestWordEm(sp.commonName ?? sp.name, LS.vitrine)));
 
 const getShowcase = (id: (typeof showcaseIds)[number]) => featuredSpecies.find((species) => species.id === id);
 
@@ -142,7 +146,7 @@ const visitPaths = [
     </div>
   </section>
 
-  <section id="vitrines" class="vitrine-grid" aria-label="Espèces animées">
+  <section id="vitrines" class="vitrine-grid" aria-label="Espèces animées" style={`--word-em:${gridWordEm.toFixed(3)}`}>
     {featuredSpecies.map((species, index) => (
       <a class="vitrine-card tap-bloom" href={`/especes/${species.id}/`}>
         <div class="vitrine-media">
@@ -174,7 +178,7 @@ const visitPaths = [
             <span>{TAXON_GROUP_LABELS[species.taxonGroup] ?? species.taxonGroup}</span>
             <span>{DIET_LABELS[species.diet] ?? species.diet}</span>
           </div>
-          <h2 style={fitStyle(species.commonName ?? species.name, LS.vitrine)}>{species.commonName ?? species.name}</h2>
+          <h2>{species.commonName ?? species.name}</h2>
           <p class="sci">{species.name}</p>
           {species.blurb && <p class="blurb">{species.blurb}</p>}
           <p class="open-card">Ouvrir la fiche</p>
@@ -447,8 +451,10 @@ const visitPaths = [
     .vitrine-body h2 {
       margin: 0;
       color: var(--color-evato-amber-bright);
-      /* L22 : taille d'origine, réduite si le plus long mot du nom ne tient pas dans la
-         carte (--word-em, lib/title-fit.mjs) ; jamais coupé au milieu d'un mot. */
+      /* L22 : taille d'origine, réduite si le plus long mot ne tient pas dans la carte
+         (--word-em, lib/title-fit.mjs) ; jamais coupé au milieu d'un mot. L30 : --word-em
+         est celui du nom le plus large de la grille (posé sur .vitrine-grid), la taille est
+         donc la même sur toutes les cartes. */
       --fit-floor: 0.9rem;
       font-size: clamp(1.15rem, 2vw, 1.65rem);
       overflow-wrap: break-word;

@@ -259,3 +259,77 @@ test('/periodes/ 320 → 400 px (×1, ×1,25, espacements 1.4.12) : la frise tie
   await context.close();
   assert.deepEqual([...new Set(failures)], []);
 });
+
+// L30 — titre de fiche espèce : jamais sous 1,5rem, toujours plus grand que le nom
+// scientifique, et rien ne déborde ; les noms trop longs se coupent à une césure douce
+// (trait d'union visible), pas n'importe où.
+test('fiche espèce : titre ≥ 1,5rem, plus grand que le nom scientifique, coupé à une césure (320, 390, 1440 px)', { timeout: 180_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const failures = [];
+  const ids = ['micropachycephalosaurus-hongtuyanensis', 'dispersituberoolithus-exilis', 'chinshakiangosaurus-chunghoensis', 'chuandongocoelurus-primitivus', 'khankhuuluu-mongoliensis', 'tyrannosaurus-rex'];
+  for (const [width, height] of [[320, 640], [390, 844], [1440, 900]]) {
+    const context = await env.browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    for (const id of ids) {
+      await page.goto(`${env.base}/especes/${id}/`, { waitUntil: 'load' });
+      await page.evaluate(() => document.fonts.ready);
+      const r = await page.evaluate(() => {
+        const h = document.querySelector('.detail-header h1');
+        const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+        const size = parseFloat(getComputedStyle(h).fontSize);
+        const sci = parseFloat(getComputedStyle(document.querySelector('.sci-name')).fontSize);
+        const box = h.getBoundingClientRect();
+        // Chaque ligne du titre : si elle finit au milieu d'un mot, ce doit être à une césure.
+        const text = h.firstChild;
+        const midWord = [];
+        const tops = new Map();
+        for (let i = 0; i < text.length; i++) {
+          const r = document.createRange();
+          r.setStart(text, i); r.setEnd(text, i + 1);
+          // Espaces et césures ignorés (leur boîte peut tomber sur l'une ou l'autre ligne).
+          // Dernière boîte : le caractère qui suit une césure rendue en renvoie deux
+          // (le trait d'union en fin de ligne, puis lui-même au début de la suivante).
+          const rects = r.getClientRects();
+          if (rects.length && !/[\s\u00AD]/.test(text.data[i])) tops.set(i, Math.round(rects[rects.length - 1].top));
+        }
+        const idx = [...tops.keys()];
+        for (let k = 1; k < idx.length; k++) {
+          const [a, b] = [idx[k - 1], idx[k]];
+          if (tops.get(a) === tops.get(b)) continue;
+          const between = text.data.slice(a + 1, b);
+          if (!/[\s­-]/.test(between + text.data[a])) midWord.push(text.data.slice(Math.max(0, a - 4), b + 4));
+        }
+        return { size, floor: 1.5 * rem, sci, overflow: h.scrollWidth > h.clientWidth + 1 || box.right > document.documentElement.clientWidth, midWord };
+      });
+      const where = `${id} @${width}`;
+      if (r.size < r.floor - 0.01) failures.push(`${where} : ${r.size}px < plancher ${r.floor}px`);
+      if (r.size <= r.sci) failures.push(`${where} : titre ${r.size}px ≤ nom scientifique ${r.sci}px`);
+      if (r.overflow) failures.push(`${where} : déborde`);
+      for (const m of r.midWord) failures.push(`${where} : coupé hors césure « ${m} »`);
+    }
+    await context.close();
+  }
+  assert.deepEqual(failures, []);
+});
+
+// L30 — vitrines : une seule taille de nom pour toute la grille, de 320 à 1 440 px.
+test('vitrines : même taille de titre sur toutes les cartes de la grille (320 → 1 440 px, tous les 16 px)', { timeout: 180_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const failures = [];
+  const context = await env.browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/vitrines/`, { waitUntil: 'load' });
+  await page.evaluate(() => document.fonts.ready);
+  for (let width = 320; width <= 1440; width += 16) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+    const sizes = await page.evaluate(() => [...document.querySelectorAll('.vitrine-grid .vitrine-body h2')].map((h) => parseFloat(getComputedStyle(h).fontSize).toFixed(2)));
+    if (sizes.length < 10) failures.push(`@${width} : ${sizes.length} cartes seulement`);
+    const distinct = [...new Set(sizes)];
+    if (distinct.length !== 1) failures.push(`@${width} : ${distinct.join(' / ')} px`);
+  }
+  await context.close();
+  assert.deepEqual(failures, []);
+});

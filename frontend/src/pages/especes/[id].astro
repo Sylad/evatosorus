@@ -4,7 +4,7 @@ import MotionToggle from '../../components/MotionToggle.astro';
 import { SPECIES, getSpeciesById, getSpeciesVideos, TAXON_GROUP_LABELS, DIET_LABELS, DIET_ICONS } from '../../data/species';
 import { PERIODS_BY_ID } from '../../data/periods';
 import { formatDecimal, formatMass, formatMassLong } from '../../lib/format-count.mjs';
-import { fitStyle, LS } from '../../lib/title-fit.mjs';
+import { fitStyle, LS, softHyphenate, SPECIES_TITLE_MAX_EM } from '../../lib/title-fit.mjs';
 
 export function getStaticPaths() {
   return SPECIES.map((s) => ({ params: { id: s.id } }));
@@ -22,6 +22,8 @@ const videos = getSpeciesVideos(s.id);
 const activeMa = s.earlyMa && s.lateMa ? Math.abs(s.earlyMa - s.lateMa) : undefined;
 // L22 : largeur du plus long mot du titre (em) — la taille du titre s'y ajuste.
 const titleFit = fitStyle(s.commonName ?? s.name, LS.heading);
+// L30 : césures douces dans les mots qui ne tiennent pas au plancher sur 320 px.
+const titleText = softHyphenate(s.commonName ?? s.name, LS.heading, SPECIES_TITLE_MAX_EM);
 // « Autres théropodes » ; les groupes « Autres … » gardent leur libellé (plus de
 // « Autres autres ornithischiens »), le groupe fourre-tout devient « Autres espèces ».
 const groupLabel = TAXON_GROUP_LABELS[s.taxonGroup] ?? '';
@@ -244,7 +246,7 @@ const speciesInsights = [
       <p class="codex-eyebrow" style={`--accent:${period?.accentColor ?? '#d4a55e'}`}>
         {TAXON_GROUP_LABELS[s.taxonGroup]} · {period?.name ?? 'Mésozoïque'}
       </p>
-      <h1 style={titleFit}>{s.commonName ?? s.name}</h1>
+      <h1 style={titleFit}>{titleText}</h1>
       <p class="sci-name">{s.name}</p>
     </header>
 
@@ -450,11 +452,13 @@ const speciesInsights = [
     .detail-header h1 {
       /* L22 : 3rem au plus ; sinon largeur disponible ÷ largeur du plus long mot du nom
          (--word-em, lib/title-fit.mjs) : le nom tient sans couper de mot.
-         Plancher tiré des données : le plus long mot des 1 511 titres
-         (Micropachycephalosaurus, 16,70 em) tient dans 276 px (contenu à 320 px) à
-         0,94rem (16,45 px) — vérifié par scripts/title-fit.test.mjs. En dessous (écran
-         < 320 px, espacements imposés WCAG 1.4.12) le mot passe à la ligne. */
-      --fit-floor: 0.94rem;
+         L30 : plancher 1,5rem (26,25 px), toujours plus grand que le nom scientifique
+         (1,15rem). Un mot trop large pour 320 px à ce plancher (Micropachycephalosaurus,
+         16,70 em) reçoit au build des césures douces syllabiques (softHyphenate,
+         SPECIES_TITLE.floorRem doit valoir ce plancher) : il passe à la ligne avec un
+         trait d'union — vérifié par scripts/title-fit.test.mjs et headings-fit. */
+      --fit-floor: 1.5rem;
+      hyphens: manual;
       /* Repli : largeur de la fenêtre moins les marges du contenu (moins la barre latérale
          et plafonnée à la largeur maximale du contenu au bureau). */
       font-size: clamp(var(--fit-floor), calc((100vw - 2 * max(1.25rem, 3vw)) / var(--word-em, 12)), 3rem);
