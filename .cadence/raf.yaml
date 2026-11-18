@@ -353,6 +353,7 @@ lots:
     status: done
     estimate: 0.5
     visible: true
+    delivered: { date: 2026-11-18, sha: 7ee71d556fe1074b23e127ff426fce5fcec82717 }
     created: 2026-10-05
     started: 2026-11-18
     review: { date: 2026-11-18, verdict: "conforme : r2 (0681e08, 85881f2) conforme après 1 mineur, astérisques corrigés en 5ee9a2a relu par le lead", commit: 5ee9a2a334664bd544bcb443abeb86892d9a2802 }
