@@ -1,7 +1,24 @@
 {
   "project": "evatosorus",
-  "generated": "2026-11-18 11:52",
+  "generated": "2026-11-18 14:56",
   "entries": [
+    {
+      "slug": "2026-11-18-les-vignettes-de-la-frise-prennent-la-couleur-de-leur-periode",
+      "title": "Les vignettes de la frise prennent la couleur de leur période",
+      "date": "2026-11-18",
+      "lots": [
+        "L32"
+      ],
+      "captures": [
+        "captures/L32-frise-bureau.png",
+        "captures/L32-frise-telephone.png"
+      ],
+      "alts": [
+        "La frise du Mésozoïque sur ordinateur, curseur à 145 Ma : sous la bande Trias, Jurassique, Crétacé, quatre rangées de six vignettes, liseré rouille pour Éoraptor, Cœlophysis et Plateosaure, vert jade pour les six espèces du Jurassique, ambre pour le Crétacé",
+        "La même frise sur téléphone, vignettes sur deux colonnes : les trois espèces du Trias cerclées de rouille, puis Allosaure, Stégosaure et Compsognathus éclairés par le curseur au milieu des vignettes jade du Jurassique"
+      ],
+      "html": "<p>Dans la <strong>frise interactive</strong> de la page *Voyage temporel*, chaque vignette d'espèce porte désormais un fin liseré de la couleur de <strong>sa</strong> période, la même que sur la bande de la frise, les fiches et la carte : <strong>rouille</strong> pour les 3 espèces du Trias, <strong>jade</strong> pour les 6 du Jurassique, <strong>ambre</strong> pour les 13 du Crétacé.</p>\n<p>Jusqu'ici, les 22 vignettes étaient toutes cerclées d'ambre, comme si elles venaient du Crétacé. L'effet reste discret : le liseré est fin, et les espèces éclairées par le curseur gardent leur cadre doré.</p>\n<p>En coulisses, les couleurs des trois périodes n'existent plus qu'à un seul endroit du code, et un test vérifie qu'aucune page ne les recopie.</p>"
+    },
     {
       "slug": "2026-11-18-la-carte-compte-les-especes-et-se-parcourt-au-clavier",
       "title": "La carte compte les espèces et se parcourt au clavier",
