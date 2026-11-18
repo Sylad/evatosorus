@@ -41,6 +41,12 @@ export function headlessEnv(env = process.env) {
 // { scrollbar: true } : lance Chromium sans --hide-scrollbars (barre de défilement classique,
 // qui réduit la largeur disponible comme sur un navigateur de bureau).
 export async function setupBrowser(t, { scrollbar = false, args = [] } = {}) {
+  // Sans site construit, le serveur ne rend que des 404 et chaque test échoue sur un
+  // symptôme trompeur (« 0 cartes », « premier titre hundefined ») : 112 échecs le 18-11
+  // pour un `astro build` non joué. On échoue ici, une fois par test, avec la vraie cause.
+  if (!existsSync(join(DIST, 'index.html'))) {
+    throw new Error('frontend/dist absent (site non construit) : lancer `cd frontend && ../scripts/avec-node.sh npx astro build` avant npm run test:scripts');
+  }
   let chromium;
   try {
     const require = createRequire(new URL('../../frontend/package.json', import.meta.url));
