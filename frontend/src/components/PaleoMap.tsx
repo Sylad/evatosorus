@@ -3,6 +3,7 @@ import L from 'leaflet';
 import 'leaflet.markercluster';
 import { PERIODS } from '../data/periods';
 import { labelColor } from '../data/label-color.mjs';
+import { tally } from '../data/map-counts.mjs';
 // CSS Leaflet importée par src/pages/carte.astro, pas ici : la CSS d'un
 // composant client:only est rattachée à toutes les pages qui ont un îlot
 // client:only (accueil et codex la chargeaient pour rien).
@@ -27,6 +28,10 @@ const PERIOD_NAME = Object.fromEntries(
 ) as Record<Marker['periodId'], string>;
 
 const especes = (n: number) => `${n} espèce${n > 1 ? 's' : ''}`;
+// « Crétacé », ou « Crétacé et Jurassique » pour un site de périodes mixtes (majoritaire en tête).
+const periodNames = (ids: string[]) => ids.map((p) => PERIOD_NAME[p as Marker['periodId']]).join(' et ');
+
+type SpeciesEntry = { id: string; period: Marker['periodId'] };
 
 // HTML escape helper to safely inject user/data strings into popup HTML.
 const escHtml = (s: string) =>
@@ -97,25 +102,15 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
       spiderfyOnMaxZoom: true,
       showCoverageOnHover: false,
       iconCreateFunction: (c) => {
-        // Couleur dominante du cluster : période la plus représentée parmi
-        // ses espèces, pour cohérence visuelle.
-        // Le chiffre compte les espèces distinctes (comme les pins et la légende),
-        // pas les pins regroupés : T. rex, trouvé aux États-Unis et au Canada, compte une fois.
-        const counts: Record<string, number> = { trias: 0, jurassique: 0, cretace: 0 };
-        const species = new Set<string>();
-        for (const child of c.getAllChildMarkers()) {
-          const o = child.options as L.MarkerOptions & { evatoPeriod?: keyof typeof counts; evatoSpecies?: string[] };
-          // Période majoritaire en espèces, pas en pins : un pin de 2 espèces pèse 2.
-          if (o.evatoPeriod) counts[o.evatoPeriod] = (counts[o.evatoPeriod] ?? 0) + (o.evatoSpecies?.length ?? 1);
-          for (const id of o.evatoSpecies ?? []) species.add(id);
-        }
-        let dom: keyof typeof counts = 'cretace';
-        let max = -1;
-        (Object.keys(counts) as (keyof typeof counts)[]).forEach((k) => {
-          if (counts[k] > max) { max = counts[k]; dom = k; }
-        });
+        // Chiffre et couleur comptent tous deux les espèces distinctes de ses repères
+        // (comme les pins et la légende), pas les pins : T. rex, trouvé aux États-Unis et
+        // au Canada, compte une fois. Couleur = période majoritaire de ces espèces.
+        const entries = c.getAllChildMarkers().flatMap(
+          (child) => (child.options as L.MarkerOptions & { evatoSpecies?: SpeciesEntry[] }).evatoSpecies ?? [],
+        );
+        const { total, dominant } = tally(entries);
+        const dom = dominant as Marker['periodId'];
         const color = PERIOD_COLOR[dom];
-        const total = species.size;
         // Nom accessible du bouton (4.1.2) : texte masqué, le chiffre seul ne dit rien.
         return L.divIcon({
           html: `<div class="evato-cluster" style="--c:${color}; --fg:${labelColor(color)};"><span aria-hidden="true">${total}</span><span class="evato-sr">Regroupement de ${especes(total)}, surtout du ${PERIOD_NAME[dom]} : Entrée pour zoomer</span></div>`,
@@ -127,12 +122,15 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
 
     for (const [, group] of grouped) {
       const first = group[0];
-      const color = PERIOD_COLOR[first.periodId];
-      const size = group.length > 1 ? 30 : 24;
+      // Un site peut mêler deux périodes : couleur de la majoritaire, nom de toutes.
+      const species: SpeciesEntry[] = group.map((g) => ({ id: g.speciesId, period: g.periodId }));
+      const { total, dominant, periods } = tally(species);
+      const color = PERIOD_COLOR[dominant as Marker['periodId']];
+      const size = total > 1 ? 30 : 24;
       const icon = L.divIcon({
         html: `<div class="evato-pin" style="--c:${color}; --fg:${labelColor(color)}; --size:${size}px;">
-          ${group.length > 1 ? `<span class="evato-pin-count" aria-hidden="true">${group.length}</span>` : '<span class="evato-pin-dot"></span>'}
-          <span class="evato-sr">${escHtml(first.country)} : ${group.length > 1 ? especes(group.length) : escHtml(first.commonName ?? first.name)}, ${PERIOD_NAME[first.periodId]}</span>
+          ${total > 1 ? `<span class="evato-pin-count" aria-hidden="true">${total}</span>` : '<span class="evato-pin-dot"></span>'}
+          <span class="evato-sr">${escHtml(first.country)} : ${total > 1 ? especes(total) : escHtml(first.commonName ?? first.name)}, ${periodNames(periods)}</span>
         </div>`,
         className: 'evato-pin-wrap',
         iconSize: [size, size],
@@ -140,14 +138,13 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
       });
       const marker = L.marker([first.lat, first.lng], {
         icon,
-        // Custom prop forwarded so iconCreateFunction can pick the dominant period.
-        evatoPeriod: first.periodId,
-        evatoSpecies: group.map((g) => g.speciesId),
-      } as L.MarkerOptions & { evatoPeriod: string; evatoSpecies: string[] });
+        // Espèces du repère avec leur période, relues par iconCreateFunction.
+        evatoSpecies: species,
+      } as L.MarkerOptions & { evatoSpecies: SpeciesEntry[] });
 
       const popupContent = `
         <div class="evato-popup">
-          <div class="evato-popup-loc">${escHtml(first.country)}${group.length > 1 ? ` · ${group.length} espèces` : ''}</div>
+          <div class="evato-popup-loc">${escHtml(first.country)}${total > 1 ? ` · ${especes(total)}` : ''}</div>
           ${group.slice(0, 5).map((g) => `
             <a class="evato-popup-link" href="/especes/${encodeURIComponent(g.speciesId)}/">
               ${g.imageUrl ? `<img src="${escHtml(g.imageUrl)}" alt="" />` : '<span class="popup-fallback">𓆗</span>'}

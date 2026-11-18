@@ -15,6 +15,18 @@ const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR
 async function open(env, width, height) {
   const context = await env.browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce' });
   const page = await context.newPage();
+  // Garde la carte Leaflet sous la main (window.__evatoMap) : Leaflet s'expose en window.L.
+  await page.addInitScript(() => {
+    let lib;
+    Object.defineProperty(window, 'L', {
+      configurable: true,
+      get: () => lib,
+      set: (v) => {
+        lib = v;
+        v?.Map?.addInitHook?.(function () { window.__evatoMap = this; });
+      },
+    });
+  });
   await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => route.fulfill({ status: 200, contentType: 'image/png', body: PNG }));
   await page.goto(`${env.base}/carte/`, { waitUntil: 'load' });
   await page.waitForSelector('.evato-cluster, .evato-pin');
@@ -91,6 +103,51 @@ test('carte : repères nommés, chiffres en espèces, contrôles en français, �
   await page.waitForTimeout(300);
   assert.equal(await page.locator('.leaflet-popup').count(), 0, 'Échap ne ferme pas la fiche');
   assert.ok(await pin.evaluate((el) => el === document.activeElement), 'le focus ne revient pas au repère');
+  await context.close();
+});
+
+// Le chiffre d'un regroupement = espèces DISTINCTES de ses repères enfants, et non le nombre
+// de repères (getChildCount) : T. rex, aux États-Unis et au Canada, compte une fois. Les
+// espèces d'un repère sont relues dans les props de l'îlot (clé du site à 0,1°), pas dans
+// ce que PaleoMap calcule.
+test('carte : le chiffre d’un regroupement compte les espèces distinctes de ses repères', { timeout: 90_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  const { context, page } = await open(env, 1440, 900);
+  const clusters = await page.evaluate(() => {
+    const island = [...document.querySelectorAll('astro-island')].find((i) => i.getAttribute('props')?.includes('speciesId'));
+    const rev = (v) => (Array.isArray(v) ? (v[0] === 1 ? v[1].map(rev) : rev(v[1])) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, rev(x)])) : v);
+    const { markers } = rev(JSON.parse(island.getAttribute('props')));
+    const key = (lat, lng) => `${lat.toFixed(1)},${lng.toFixed(1)}`;
+    const bySite = new Map();
+    for (const m of markers) {
+      const k = key(m.lat, m.lng);
+      if (!bySite.has(k)) bySite.set(k, []);
+      bySite.get(k).push(m);
+    }
+    const out = [];
+    window.__evatoMap.eachLayer((layer) => {
+      if (typeof layer.getAllChildMarkers !== 'function' || !layer._icon) return;
+      const children = layer.getAllChildMarkers();
+      const species = new Set();
+      for (const c of children) {
+        const { lat, lng } = c.getLatLng();
+        for (const m of bySite.get(key(lat, lng)) ?? []) species.add(m.speciesId);
+      }
+      out.push({
+        shown: Number(layer._icon.querySelector('[aria-hidden="true"]').textContent),
+        pins: children.length,
+        occurrences: children.reduce((n, c) => n + (bySite.get(key(c.getLatLng().lat, c.getLatLng().lng))?.length ?? 0), 0),
+        distinct: species.size,
+        name: layer._icon.querySelector('.evato-sr').textContent,
+      });
+    });
+    return out;
+  });
+  assert.ok(clusters.length > 0, 'aucun regroupement à l’ouverture');
+  for (const c of clusters) assert.equal(c.shown, c.distinct, `${c.name} : ${c.shown} affiché, ${c.distinct} espèces distinctes (${c.pins} repères)`);
+  // Le test ne vaut que si un regroupement compte une espèce en double (cas réel : Amérique du Nord).
+  assert.ok(clusters.some((c) => c.occurrences > c.distinct), 'aucun regroupement avec une espèce en double : test sans objet');
   await context.close();
 });
 

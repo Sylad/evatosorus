@@ -27,7 +27,8 @@ const markers = SPECIES.flatMap((s) =>
 );
 
 // Légende = ce que montrent les chiffres de la carte : des espèces distinctes
-// (avant L10, « N sites » comptait les couples espèce × lieu : 19 pour 15 espèces).
+// (avant L10, « N sites » comptait les couples espèce × lieu : 31 pour 24 espèces
+// au 2026-11-18).
 const speciesOf = (pid: string) => new Set(markers.filter((m) => m.periodId === pid).map((m) => m.speciesId)).size;
 const legend = PERIODS.map((p) => ({ id: p.id, name: p.name, color: p.accentColor, count: speciesOf(p.id) }));
 const mapped = new Set(markers.map((m) => m.speciesId)).size;

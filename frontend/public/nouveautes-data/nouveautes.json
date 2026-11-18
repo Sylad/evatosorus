@@ -1,7 +1,26 @@
 {
   "project": "evatosorus",
-  "generated": "2026-11-17 15:04",
+  "generated": "2026-11-18 11:52",
   "entries": [
+    {
+      "slug": "2026-11-18-la-carte-compte-les-especes-et-se-parcourt-au-clavier",
+      "title": "La carte compte les espèces et se parcourt au clavier",
+      "date": "2026-11-18",
+      "lots": [
+        "L10"
+      ],
+      "captures": [
+        "captures/L10-carte-apres-390.png",
+        "captures/L10-carte-avant-390.png",
+        "captures/L10-carte-apres-1440.png"
+      ],
+      "alts": [
+        "La carte sur téléphone : la légende Trias 3 espèces, Jurassique 6, Crétacé 15, puis le planisphère entier avec les regroupements 13 en Amérique du Nord, 4 en Amérique du Sud et 7 en Europe",
+        "La même carte avant la correction : légende en « sites » écrite dans la couleur de chaque période, peu lisible, et carte centrée sur l'Europe et l'Afrique sans les Amériques",
+        "La carte sur ordinateur : légende en espèces avec une pastille de couleur par période, et sur le planisphère les regroupements 13, 5, 3, 2 et 2 ainsi que deux sites isolés"
+      ],
+      "html": "<p>La <strong>carte paléo-monde</strong> dit maintenant la même chose partout : chaque chiffre compte des <strong>espèces</strong>, et une espèce trouvée dans plusieurs pays (le T. rex, aux États-Unis et au Canada) ne compte qu'une fois.</p>\n<ul><li>La légende indique le nombre d'<strong>espèces</strong> par période, en texte clair et lisible, avec une pastille de la couleur des repères.</li><li>Au téléphone, la carte s'ouvre sur <strong>tous les sites</strong>, Amériques et Asie comprises.</li><li>Au clavier, chaque repère s'annonce (« Mongolie : 2 espèces, Crétacé »), <strong>Échap</strong> referme la fiche et ramène au repère, et les boutons s'appellent <strong>Zoomer</strong>, <strong>Dézoomer</strong> et <strong>Fermer</strong>.</li><li>Un site où vivaient des espèces de deux périodes annonce les deux, et la couleur d'un regroupement suit la période qui y compte le plus d'espèces.</li></ul>"
+    },
     {
       "slug": "2026-11-17-chaque-capture-decrite-pour-les-lecteurs-d-ecran",
       "title": "Nouveautés : chaque capture décrite pour les lecteurs d'écran",
