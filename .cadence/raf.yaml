@@ -543,6 +543,12 @@ lots:
     started: 2026-11-17
     review: { date: 2026-11-17, verdict: "conforme : 0 bloquant ; Astro 7.4 (mdx 8, react 7, vite 8), npm audit 0 ; lanceur avec-node.sh ; constat majeur levé : NODE_VERSION=22.23.5 posé en production sur Cloudflare Pages ; mineur : avec-node.sh échoue sans .nvmrc", commit: e11ca6891b662618c150ac5d2dcc80a03cde8be9 }
     finished: 2026-11-17
+  - id: L52
+    title: "Revue UX — bonnes pratiques d'une appli web standard (D-13 du registre parent) : chaque page en vrai navigateur à 390 et 1440 px, au clavier, contre WCAG 2.2 AA, les heuristiques de Nielsen et la skill interface-utilisable (tailles de texte en rem ≥ 12 px, cibles ≥ 24 px, contrastes, focus visible, états vides et d'erreur) ; constats mesurés, sous-lots proposés"
+    status: todo
+    estimate: 0.5
+    visible: true
+    created: 2026-11-18
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
