@@ -352,8 +352,10 @@ lots:
     title: "Couleurs de période recopiées hors periods.ts : légende de carte.astro:109-111, SpeciesCard.astro:12, CodexBrowser.tsx:300 → importées de periods.ts, test de source unique étendu (relevé en revue L24)"
     status: doing
     estimate: 0.5
+    visible: true
     created: 2026-10-05
     started: 2026-11-18
+    review: { date: 2026-11-18, verdict: "conforme : couleurs de période importées de periods.ts, test de source unique étendu ; effet visible sur la frise /periodes/ (lot passé visible, revue UX à faire)", commit: 0908452602b4077af2edab63a52d434fee03e406 }
   - id: L33
     title: "Test species-decimals (L22) aléatoire : l'id SVG Math.random d'EvatoSkull.astro:16 (« skull-orb-70465t ») est pris pour « NNNNt » par la regex — id déterministe ou balises retirées avant la regex (relevé en revue L24)"
     status: done
