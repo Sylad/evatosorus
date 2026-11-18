@@ -8,6 +8,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import { SPECIES } from '../data/species';
+import { PERIODS } from '../data/periods';
 
 // Flatten species locations to one marker per (species, location).
 const markers = SPECIES.flatMap((s) =>
@@ -25,15 +26,16 @@ const markers = SPECIES.flatMap((s) =>
     })),
 );
 
-const periodCounts = {
-  trias: markers.filter((m) => m.periodId === 'trias').length,
-  jurassique: markers.filter((m) => m.periodId === 'jurassique').length,
-  cretace: markers.filter((m) => m.periodId === 'cretace').length,
-};
+// Légende = ce que montrent les chiffres de la carte : des espèces distinctes
+// (avant L10, « N sites » comptait les couples espèce × lieu : 19 pour 15 espèces).
+const speciesOf = (pid: string) => new Set(markers.filter((m) => m.periodId === pid).map((m) => m.speciesId)).size;
+const legend = PERIODS.map((p) => ({ id: p.id, name: p.name, color: p.accentColor, count: speciesOf(p.id) }));
+const mapped = new Set(markers.map((m) => m.speciesId)).size;
+const especes = (n: number) => `${n} espèce${n > 1 ? 's' : ''}`;
 ---
 <CodexLayout
   title="Carte paléo-monde — Evatosorus"
-  description="Où ont vécu les dinosaures ? Tous les sites fossiles cartographiés sur le monde actuel."
+  description="Où ont vécu les dinosaures ? Les sites fossiles des espèces phares du codex, cartographiés sur le monde actuel."
   active="carte"
 >
   <PageHero videoSrc="/hero-trex-7.mp4" eyebrow="carte paléo-monde" title="Où ont vécu les dinosaures ?" />
@@ -41,24 +43,30 @@ const periodCounts = {
   <header class="map-header">
     <p class="codex-lede">
       Pendant le Mésozoïque, la Pangée s'est fragmentée puis a dérivé jusqu'à
-      la configuration actuelle. La carte montre où les fossiles ont été
-      trouvés sur le globe d'aujourd'hui — chaque pin est une espèce
-      attestée dans un site précis. Couleur = période géologique.
+      la configuration actuelle. La carte montre où ont été trouvés, sur le
+      globe d'aujourd'hui, les fossiles des {especes(mapped)} localisées du codex. Chaque pastille marque un site ; son chiffre compte les
+      espèces qui y sont attestées. Couleur = période géologique.
     </p>
   </header>
 
-  <div class="map-legend">
-    <span class="legend-item legend-trias">Trias · {periodCounts.trias} sites</span>
-    <span class="legend-item legend-jura">Jurassique · {periodCounts.jurassique} sites</span>
-    <span class="legend-item legend-cret">Crétacé · {periodCounts.cretace} sites</span>
-  </div>
+  {/* Pastille de la couleur de période, dessinée comme les repères de la carte ;
+      texte ivoire : en couleur de période, Trias tombait à 3,8:1 (1.4.3, L10). */}
+  <ul class="map-legend" aria-label="Légende des couleurs">
+    {legend.map((l) => (
+      <li class="legend-item" style={`--c:${l.color}`}>
+        <span class="legend-swatch" aria-hidden="true"></span>{l.name} · {especes(l.count)}
+      </li>
+    ))}
+  </ul>
 
   <PaleoMap client:only="react" markers={markers} />
 
   <p class="map-note">
     Les coordonnées sont approximatives (capitales / régions fossiles), pas
     le site précis du gisement. Les pins regroupent plusieurs espèces sur
-    le même point pour ne pas surcharger la carte.
+    le même point pour ne pas surcharger la carte ; un regroupement prend la
+    couleur de sa période majoritaire. Au clavier : Tab passe d'un repère à
+    l'autre, Entrée l'ouvre, Échap referme la fiche.
   </p>
 
   {/*
@@ -94,7 +102,9 @@ const periodCounts = {
       display: flex;
       gap: 0.8rem;
       flex-wrap: wrap;
-      margin-bottom: 1rem;
+      margin: 0 0 1rem;
+      padding: 0;
+      list-style: none;
     }
     .legend-item {
       font-family: var(--font-display);
@@ -104,11 +114,21 @@ const periodCounts = {
       padding: 0.3rem 0.7rem;
       border-radius: 999px;
       background: rgba(13, 10, 6, 0.5);
-      border: 1px solid currentColor;
+      border: 1px solid var(--c);
+      color: var(--color-evato-bone);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    .legend-trias { color: #c75131; }
-    .legend-jura { color: #5e8f6e; }
-    .legend-cret { color: #d4a55e; }
+    /* Même construction que .evato-pin (PaleoMap.tsx), en réduit. */
+    .legend-swatch {
+      width: 0.8rem;
+      height: 0.8rem;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--c) 92%, white 8%), var(--c) 75%);
+      border: 2px solid color-mix(in srgb, var(--c) 50%, #0d0a06);
+    }
     .map-note {
       font-size: 0.85rem;
       color: var(--color-evato-bone-muted);

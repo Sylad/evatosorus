@@ -22,6 +22,11 @@ type Marker = {
 const PERIOD_COLOR = Object.fromEntries(
   PERIODS.map((p) => [p.id, p.accentColor]),
 ) as Record<Marker['periodId'], string>;
+const PERIOD_NAME = Object.fromEntries(
+  PERIODS.map((p) => [p.id, p.name]),
+) as Record<Marker['periodId'], string>;
+
+const especes = (n: number) => `${n} espèce${n > 1 ? 's' : ''}`;
 
 // HTML escape helper to safely inject user/data strings into popup HTML.
 const escHtml = (s: string) =>
@@ -43,9 +48,23 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
     map = L.map(ref.current, {
       center: [10, 10],
       zoom: 2,
+      // Zoom 0 (monde de 256 px) laisse de larges bandes vides au-dessus et
+      // au-dessous du planisphère dans une carte de 600 px de haut.
+      minZoom: 1,
       worldCopyJump: true,
       scrollWheelZoom: true,
+      zoomControl: false,
     });
+    // Boutons de zoom nommés en français (le nom accessible vient du title, 2.5.3).
+    L.control.zoom({ zoomInTitle: 'Zoomer', zoomOutTitle: 'Dézoomer' }).addTo(map);
+    // Cadre initial sur l'ensemble des sites : au téléphone, le cadrage fixe
+    // [10, 10] zoom 2 laissait les Amériques et l'Asie hors champ (L10).
+    if (markers.length > 0) {
+      map.fitBounds(L.latLngBounds(markers.map((m) => [m.lat, m.lng] as [number, number])), {
+        padding: [12, 12],
+        maxZoom: 2,
+      });
+    }
 
     // Fond sombre gris-ardoise assorti au Mésozoïque. Esri World Dark Gray Base :
     // gratuit et sans clé, avec l'attribution Esri. CARTO dark_nolabels, utilisé
@@ -78,12 +97,17 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
       spiderfyOnMaxZoom: true,
       showCoverageOnHover: false,
       iconCreateFunction: (c) => {
-        // Calcule la couleur dominante du cluster (période la plus
-        // représentée parmi ses enfants) pour cohérence visuelle.
+        // Couleur dominante du cluster : période la plus représentée parmi
+        // ses espèces, pour cohérence visuelle.
+        // Le chiffre compte les espèces distinctes (comme les pins et la légende),
+        // pas les pins regroupés : T. rex, trouvé aux États-Unis et au Canada, compte une fois.
         const counts: Record<string, number> = { trias: 0, jurassique: 0, cretace: 0 };
+        const species = new Set<string>();
         for (const child of c.getAllChildMarkers()) {
-          const pid = (child.options as L.MarkerOptions & { evatoPeriod?: keyof typeof counts }).evatoPeriod;
-          if (pid) counts[pid] = (counts[pid] ?? 0) + 1;
+          const o = child.options as L.MarkerOptions & { evatoPeriod?: keyof typeof counts; evatoSpecies?: string[] };
+          // Période majoritaire en espèces, pas en pins : un pin de 2 espèces pèse 2.
+          if (o.evatoPeriod) counts[o.evatoPeriod] = (counts[o.evatoPeriod] ?? 0) + (o.evatoSpecies?.length ?? 1);
+          for (const id of o.evatoSpecies ?? []) species.add(id);
         }
         let dom: keyof typeof counts = 'cretace';
         let max = -1;
@@ -91,9 +115,10 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
           if (counts[k] > max) { max = counts[k]; dom = k; }
         });
         const color = PERIOD_COLOR[dom];
-        const total = c.getChildCount();
+        const total = species.size;
+        // Nom accessible du bouton (4.1.2) : texte masqué, le chiffre seul ne dit rien.
         return L.divIcon({
-          html: `<div class="evato-cluster" style="--c:${color}; --fg:${labelColor(color)};"><span>${total}</span></div>`,
+          html: `<div class="evato-cluster" style="--c:${color}; --fg:${labelColor(color)};"><span aria-hidden="true">${total}</span><span class="evato-sr">Regroupement de ${especes(total)}, surtout du ${PERIOD_NAME[dom]} : Entrée pour zoomer</span></div>`,
           className: 'evato-cluster-wrap',
           iconSize: [40, 40],
         });
@@ -106,7 +131,8 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
       const size = group.length > 1 ? 30 : 24;
       const icon = L.divIcon({
         html: `<div class="evato-pin" style="--c:${color}; --fg:${labelColor(color)}; --size:${size}px;">
-          ${group.length > 1 ? `<span class="evato-pin-count">${group.length}</span>` : '<span class="evato-pin-dot"></span>'}
+          ${group.length > 1 ? `<span class="evato-pin-count" aria-hidden="true">${group.length}</span>` : '<span class="evato-pin-dot"></span>'}
+          <span class="evato-sr">${escHtml(first.country)} : ${group.length > 1 ? especes(group.length) : escHtml(first.commonName ?? first.name)}, ${PERIOD_NAME[first.periodId]}</span>
         </div>`,
         className: 'evato-pin-wrap',
         iconSize: [size, size],
@@ -116,7 +142,8 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
         icon,
         // Custom prop forwarded so iconCreateFunction can pick the dominant period.
         evatoPeriod: first.periodId,
-      } as L.MarkerOptions & { evatoPeriod: string });
+        evatoSpecies: group.map((g) => g.speciesId),
+      } as L.MarkerOptions & { evatoPeriod: string; evatoSpecies: string[] });
 
       const popupContent = `
         <div class="evato-popup">
@@ -137,15 +164,39 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
     }
     map.addLayer(cluster);
 
+    // Le bouton de fermeture de Leaflet s'appelle « Close popup » : en français.
+    map.on('popupopen', (e) => {
+      e.popup.getElement()?.querySelector('.leaflet-popup-close-button')?.setAttribute('aria-label', 'Fermer');
+    });
+    // Échap ferme la bulle même quand le focus est sur un repère (le gestionnaire
+    // clavier de Leaflet n'écoute que si la carte elle-même a reçu le focus), et le
+    // focus revient au repère qui l'a ouverte (2.1.1).
+    const container = map.getContainer();
+    const onKeydown = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape' || !map) return;
+      const popup = (map as L.Map & { _popup?: L.Popup })._popup;
+      if (!popup || !map.hasLayer(popup)) return;
+      const source = (popup as L.Popup & { _source?: L.Marker })._source;
+      map.closePopup();
+      (source?.getElement() as HTMLElement | undefined)?.focus();
+    };
+    container.addEventListener('keydown', onKeydown);
+
     return () => {
       mounted = false;
+      container.removeEventListener('keydown', onKeydown);
       map?.remove();
     };
   }, [markers]);
 
   return (
     <>
-      <div ref={ref} className="paleo-map" />
+      <div
+        ref={ref}
+        className="paleo-map"
+        role="region"
+        aria-label="Carte des sites fossiles : Tab passe d'un repère à l'autre, Entrée l'ouvre, flèches pour déplacer, + et − pour zoomer"
+      />
       <style>{`
         .paleo-map {
           height: 600px;
@@ -223,6 +274,15 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
           font-size: 0.65rem;
         }
         .leaflet-control-attribution a { color: var(--color-evato-amber) !important; }
+
+        .evato-sr {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          overflow: hidden;
+          clip-path: inset(50%);
+          white-space: nowrap;
+        }
 
         /* ── Pins divIcon colorés par période ──────────────────────── */
         .evato-pin-wrap { background: transparent !important; border: 0 !important; }
