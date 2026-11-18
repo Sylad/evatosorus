@@ -11,7 +11,7 @@ import { fitStyle, LS } from '../lib/title-fit.mjs';
 // Pas de GSAP : le rendu CSS smooth + transition + animations légères
 // suffisent et évitent +30 KB de bundle (chantier #2 backlog 2026-05-10).
 
-import { PERIODS } from '../data/periods';
+import { PERIODS, PERIODS_BY_ID } from '../data/periods';
 import { SPECIES } from '../data/species';
 
 // Une seule ligne d'iconiques, triées par Ma décroissant (du plus
@@ -86,7 +86,7 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
         data-late={sp.late}
         data-period={sp.period}
       >
-        <span class="meso-iconic-img" style={`--accent:var(--color-evato-${sp.period === 'trias' ? 'rust' : sp.period === 'jurassique' ? 'jade' : 'amber'});`}>
+        <span class="meso-iconic-img" style={`--accent:${PERIODS_BY_ID[sp.period].accentColor};`}>
           {sp.image ? <img src={sp.image} alt={sp.common} loading="lazy" /> : <span class="meso-iconic-fallback">𓆗</span>}
         </span>
         <span class="meso-iconic-name" style={fitStyle(sp.common, LS.card)}>{sp.common}</span>
@@ -423,7 +423,7 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
     overflow: hidden;
     border-radius: 4px;
     background: linear-gradient(135deg, #1a120a, #0d0a06);
-    border: 1px solid color-mix(in srgb, var(--accent, #d4a55e) 25%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
     display: grid;
     place-items: center;
     transition: filter 220ms ease;

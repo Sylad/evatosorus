@@ -3,6 +3,7 @@ import { useWindowVirtualizer } from '@tanstack/react-virtual';
 import type { Species } from '../data/species.types';
 import { formatCount, formatDecimal, formatMass, formatRange } from '../lib/format-count.mjs';
 import { longestWordEm, LS } from '../lib/title-fit.mjs';
+import { PERIODS_BY_ID } from '../data/periods';
 
 // Subset minimum nécessaire pour afficher une card. Pour préserver les
 // optimisations bandwidth (codex.astro trim ~60% des champs avant de passer
@@ -299,8 +300,8 @@ function Card({
   dietLabels: Record<string, string>;
   dietIcons: Record<string, string>;
 }) {
-  const periodLabel = s.periodId === 'trias' ? 'Trias' : s.periodId === 'jurassique' ? 'Jurassique' : 'Crétacé';
-  const periodColor = s.periodId === 'trias' ? '#c75131' : s.periodId === 'jurassique' ? '#5e8f6e' : '#d4a55e';
+  // Nom et couleur de période : periods.ts, source unique (L32).
+  const { shortName: periodLabel, accentColor: periodColor } = PERIODS_BY_ID[s.periodId];
   const groupSilhouette = `/silhouettes/group-${s.taxonGroup}.png`;
   const primaryImage = s.lifeRestorationUrl ?? s.imageUrl;
   const isSilhouette = !primaryImage;
