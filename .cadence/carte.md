@@ -10,6 +10,9 @@
   CLAUDE.md § Nouveautés, et un test vérifie que cette doc reste là.
 - Décision L26 (revue) : la hauteur de la légende (`--evato-cap-h`) suit ses changements de taille
   (ResizeObserver, repli `resize`), pas seulement l'ouverture : écran tourné visionneuse ouverte.
+- Décision L32 (revue) : `cadence news` ne rend que `**gras**` ; un `*italique*` sort avec ses astérisques.
+  Nommer une page en texte simple ou entre guillemets « … » (U+202F). Test : `scripts/nouveautes.test.mjs`
+  refuse tout astérisque restant dans le html rendu du JSON.
 - Workflow de test : les e2e lisent `frontend/dist` ; toujours `npx astro build` avant
   `npm run test:scripts`, sinon un dist périmé fait échouer les tests de la page (vécu revue L26).
 

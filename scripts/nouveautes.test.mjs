@@ -128,3 +128,14 @@ test('guillemets français tenus par une espace fine insécable (U+202F)', () =>
     assert.equal(bad, null, `${f} : ${bad?.length} guillemet(s) sans U+202F`);
   }
 });
+
+// Revue de code L32 : cadence news ne rend que **gras** ; un *italique* markdown sort tel
+// quel, astérisques compris, sur /nouveautes/ (« la page *Voyage temporel* »). Écrire le
+// nom en texte simple ou entre guillemets « … ».
+test('aucun astérisque markdown laissé brut dans le HTML rendu', () => {
+  for (const e of readJson().entries) {
+    const text = e.html.replace(/<[^>]+>/g, '');
+    const bad = text.match(/\*[^*\s][^*]*\*|\*\*/g);
+    assert.equal(bad, null, `${e.slug} : ${bad?.join(', ')} (italique markdown non rendu)`);
+  }
+});
