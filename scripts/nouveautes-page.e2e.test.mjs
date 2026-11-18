@@ -12,6 +12,7 @@ import { existsSync, mkdirSync, readFileSync, statSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import { headlessEnv } from './lib/e2e-dist.mjs';
 
 const DIST = fileURLToPath(new URL('../frontend/dist/', import.meta.url));
 const DATA = JSON.parse(readFileSync(new URL('../frontend/public/nouveautes-data/nouveautes.json', import.meta.url), 'utf8'));
@@ -87,7 +88,7 @@ async function setup(t) {
   }
   let browser;
   try {
-    browser = await chromium.launch();
+    browser = await chromium.launch({ env: headlessEnv() });
   } catch (e) {
     t.skip(`Chromium indisponible (${String(e.message).split('\n')[0]})`);
     return null;

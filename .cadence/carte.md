@@ -21,6 +21,8 @@
 - Tests : `scripts/map-counts.test.mjs` (unitaire) ; `scripts/carte-ux.e2e.test.mjs` capte la carte
   (`window.L` → `Map.addInitHook`) et compare le chiffre de chaque regroupement aux espèces des repères
   enfants relues dans les props de l'îlot — échoue si `getChildCount()` revient (8 affiché / 13 espèces).
-- Environnement (2026-11-18) : Chromium exige `libasound.so.2` (absente) — extraite du .deb Ubuntu dans
-  `<worktree>.captures/asound`, `LD_LIBRARY_PATH` dessus. Sous WSL, les pages à vidéo hero (/carte/, /about/)
-  bloquent parfois `page.goto` (tout ou rien par lancement de Chromium) : relancer, ce n'est pas le code.
+- Environnement (2026-11-18) : sous WSLg, Chromium headless se connecte au compositeur Wayland
+  (`XDG_RUNTIME_DIR/wayland-0`) dès qu'une page porte une `<video>` et reste bloqué (`page.goto` expire,
+  ~7 lancements sur 10). Tous les tests lancent Chromium avec `env: headlessEnv()`
+  (`scripts/lib/e2e-dist.mjs` : sans DISPLAY, WAYLAND_DISPLAY vers un socket inexistant) ;
+  `scripts/e2e-headless-env.test.mjs` refuse un `chromium.launch` qui ne le passe pas.

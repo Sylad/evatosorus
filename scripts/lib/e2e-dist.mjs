@@ -27,6 +27,16 @@ function serveDist() {
   return new Promise((resolve) => server.listen(0, '127.0.0.1', () => resolve(server)));
 }
 
+// Environnement de Chromium sans affichage. Sous WSLg, Chromium headless se connecte au
+// compositeur Wayland (XDG_RUNTIME_DIR/wayland-0) dès qu'une page porte une <video>, et
+// la connexion reste bloquée : `page.goto` expirait sur /carte/, /about/, /vitrines/…
+// (≈ 7 lancements sur 10, 2026-11-18). Retirer WAYLAND_DISPLAY ne suffit pas (repli sur
+// « wayland-0 ») : il désigne un socket qui n'existe pas. Sans effet hors WSLg.
+export function headlessEnv(env = process.env) {
+  const { DISPLAY, ...rest } = env;
+  return { ...rest, WAYLAND_DISPLAY: 'evatosorus-tests-sans-affichage' };
+}
+
 // Renvoie { browser, base } ou null (test passé en skip) ; ferme tout en fin de test.
 // { scrollbar: true } : lance Chromium sans --hide-scrollbars (barre de défilement classique,
 // qui réduit la largeur disponible comme sur un navigateur de bureau).
@@ -41,7 +51,7 @@ export async function setupBrowser(t, { scrollbar = false, args = [] } = {}) {
   }
   let browser;
   try {
-    browser = await chromium.launch({ args, ...(scrollbar ? { ignoreDefaultArgs: ['--hide-scrollbars'] } : {}) });
+    browser = await chromium.launch({ args, env: headlessEnv(), ...(scrollbar ? { ignoreDefaultArgs: ['--hide-scrollbars'] } : {}) });
   } catch (e) {
     t.skip(`Chromium indisponible (${String(e.message).split('\n')[0]})`);
     return null;
