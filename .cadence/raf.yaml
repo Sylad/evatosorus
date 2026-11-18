@@ -116,6 +116,7 @@ lots:
     status: done
     visible: true
     estimate: 0.25
+    delivered: { date: 2026-11-18, sha: 93498e531d91a17ee6dc446be91b585a7a8dd233 }
     created: 2026-09-28
     started: 2026-11-18
     review: { date: 2026-11-18, verdict: "conforme : seconde revue — test rouge si retour à getChildCount() (8 affiché pour 13 espèces), 5 constats corrigés, alt des captures conformes, JSON des nouveautés régénéré ; 93498e5 ne saute aucun test (0 skip sur 47)", commit: 93498e531d91a17ee6dc446be91b585a7a8dd233 }
