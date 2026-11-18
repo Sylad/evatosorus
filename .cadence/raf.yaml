@@ -350,13 +350,14 @@ lots:
     finished: 2026-11-17
   - id: L32
     title: "Couleurs de période recopiées hors periods.ts : légende de carte.astro:109-111, SpeciesCard.astro:12, CodexBrowser.tsx:300 → importées de periods.ts, test de source unique étendu (relevé en revue L24)"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
     created: 2026-10-05
     started: 2026-11-18
     review: { date: 2026-11-18, verdict: "conforme : r2 (0681e08, 85881f2) conforme après 1 mineur, astérisques corrigés en 5ee9a2a relu par le lead", commit: 5ee9a2a334664bd544bcb443abeb86892d9a2802 }
     ux: { date: 2026-11-18, verdict: "conforme (lead, captures 1440/390 du run) : bordures des 22 vignettes à la couleur de leur période (3 rouille, 6 jade, 13 ambre), aucune mise en page changée, sélection active toujours distincte (liseré lumineux) ; non mesuré : contraste des liserés, décoratifs (pas porteurs d'information seuls, la période est écrite)" }
+    finished: 2026-11-18
   - id: L33
     title: "Test species-decimals (L22) aléatoire : l'id SVG Math.random d'EvatoSkull.astro:16 (« skull-orb-70465t ») est pris pour « NNNNt » par la regex — id déterministe ou balises retirées avant la regex (relevé en revue L24)"
     status: done
