@@ -124,10 +124,14 @@ lots:
     finished: 2026-11-18
   - id: L11
     title: Revue UX — À propos
-    status: todo
+    status: done
     visible: true
     estimate: 0.25
     created: 2026-09-28
+    started: 2026-11-19
+    review: { date: 2026-11-19, verdict: "conforme — revue de code (cadence:code-reviewer, 19-11) : 0 bloquant, 0 suite ; rapport scratchpad revues/evatosorus-L11.md", commit: f26b032825e797221330db4907e65dec28cb55ec }
+    ux: { date: 2026-11-19, verdict: "conforme — verdict du lead sur les captures 1440 et 390 px de f26b032 : texte lisible, plus de mots collés, crédits sans ChatGPT ; porte verte f26b032" }
+    finished: 2026-11-19
   - id: L12
     title: "Revue UX — Gabarit commun : navigation, en-tête, pied, rendu téléphone"
     public: Menu et « Copier le lien » plus faciles à toucher, chiffres plus lisibles
