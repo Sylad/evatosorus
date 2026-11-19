@@ -127,6 +127,7 @@ lots:
     status: done
     visible: true
     estimate: 0.25
+    delivered: { date: 2026-11-19, sha: ff4feb02623c2d93dc6a6d9632c54f246ce5d3e0 }
     created: 2026-09-28
     started: 2026-11-19
     review: { date: 2026-11-19, verdict: "conforme — revue de code (cadence:code-reviewer, 19-11) : 0 bloquant, 0 suite ; rapport scratchpad revues/evatosorus-L11.md", commit: f26b032825e797221330db4907e65dec28cb55ec }
