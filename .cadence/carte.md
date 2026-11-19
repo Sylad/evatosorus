@@ -29,3 +29,17 @@
   ~7 lancements sur 10). Tous les tests lancent Chromium avec `env: headlessEnv()`
   (`scripts/lib/e2e-dist.mjs` : sans DISPLAY, WAYLAND_DISPLAY vers un socket inexistant) ;
   `scripts/e2e-headless-env.test.mjs` refuse un `chromium.launch` qui ne le passe pas.
+
+## À propos (`/about/`) — L11
+- Écran : `frontend/src/pages/about.astro`. Voile sombre `.about::before` (rgba(13,10,6,.74)) sous la
+  colonne de texte : corps et liens ambre ≥ 4,5:1 au pire pixel sur l'image de fond fixe (mesuré : liens
+  6,95:1, corps 11:1). Liens `target=_blank` suivis de « ↗ » (`content: … / ' (nouvel onglet)'`, en ligne
+  pour ne jamais passer seule à la ligne). Paragraphes séparés de 1em.
+- `MotionToggle placement="top-mobile"` : sous 1024 px, bouton Pause en haut à gauche du burger (bande
+  réservée de `.codex-main`) au lieu du bas, où il masquait la fin des lignes. Autres pages inchangées.
+- Décision L11 : `compressHTML: true` dans `astro.config.mjs`. Astro 7 (L51) passait par défaut à 'jsx',
+  qui supprime l'espace porté par un saut de ligne autour de `<a>/<strong>/<em>` (mots collés sur tout le
+  site). Test : `scripts/html-espaces.test.mjs` (toutes les pages de dist + aucun lien eywa-eywa.pages.dev ;
+  Eywa = https://avatar-pandora-12q.pages.dev).
+- Icône crâne : auteur **Delapouite** (pas Lorc), https://game-icons.net/1x1/delapouite/t-rex-skull.html
+  (tracé identique vérifié). Tests de la page : `scripts/about-ux.e2e.test.mjs` (R1 contraste … R5).

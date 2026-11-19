@@ -10,11 +10,19 @@
  * prefers-reduced-motion : tout y est déjà figé (image fixe, SMIL en pause).
  */
 import { HAS_AMBIENT_AUDIO } from '../lib/ambient-audio';
+
+interface Props {
+  /** 'top-mobile' : sous 1024 px (burger présent), le bouton va en haut à droite, à gauche
+   *  du burger, dans la bande réservée au-dessus du contenu, au lieu du bas de l'écran où il
+   *  masquait la fin des lignes d'une page de texte (/about/ à 390 px, revue UX L11, m4). */
+  placement?: 'bottom' | 'top-mobile';
+}
+const { placement = 'bottom' } = Astro.props;
 ---
 <button
   id="evato-motion-toggle"
   type="button"
-  class:list={['evato-motion-toggle', { 'beside-audio': HAS_AMBIENT_AUDIO }]}
+  class:list={['evato-motion-toggle', { 'beside-audio': HAS_AMBIENT_AUDIO, 'top-mobile': placement === 'top-mobile' }]}
   aria-label="Mettre en pause les animations"
   aria-pressed="false"
   hidden
@@ -104,6 +112,12 @@ import { HAS_AMBIENT_AUDIO } from '../lib/ambient-audio';
   @media (max-width: 480px) {
     .evato-motion-toggle { bottom: 0.85rem; right: 0.85rem; }
     .evato-motion-toggle.beside-audio { right: calc(0.85rem + 2.5rem + 0.5rem); }
+  }
+  /* top-mobile : en haut, à gauche du burger (fixe en haut à droite, 2,75rem, visible sous
+     1024 px), dans la bande libre de .codex-main (padding-top 4,25rem). */
+  @media (max-width: 1023px) {
+    .evato-motion-toggle.top-mobile,
+    .evato-motion-toggle.top-mobile.beside-audio { top: 0.85rem; bottom: auto; right: calc(0.85rem + 2.75rem + 0.5rem); }
   }
   /* Sous 360 px, en bas il recouvrait le lien « À propos » de l'accueil
      (39×39 px à 320×568) : en haut à droite, dans la zone libre à côté du

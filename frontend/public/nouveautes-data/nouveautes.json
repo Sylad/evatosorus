@@ -1,7 +1,24 @@
 {
   "project": "evatosorus",
-  "generated": "2026-11-18 15:19",
+  "generated": "2026-11-19 12:35",
   "entries": [
+    {
+      "slug": "2026-11-19-la-page-a-propos-se-lit-d-un-bout-a-l-autre",
+      "title": "La page À propos se lit d'un bout à l'autre",
+      "date": "2026-11-19",
+      "lots": [
+        "L11"
+      ],
+      "captures": [
+        "captures/L11-about-1440.png",
+        "captures/L11-about-390.png"
+      ],
+      "alts": [
+        "La page À propos sur ordinateur : la colonne de texte « Comment c'est fait » sur un voile sombre, liens ambre suivis d'une petite flèche, et la jungle du T. rex visible à droite",
+        "La page À propos sur téléphone : le bouton Pause en haut à côté du menu, puis le titre Evatosorus, la vidéo du T. rex et la section Pour qui avec le lien Eywa"
+      ],
+      "html": "<p>La page <strong>À propos</strong> se lit sans effort, même sur les rayons clairs de la jungle en fond.</p>\n<ul><li>Le texte et les liens ambre reposent sur un <strong>voile sombre</strong> : ils restent lisibles partout, l'image du T. rex reste visible autour.</li><li>Les <strong>espaces</strong> autour des liens et des mots en gras sont revenus (« le domaine public evatosorus.sladoire.dev et l'URL Pages… ») — sur cette page comme sur le reste du site.</li><li>Le lien vers <strong>Eywa</strong> mène de nouveau au codex de Pandora, et le crédit de l'icône du crâne nomme son vrai auteur, Delapouite, avec une page qui existe.</li><li>Une petite <strong>flèche</strong> signale chaque lien qui ouvre un nouvel onglet ; les paragraphes sont aérés ; la version d'Astro annoncée est la bonne.</li><li>Sur téléphone, le bouton <strong>Pause</strong> se range en haut, à côté du menu, au lieu de cacher la fin des lignes.</li></ul>"
+    },
     {
       "slug": "2026-11-18-les-vignettes-de-la-frise-prennent-la-couleur-de-leur-periode",
       "title": "Les vignettes de la frise prennent la couleur de leur période",

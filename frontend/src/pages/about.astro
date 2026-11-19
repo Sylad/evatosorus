@@ -9,7 +9,7 @@ import { formatCount } from '../lib/format-count.mjs';
   description="Pourquoi ce site, pour qui, comment c'est fait."
   active="about"
 >
-  <MotionToggle />
+  <MotionToggle placement="top-mobile" />
   <article class="about">
     <header>
       <p class="codex-eyebrow">à propos</p>
@@ -32,7 +32,7 @@ import { formatCount } from '../lib/format-count.mjs';
       <h2>Pour qui</h2>
       <p>
         D'abord pour <strong>Eva</strong>, ma nièce de 18 ans, fan visuelle
-        depuis toujours. Ce site fait suite à <a href="https://eywa-eywa.pages.dev">Eywa</a>,
+        depuis toujours. Ce site fait suite à <a href="https://avatar-pandora-12q.pages.dev" target="_blank" rel="noopener">Eywa</a>,
         son codex de Pandora. Cette fois on remonte 252 millions d'années en
         arrière.
       </p>
@@ -47,7 +47,7 @@ import { formatCount } from '../lib/format-count.mjs';
     <section data-amber-split>
       <h2>Comment c'est fait</h2>
       <p>
-        Stack : <strong>Astro 6</strong> + <strong>Tailwind 4</strong> +
+        Stack : <strong>Astro 7</strong> + <strong>Tailwind 4</strong> +
         <strong>React 19</strong> pour les composants interactifs (filtres,
         carte). Tout est généré statiquement et déployé sur
         <strong>Cloudflare Pages</strong>, avec le domaine public
@@ -137,7 +137,7 @@ import { formatCount } from '../lib/format-count.mjs';
         </li>
         <li>
           <strong>Icône crâne T-Rex</strong> (logo, sidebar, favicon) —
-          <a href="https://game-icons.net/1x1/lorc/t-rex-skull.html" target="_blank" rel="noopener">Lorc / game-icons.net</a>,
+          <a href="https://game-icons.net/1x1/delapouite/t-rex-skull.html" target="_blank" rel="noopener">Delapouite / game-icons.net</a>,
           sous licence <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC-BY 3.0</a>.
         </li>
         <li>
@@ -160,7 +160,7 @@ import { formatCount } from '../lib/format-count.mjs';
       <h2>Inspirations</h2>
       <ul class="sources">
         <li>
-          <strong><a href="https://eywa-eywa.pages.dev" target="_blank" rel="noopener">Eywa</a></strong>
+          <strong><a href="https://avatar-pandora-12q.pages.dev" target="_blank" rel="noopener">Eywa</a></strong>
           — le codex de Pandora (univers Avatar) que j'ai fait pour Eva avant Evatosorus.
           Même approche immersive (CycleBackdrop, DustField, atmosphère temps-driven), même
           stack Astro, même dédicataire. Eywa est le grand frère, Evatosorus le petit cousin
@@ -180,9 +180,9 @@ import { formatCount } from '../lib/format-count.mjs';
           C'est l'esthétique éditoriale visée pour les blurbs de chaque fiche.
         </li>
         <li>
-          <strong>Le dino offline du navigateur Chrome</strong> 🦖 — universellement reconnu,
+          <strong>Le dino offline du navigateur Chrome</strong> — universellement reconnu,
           inspiration tacite pour le format pixelisé du favicon initial (avant qu'on
-          passe à la silhouette de crâne Lorc, plus fidèle au sujet).
+          passe à la silhouette de crâne de Delapouite, plus fidèle au sujet).
         </li>
         <li>
           <strong>L'éditorial Eva-Pandora-Mésozoïque</strong> — l'idée d'un site qui parle
@@ -197,7 +197,7 @@ import { formatCount } from '../lib/format-count.mjs';
       <h2>Mes autres sites</h2>
       <ul class="sources">
         <li>
-          <a href="https://eywa-eywa.pages.dev" target="_blank" rel="noopener">Eywa</a>
+          <a href="https://avatar-pandora-12q.pages.dev" target="_blank" rel="noopener">Eywa</a>
           — codex de Pandora (Avatar), aussi pour Eva.
         </li>
         <li>
@@ -261,6 +261,26 @@ import { formatCount } from '../lib/format-count.mjs';
   <style>
     .about {
       max-width: 70ch;
+      /* L11 (B1, WCAG 1.4.3) : la colonne se lit sur l'image de fond fixe ; ses zones
+         claires (rayons de la jungle) tombaient à 2,4:1 sous les liens ambre et 3,7:1 sous
+         le corps. Voile sombre sous la colonne, débordant de la gouttière pour que le texte
+         ne bouge pas : ≥ 4,5:1 au pire pixel (scripts/about-ux.e2e.test.mjs). L'image reste
+         visible autour et à travers. */
+      position: relative;
+      isolation: isolate;
+    }
+    .about::before {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      inset: -1.25rem -1.5rem;
+      border-radius: 10px;
+      background: rgba(13, 10, 6, 0.74);
+      box-shadow: 0 0 48px 24px rgba(13, 10, 6, 0.55);
+      pointer-events: none;
+    }
+    @media (max-width: 640px) {
+      .about::before { inset: -0.75rem -0.9rem; }
     }
     .about-hero {
       margin: 2rem 0 2.5rem;
@@ -312,6 +332,11 @@ import { formatCount } from '../lib/format-count.mjs';
       line-height: 1.75;
       color: var(--color-evato-bone);
     }
+    /* L11 (m2) : paragraphes séparés (la remise à zéro de Tailwind ôte leur marge). */
+    .about section p {
+      margin: 0 0 1em;
+    }
+    .about section p:last-child { margin-bottom: 0; }
     .about ul {
       padding-left: 1.4rem;
     }
@@ -321,6 +346,14 @@ import { formatCount } from '../lib/format-count.mjs';
       text-decoration: underline;
       text-decoration-color: rgba(212, 165, 94, 0.3);
       text-underline-offset: 3px;
+    }
+    /* L11 (m6, Nielsen 3) : un lien qui ouvre un nouvel onglet le dit — flèche visible,
+       « (nouvel onglet) » pour le lecteur d'écran (texte de remplacement de content). */
+    .about a[target='_blank']::after {
+      /* Espace insécable + affichage en ligne : la flèche ne passe jamais seule à la ligne
+         (« Eywa / ↗ » à 390 px avec inline-block). */
+      content: '\00a0↗' / ' (nouvel onglet)';
+      font-size: 0.8em;
     }
     .about a:hover {
       color: var(--color-evato-amber-bright);
