@@ -43,3 +43,15 @@
   Eywa = https://avatar-pandora-12q.pages.dev).
 - Icône crâne : auteur **Delapouite** (pas Lorc), https://game-icons.net/1x1/delapouite/t-rex-skull.html
   (tracé identique vérifié). Tests de la page : `scripts/about-ux.e2e.test.mjs` (R1 contraste … R5).
+
+## Revue « bonnes pratiques » (toutes pages) — L52
+- Rapport : `docs/qa/revue-L52-bonnes-pratiques.md` (C1–C10 corrigés, sous-lots L52/t1–t3) ; garde
+  `scripts/bonnes-pratiques-ux.e2e.test.mjs` R1–R7 (une ligne du rapport relie chaque garde à son écart).
+- Décision L52 (revue r1) : un contraste se mesure aussi **au pire pixel du fond réel** — la page porte une
+  photo fixe (`.codex-bg`) derrière le contenu. Méthode `contrasteFondReel` : effacer l'élément (couleur
+  transparente, ou `opacity: 0` pour un contrôle), capturer sa boîte, composer la couleur sur chaque pixel.
+- Décision L52 (revue r1) : frise de `/periodes/`, plus d'`opacity` sur les vignettes atténuées (elle laissait
+  passer la photo à travers le texte : 2,7:1) ; l'image s'assombrit (`saturate(.6) brightness(.65)`), fond de
+  vignette `rgba(26,18,10,.7)` → 6:1 au pire pixel. La vignette allumée garde bordure, halo et nom ambre.
+- `SpeciesCard.astro` sert les fiches des périodes (`/periodes/<id>/`, silhouettes comprises) ; le codex a ses
+  propres cartes (`CodexBrowser.tsx` + `codex-browser.css`).

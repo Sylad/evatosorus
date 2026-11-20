@@ -29,7 +29,7 @@ captures 390 et 1440 px.
 | Contrôle | Avant | Après L52 |
 |---|---|---|
 | Violations axe (pages × fenêtres touchées) | 4 pages : codex (`select-name`, critique), périodes (`color-contrast` ×19, sérieux), fiche espèce (`image-redundant-alt` ×6, `landmark-complementary-is-top-level`), carte (`link-in-text-block` ×2, sérieux) | **0** sur les 90 passages |
-| Texte visible sous 12 px | périodes (41 éléments : graduations, plages, pastilles), cartes d'espèce (`card-period` 11,4 px, `silhouette` 9,6 px), carte (légende 11,9 px, attribution 11,4 px) | 1 reste : nom « Pachycéphalosaure » ajusté à 11,4–11,96 px (sous-lot L52/b) |
+| Texte visible sous 12 px | périodes (41 éléments : graduations, plages, pastilles), cartes d'espèce (`card-period` 11,4 px, `silhouette` 9,6 px), carte (légende 11,9 px, attribution 11,4 px) | 1 reste : nom « Pachycéphalosaure » ajusté à 11,4–11,96 px (sous-lot L52/t2) |
 | Débordement horizontal | 0 partout | 0 partout |
 | Erreurs console / HTTP ≥ 400 | 0 | 0 |
 | `user-scalable` / zoom bloqué | absent | absent |
@@ -45,24 +45,37 @@ captures 390 et 1440 px.
 | C1 | toutes | `html { font-size: 17.5px }` : la taille choisie par le visiteur est ignorée | WCAG 1.4.4, skill (texte en rem) | `font-size: 109.375%` — rendu identique au réglage par défaut |
 | C2 | gabarit, visionneuse | `100vh` (le bas du tiroir et de la visionneuse passe sous la barre du navigateur mobile) | skill §5 | reprise `100dvh` après chaque `100vh` |
 | C3 | `/codex/` | `<select>` « Groupe » sans nom accessible (axe `select-name`, critique) | WCAG 4.1.2 | `aria-label="Groupe"` |
-| C4 | `/codex/` | bord des boutons radio vides à ≈ 2,3:1 (`rgba(212,165,94,.4)`) | WCAG 1.4.11 (3:1) | alpha 0,75 → 5,3:1 |
-| C5 | `/periodes/` | plages « 231—228 Ma » des cartes atténuées à **3,21:1** (opacité 0,55) | WCAG 1.4.3 | opacité 0,75 → 5,1:1 ; la carte allumée reste distincte (opacité 1, bordure et halo ambre, capture 1440) |
+| C4 | `/codex/` | bord des boutons radio vides à 2,32:1 au pixel sur le fond réel (`rgba(212,165,94,.4)`) | WCAG 1.4.11 (3:1) | alpha 0,75 → 5,3:1 |
+| C5 | `/periodes/` | plages « 231—228 Ma » des cartes atténuées à **3,21:1** (opacité 0,55) sur le fond uni ; mesurées au pixel sur le fond réel (photo fixe `.codex-bg` vue à travers la carte) : **2,74:1** encore à opacité 0,75 (revue r1) | WCAG 1.4.3 | plus d'opacité sur la carte atténuée (son image s'assombrit : `saturate(.6) brightness(.65)`), fond de carte `rgba(26,18,10,.7)` au lieu de `.4` → **5,97:1 au pire pixel** (1440 px), ≥ 6:1 à 320 et 390 ; la carte allumée reste distincte (bordure, halo et nom ambre) |
 | C6 | `/periodes/` | graduations et plages des bandes à 10,85 px, libellés d'ère à 11,55 px (320 px), pastilles d'espèces à 11,4 px | skill (≥ 12 px) | 0,6875 rem (12,03 px) ; graduations espacées d'au moins 4,1 px à 320 px, plages et libellés dans leur bande sur une ligne (mesuré 320–1440) |
-| C7 | cartes d'espèce (`SpeciesCard`) | étiquette de période 11,4 px, « silhouette » 9,6 px | skill (≥ 12 px) | 0,6875 rem |
+| C7 | cartes d'espèce (`SpeciesCard`, fiches des périodes) | étiquette de période 11,4 px, « silhouette » 9,6 px | skill (≥ 12 px) | 0,6875 rem |
 | C8 | `/carte/` | légende 11,9 px, attribution 11,4 px ; liens de l'attribution distingués par la seule couleur (1,04:1 avec le texte voisin) | skill (≥ 12 px), WCAG 1.4.1 | 0,6875 rem ; liens soulignés |
 | C9 | fiche espèce | images des espèces voisines avec un `alt` égal au nom qui suit dans le même lien (lu deux fois) ; `aside` imbriqué dans `main` | WCAG 1.1.1 (bonne pratique axe), landmarks | `alt=""` ; `aside` → `div` |
 | C10 | fiche espèce | règle d'anneau de focus pour `video` (Chromium n'en dessine pas sur l'hôte) | WCAG 2.4.7 | `video:focus-visible { outline: 2px solid ambre }` |
 
-Garde : `scripts/bonnes-pratiques-ux.e2e.test.mjs` (R1–R5), vérifié rouge sur l'état d'avant pour R2 (3,23:1).
-`npm run test:scripts` : 226 tests, tous verts après correction.
+Garde : `scripts/bonnes-pratiques-ux.e2e.test.mjs` (R1–R7), vérifié rouge sur l'état d'avant pour R2 (3,23:1).
+Après la revue r1, chaque garde a été vérifiée rouge en retirant sa correction : R2 (fond de carte à 0,4 → 4,13:1
+sur la photo), R3 (bord à 0,4 → 2,32:1, contraste mesuré au pixel et non plus l'alpha), R6 (règle
+`video:focus-visible` retirée → anneau `auto` que Chromium ne dessine pas), R7 (étiquette de période ou
+« silhouette » à 0,55 rem). R2 et R3 mesurent le pire pixel du fond réel (élément effacé, capture de sa boîte).
+
+| Garde | Écart couvert |
+|---|---|
+| R1 | C1, C2 |
+| R2 | C5 (fond uni et fond réel), C6 |
+| R3 | C3, C4 |
+| R4 | C8 |
+| R5 | C9 |
+| R6 | C10 |
+| R7 | C7 (`/periodes/cretace/` : SpeciesCard, silhouettes comprises ; `/codex/` : CodexBrowser) |
 
 ## Écarts proposés en sous-lots (non corrigés ici)
 
 | Sous-lot | Écart mesuré | Règle | Pourquoi pas dans ce lot | Proposition |
 |---|---|---|---|---|
-| **L52/a** — Carte : état d'erreur des fonds | Tuiles Esri bloquées (`server.arcgisonline.com`) : fond noir uni, aucun message (capture `L52-carte-tuiles-bloquees-390.png`) ; sans JS (`client:only`, pas de `<noscript>`), la carte est une zone vide | Nielsen 1 (état du système) et 9, skill §6, invariant de carte n° 12 | comportement à concevoir (texte, bascule OSM, réessai) | écouter `tileerror` sur la couche de fond ; au-delà de N échecs, bandeau « Fond de carte indisponible — les repères restent cliquables » et bascule sur OSM ; `<noscript>` avec la liste des sites |
-| **L52/b** — Nom des cartes de la frise sous 12 px | « Pachycéphalosaure » ajusté à 11,4–11,96 px selon la largeur (`--fit-floor: 0.65rem`) ; un plancher à 12 px coupe le mot à 736 et 920 px (`headings-fit.e2e`) | skill (≥ 12 px) | demande de changer la grille (largeur mini des cartes) ou d'autoriser une césure | `minmax(min(10rem, 100%), 1fr)` ou césure `hyphens: auto` + `lang`, puis plancher 0,6875 rem |
-| **L52/c** — Boutons de zoom de la carte à 44 px | `+` / `−` Leaflet à 30×30 px (≥ 24, minimum tenu ; < 44 visés) | WCAG 2.5.5 (AAA), skill §3 | réglage visuel de la carte à revoir avec la légende | `.leaflet-control-zoom a { width/height: 44px; line-height: 44px }` |
+| **L52/t1** — Carte : état d'erreur des fonds | Tuiles Esri bloquées (`server.arcgisonline.com`) : fond noir uni, aucun message (constaté en capture à 390 px, non versionnée : la carte entière est une zone noire) ; sans JS (`client:only`, pas de `<noscript>`), la carte est une zone vide | Nielsen 1 (état du système) et 9, skill §6, invariant de carte n° 12 | comportement à concevoir (texte, bascule OSM, réessai) | écouter `tileerror` sur la couche de fond ; au-delà de N échecs, bandeau « Fond de carte indisponible — les repères restent cliquables » et bascule sur OSM ; `<noscript>` avec la liste des sites |
+| **L52/t2** — Nom des cartes de la frise sous 12 px | « Pachycéphalosaure » ajusté à 11,4–11,96 px selon la largeur (`--fit-floor: 0.65rem`) ; un plancher à 12 px coupe le mot à 736 et 920 px (`headings-fit.e2e`) | skill (≥ 12 px) | demande de changer la grille (largeur mini des cartes) ou d'autoriser une césure | `minmax(min(10rem, 100%), 1fr)` ou césure `hyphens: auto` + `lang`, puis plancher 0,6875 rem |
+| **L52/t3** — Boutons de zoom de la carte à 44 px | `+` / `−` Leaflet à 30×30 px (≥ 24, minimum tenu ; < 44 visés) | WCAG 2.5.5 (AAA), skill §3 | réglage visuel de la carte à revoir avec la légende | `.leaflet-control-zoom a { width/height: 44px; line-height: 44px }` |
 
 ## Notes de mesure (non-écarts)
 

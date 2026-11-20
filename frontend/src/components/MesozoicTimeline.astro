@@ -396,22 +396,24 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
     flex-direction: column;
     gap: 0.3rem;
     padding: 0.6rem;
-    background: rgba(26, 18, 10, 0.4);
+    /* L52 (revue r1) : 0,85 et non 0,4 — la grille passe sur la photo de fond de la page ; à 0,4,
+       la plage d'une carte atténuée tombait à 2,7:1 sur ses pixels les plus clairs (1440 px). */
+    background: rgba(26, 18, 10, 0.7);
     border: 1px solid rgba(212, 165, 94, 0.15);
     border-radius: 6px;
     text-decoration: none;
     color: inherit;
-    transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, opacity 220ms ease;
-    /* L52 : 0,75 et non 0,55 — atténuée, la plage « 252—201 Ma » tombait à 3,2:1 (WCAG 1.4.3) ;
-       à 0,75 elle fait 5,1:1. La carte allumée reste distincte (opacité 1, bordure et halo ambre). */
-    opacity: 0.75;
+    transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+    /* L52 (revue r1) : plus d'opacité sur la carte atténuée. À 0,55 puis 0,75, l'opacité laissait passer
+       la photo fixe de la page (.codex-bg) à travers le texte : plage « 214—204 Ma » à 2,7:1 au pire
+       pixel (1440 px). La carte atténuée se distingue par son image assombrie (filtre ci-dessous) ;
+       la carte allumée garde bordure et halo ambre. */
   }
   .meso-iconic:hover {
     transform: translateY(-2px);
     border-color: rgba(212, 165, 94, 0.45);
   }
   .meso-iconic--lit {
-    opacity: 1;
     border-color: var(--color-evato-amber);
     box-shadow:
       0 0 0 1px var(--color-evato-amber),
@@ -429,7 +431,8 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
     display: grid;
     place-items: center;
     transition: filter 220ms ease;
-    filter: saturate(0.7) brightness(0.85);
+    /* L52 (revue r1) : 0,6 / 0,65 reprend l'effet de l'ancienne opacité 0,75 sur l'image (0,85 × 0,75). */
+    filter: saturate(0.6) brightness(0.65);
   }
   .meso-iconic-img img {
     width: 100%;
