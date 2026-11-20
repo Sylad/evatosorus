@@ -564,17 +564,19 @@ lots:
     finished: 2026-11-17
   - id: L52
     title: "Revue UX — bonnes pratiques d'une appli web standard (D-13 du registre parent) : chaque page en vrai navigateur à 390 et 1440 px, au clavier, contre WCAG 2.2 AA, les heuristiques de Nielsen et la skill interface-utilisable (tailles de texte en rem ≥ 12 px, cibles ≥ 24 px, contrastes, focus visible, états vides et d'erreur) ; constats mesurés, sous-lots proposés"
-    status: doing
+    status: done
     estimate: 0.5
     visible: true
+    delivered: { date: 2026-11-20, sha: a11c284b5ade0bf7f82a3f3035f07d925f3b91b1 }
     created: 2026-11-18
     started: 2026-11-20
     tasks:
       - { id: t1, title: "Carte : fond de carte indisponible (serveur de tuiles bloqué) → carte noire sans message, zone vide sans JavaScript ; invariant 12 (un échec de chargement se voit) — message sur la carte et texte de repli", status: done }
       - { id: t2, title: "« Pachycéphalosaure » descend à 11,4–11,96 px dans la grille des périodes (< 12 px) ; monter à 12 px coupe le mot à 736 et 920 px — élargir les cartes ou autoriser la césure (hyphens)", status: done }
       - { id: t3, title: "Boutons de zoom de la carte + et − à 30×30 px : 24 px tenus, 44 px visés (cibles tactiles) — les agrandir sans masquer la carte", status: done }
-    review: { date: 2026-11-20, verdict: "non conforme (r3 : minuteur des 15 s de PaleoMap.tsx:105 sans test ; comportement mesuré correct ; t1-t3 faits, Nouveauté exacte)", commit: 576a191468855a56e52e5ed00b81a61f4d6e4c27 }
+    review: { date: 2026-11-20, verdict: "conforme (r4 du lead sur e8ffae1 et 04ca240 : R8 bis sous horloge simulée, rouge sur 5 mutations du minuteur, attente de montage tolérante sans toucher aux bornes ; diff relu)", commit: 04ca2408c2dfb03f23d635fd235ca8215befdbba }
     ux: { date: 2026-11-20, verdict: "conforme (lead, captures 1050 et 348 px de la frise) : titres, dates et noms lisibles sur le fond photo, cartes sélectionnées marquées, aucune coupure ni débordement au téléphone ; écarts restants dans t1-t3" }
+    finished: 2026-11-20
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
