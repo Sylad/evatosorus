@@ -568,6 +568,10 @@ lots:
     visible: true
     created: 2026-11-18
     started: 2026-11-20
+    tasks:
+      - { id: t1, title: "Carte : fond de carte indisponible (serveur de tuiles bloqué) → carte noire sans message, zone vide sans JavaScript ; invariant 12 (un échec de chargement se voit) — message sur la carte et texte de repli", status: todo }
+      - { id: t2, title: "« Pachycéphalosaure » descend à 11,4–11,96 px dans la grille des périodes (< 12 px) ; monter à 12 px coupe le mot à 736 et 920 px — élargir les cartes ou autoriser la césure (hyphens)", status: todo }
+      - { id: t3, title: "Boutons de zoom de la carte + et − à 30×30 px : 24 px tenus, 44 px visés (cibles tactiles) — les agrandir sans masquer la carte", status: todo }
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
