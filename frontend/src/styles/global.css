@@ -148,15 +148,23 @@
 }
 
 @layer base {
+  /* L52 : la vidéo reçoit le focus (contrôles) ; Chromium ne lui dessine aucun anneau (WCAG 2.4.7). */
+  video:focus-visible {
+    outline: 2px solid var(--color-evato-amber-bright);
+    outline-offset: 3px;
+  }
   html {
     background: var(--color-evato-bg);
     color: var(--color-evato-bone);
     font-family: var(--font-body);
-    font-size: 17.5px;
+    /* L52 : 109,375 % = 17,5 px avec le réglage par défaut (16 px), mais suit la taille de
+       police choisie par le visiteur dans son navigateur (WCAG 1.4.4) ; 17.5px l'ignorait. */
+    font-size: 109.375%;
     line-height: 1.65;
   }
   body {
     min-height: 100vh;
+    min-height: 100dvh; /* L52 : hauteur visible réelle sur mobile */
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);

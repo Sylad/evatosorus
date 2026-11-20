@@ -268,9 +268,10 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
         .leaflet-control-attribution {
           background: rgba(13, 10, 6, 0.65) !important;
           color: var(--color-evato-bone-muted) !important;
-          font-size: 0.65rem;
+          font-size: 0.6875rem; /* L52 : 12 px minimum */
         }
-        .leaflet-control-attribution a { color: var(--color-evato-amber) !important; }
+        /* L52 : soulignés — l'ambre seul ne les distingue pas du texte voisin (1,04:1, WCAG 1.4.1). */
+        .leaflet-control-attribution a { color: var(--color-evato-amber) !important; text-decoration: underline !important; }
 
         .evato-sr {
           position: absolute;

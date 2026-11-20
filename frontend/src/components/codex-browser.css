@@ -157,7 +157,8 @@
   appearance: none;
   width: 20px;
   height: 20px;
-  border: 1px solid rgba(212, 165, 94, 0.4);
+  /* L52 : bordure à 0,75 (≈ 5:1 sur le fond) ; à 0,4 le contour du bouton radio vide faisait ≈ 2,2:1 (WCAG 1.4.11). */
+  border: 1px solid rgba(212, 165, 94, 0.75);
   border-radius: 50%;
   margin: 0;
   cursor: pointer;

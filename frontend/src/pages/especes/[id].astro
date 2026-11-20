@@ -278,7 +278,7 @@ const speciesInsights = [
         )}
       </div>
 
-      <aside class="detail-stats">
+      <div class="detail-stats">
         <dl>
           <dt>Régime</dt>
           <dd>{DIET_ICONS[s.diet]} {DIET_LABELS[s.diet]}</dd>
@@ -295,7 +295,7 @@ const speciesInsights = [
             </>
           )}
         </dl>
-      </aside>
+      </div>
     </div>
 
     {s.blurb && (
@@ -368,7 +368,8 @@ const speciesInsights = [
         <div class="related-grid">
           {otherSameGroup.map((o) => (
             <a href={`/especes/${o.id}/`} class="related-card">
-              {o.imageUrl && <img src={o.imageUrl} alt={o.commonName ?? o.name} loading="lazy" />}
+              {/* L52 : alt vide — le nom suit dans le même lien, un alt identique le faisait lire deux fois. */}
+              {o.imageUrl && <img src={o.imageUrl} alt="" loading="lazy" />}
               <span class="related-name">{o.commonName ?? o.name}</span>
             </a>
           ))}

@@ -213,6 +213,7 @@ export function CodexBrowser({
               value={state.group}
               onChange={(e) => setState((s) => ({ ...s, group: e.target.value }))}
               className="filter-select"
+              aria-label="Groupe"
             >
               <option value="all">Tous</option>
               {taxonGroups.map((g) => (

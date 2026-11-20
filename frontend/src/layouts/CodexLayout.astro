@@ -241,6 +241,7 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
          l'écran et toute la page défilait de côté (L22, WCAG 1.4.10). */
       grid-template-columns: minmax(0, 1fr);
       min-height: 100vh;
+      min-height: 100dvh;
     }
     @media (min-width: 1024px) {
       /* 304 px (au lieu de 280) : « Carte paléo-monde », libellé unifié avec
@@ -259,7 +260,9 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
       z-index: 50;
       width: min(85vw, 320px);
       height: 100vh;
+      height: 100dvh; /* L52 : le bas du tiroir ne passe plus sous la barre du navigateur mobile */
       max-height: 100vh;
+      max-height: 100dvh;
       overflow-y: auto;
       padding: 2rem 1.5rem;
       border-right: 1px solid rgba(212, 165, 94, 0.22);
@@ -289,6 +292,7 @@ const NAV: { id: NonNullable<Props['active']>; label: string; href: string }[] =
         width: auto;
         height: auto;
         max-height: 100vh;
+        max-height: 100dvh;
         background: rgba(13, 10, 6, 0.45);
         backdrop-filter: blur(6px);
         transform: none;

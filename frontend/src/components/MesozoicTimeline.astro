@@ -290,11 +290,11 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
     /* « JURASSIQUE » doit tenir dans sa bande (104 px à 390) : interlettrage resserré. */
     .meso-band-label { font-size: 0.78rem; letter-spacing: 0.1em; }
     /* L39 : « 252 — 201 Ma » doit tenir sur une ligne dans la bande du Trias (≈ 90 px à 390). */
-    .meso-band-range { font-size: 0.62rem; letter-spacing: 0.02em; }
+    .meso-band-range { font-size: 0.6875rem; letter-spacing: 0; } /* L52 : 12 px minimum */
   }
   @media (max-width: 360px) {
     /* Bande Jurassique de 83 px à 320. */
-    .meso-band-label { font-size: 0.66rem; letter-spacing: 0.04em; }
+    .meso-band-label { font-size: 0.6875rem; letter-spacing: 0; } /* L52 : 12 px minimum */
     .meso-band-range { display: none; }
   }
 
@@ -318,7 +318,7 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
     left: 50%;
     transform: translateX(-50%);
     font-family: var(--font-display);
-    font-size: 0.62rem;
+    font-size: 0.6875rem; /* L52 : 12 px minimum (10,85 px avant) */
     letter-spacing: 0.12em;
     color: var(--color-evato-bone-muted);
     white-space: nowrap;
@@ -402,7 +402,9 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
     text-decoration: none;
     color: inherit;
     transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, opacity 220ms ease;
-    opacity: 0.55;
+    /* L52 : 0,75 et non 0,55 — atténuée, la plage « 252—201 Ma » tombait à 3,2:1 (WCAG 1.4.3) ;
+       à 0,75 elle fait 5,1:1. La carte allumée reste distincte (opacité 1, bordure et halo ambre). */
+    opacity: 0.75;
   }
   .meso-iconic:hover {
     transform: translateY(-2px);
@@ -459,7 +461,7 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
     color: var(--color-evato-amber-bright);
   }
   .meso-iconic-range {
-    font-size: 0.68rem;
+    font-size: 0.6875rem;
     color: var(--color-evato-bone-muted);
     font-family: var(--font-display);
     letter-spacing: 0.12em;
