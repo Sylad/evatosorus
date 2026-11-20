@@ -1,7 +1,24 @@
 {
   "project": "evatosorus",
-  "generated": "2026-11-19 12:35",
+  "generated": "2026-11-20 10:29",
   "entries": [
+    {
+      "slug": "2026-11-20-les-petits-textes-du-site-se-lisent-sans-plisser-les-yeux",
+      "title": "Les petits textes du site se lisent sans plisser les yeux",
+      "date": "2026-11-20",
+      "lots": [
+        "L52"
+      ],
+      "captures": [
+        "captures/L52-frise-bureau.png",
+        "captures/L52-frise-telephone.png"
+      ],
+      "alts": [
+        "La frise interactive sur ordinateur, curseur à 145 Ma : graduations 240 à 80 lisibles sous la bande Trias, Jurassique, Crétacé, puis les vignettes sur fond sombre, dates « 231—228 Ma » bien nettes, Allosaure, Stégosaure et Compsognathus cerclés d'or",
+        "La même frise sur téléphone : bande des trois périodes avec leurs dates, puis les vignettes sur deux colonnes, Éoraptor et Cœlophysis atténués mais lisibles, Allosaure et Stégosaure éclairés d'un cadre doré"
+      ],
+      "html": "<p>Une passe sur <strong>tout le site</strong> pour le rendre plus confortable à lire, sur téléphone comme sur ordinateur.</p>\n<ul><li>Dans la <strong>frise</strong> de « Voyage temporel », les graduations, les dates des périodes et des vignettes passent à 12 px au moins. Les vignettes hors du curseur ne deviennent plus transparentes : leur image s'assombrit, mais leurs dates restent nettes, même devant la jungle en fond.</li><li>Sur les <strong>fiches des périodes</strong> et dans le <strong>codex</strong>, l'étiquette de période et la mention « silhouette » des cartes d'espèce grandissent ; les boutons du filtre ont un contour bien visible.</li><li>Sur la <strong>carte</strong>, la légende et les crédits sont plus grands, et les liens des crédits sont soulignés.</li><li>Si vous avez agrandi le texte dans votre navigateur, le site <strong>suit ce réglage</strong> au lieu de l'ignorer.</li><li>Au clavier, la <strong>vidéo</strong> d'une fiche d'espèce s'entoure d'un anneau ambre quand elle a le focus.</li></ul>"
+    },
     {
       "slug": "2026-11-19-la-page-a-propos-se-lit-d-un-bout-a-l-autre",
       "title": "La page À propos se lit d'un bout à l'autre",
