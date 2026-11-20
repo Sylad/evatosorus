@@ -573,7 +573,7 @@ lots:
       - { id: t1, title: "Carte : fond de carte indisponible (serveur de tuiles bloqué) → carte noire sans message, zone vide sans JavaScript ; invariant 12 (un échec de chargement se voit) — message sur la carte et texte de repli", status: done }
       - { id: t2, title: "« Pachycéphalosaure » descend à 11,4–11,96 px dans la grille des périodes (< 12 px) ; monter à 12 px coupe le mot à 736 et 920 px — élargir les cartes ou autoriser la césure (hyphens)", status: done }
       - { id: t3, title: "Boutons de zoom de la carte + et − à 30×30 px : 24 px tenus, 44 px visés (cibles tactiles) — les agrandir sans masquer la carte", status: done }
-    review: { date: 2026-11-20, verdict: "conforme r2 (20-11, 4c052a3) : entrée Nouveautés et JSON à jour, anneau de focus vidéo testé (R6 rouge sans la règle), R3 mesuré au pixel (a trouvé et corrigé R2 à 2,74:1), C7 testé ; mineur : commentaire MesozoicTimeline.astro:399 dit 0,85 pour une valeur de 0,7", commit: 4c052a33c4951d68c8c5b6b860700a55ec868f63 }
+    review: { date: 2026-11-20, verdict: "non conforme (r3 : minuteur des 15 s de PaleoMap.tsx:105 sans test ; comportement mesuré correct ; t1-t3 faits, Nouveauté exacte)", commit: 576a191468855a56e52e5ed00b81a61f4d6e4c27 }
     ux: { date: 2026-11-20, verdict: "conforme (lead, captures 1050 et 348 px de la frise) : titres, dates et noms lisibles sur le fond photo, cartes sélectionnées marquées, aucune coupure ni débordement au téléphone ; écarts restants dans t1-t3" }
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
