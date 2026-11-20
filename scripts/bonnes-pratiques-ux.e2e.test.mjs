@@ -13,6 +13,9 @@
 // R7 — cartes d'espèce (C7) : étiquette de période et étiquette « silhouette » ≥ 12 px.
 // R8 — /carte/ (t1, invariant 12) : serveur de tuiles bloqué → message sur la carte, effacé dès qu'une
 //      tuile arrive ; sans JavaScript, un texte de repli et la liste des sites remplacent la carte.
+// R8 bis — /carte/ (invariant 12) : serveur de tuiles qui ne répond jamais (requêtes pendantes) → aucun
+//      message avant 15 s, message après ; tuiles servies en 8 s (chargement lent) → aucun message.
+//      Horloge simulée de Playwright : le test ne dure pas 15 s.
 // R9 — /periodes/ (t2) : noms des espèces emblématiques ≥ 12 px, et aucun ne déborde ni ne se coupe
 //      ailleurs qu'à une césure (« Pachycéphalo-saure ») de 320 à 1440 px, 736 et 920 compris.
 // R10 — /carte/ (t3) : boutons de zoom + et − d'au moins 44 × 44 px, dans le coin, la carte visible.
@@ -279,6 +282,72 @@ test('R8 — /carte/ : fond de carte bloqué → message sur la carte ; sans Jav
   assert.ok(r.pays > 5, `liste des sites : ${r.pays} pays`);
   assert.ok(r.liens >= r.pays, 'chaque pays liste ses espèces avec un lien vers leur fiche');
   await context.close();
+});
+
+// Ouvre /carte/ sous une horloge simulée et figée, les tuiles Esri retenues (ni servies ni refusées).
+// Rend { page, context, avance(ms), tuiles, ecoule() } : `avance` fait passer du temps simulé,
+// `tuiles` est la liste des requêtes de tuiles en attente, `ecoule()` le temps simulé passé depuis l'ouverture.
+async function carteHorlogeFigee(env) {
+  const context = await env.browser.newContext({ viewport: { width: 1440, height: 844 }, reducedMotion: 'reduce' });
+  const page = await context.newPage();
+  const depart = new Date('2026-11-20T10:00:00Z');
+  await page.clock.install({ time: depart });
+  await page.clock.pauseAt(depart);
+  const tuiles = [];
+  await page.route(/arcgisonline\.com/, (route) => { tuiles.push(route); });
+  await page.route(/^https?:\/\/(?!127\.0\.0\.1)(?!.*arcgisonline)/, (route) => route.abort());
+  await page.goto(`${env.base}/carte/`, { waitUntil: 'load' });
+  let ecoule = 0;
+  const avance = async (ms) => { await page.clock.runFor(ms); ecoule += ms; };
+  // La carte se monte (repères dessinés par lots, sur des minuteurs) : on avance par pas de 100 ms.
+  // Le minuteur du silence est armé pendant ce montage, donc entre 0 et `ecoule` ms simulées.
+  for (;;) {
+    const pret = await page.evaluate(() => document.querySelectorAll('.evato-pin, .evato-cluster').length > 0);
+    if (pret && tuiles.length > 0) break;
+    assert.ok(ecoule < 2_000, `carte non montée après ${ecoule} ms simulées (${tuiles.length} tuile(s) demandée(s))`);
+    await avance(100);
+    await new Promise((r) => setTimeout(r, 50));
+  }
+  const ferme = async () => { await page.unrouteAll({ behavior: 'ignoreErrors' }); await context.close(); };
+  return { page, avance, tuiles, ecoule: () => ecoule, ferme };
+}
+
+const bandeauFond = (page) => page.locator('.paleo-map-alert [data-base-down]').count();
+
+test('R8 bis — /carte/ : tuiles sans réponse → message après 15 s, pas avant ; tuiles servies en 8 s → aucun message', { timeout: 90_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+
+  await t.test('serveur qui ne répond jamais : rien à 14 s, message à 15 s', async () => {
+    const c = await carteHorlogeFigee(env);
+    const monte = c.ecoule();
+    await c.avance(14_000 - monte);
+    assert.equal(await bandeauFond(c.page), 0, 'aucun message à 14 s : un chargement lent n\'est pas une panne');
+    // Minuteur armé au plus tard à `monte` ms : il a sonné à `monte` + 15 s au plus tard.
+    await c.avance(monte + 15_000 - c.ecoule());
+    const alerte = c.page.locator('.paleo-map-alert [data-base-down]');
+    await alerte.waitFor({ timeout: 5_000 });
+    assert.match((await alerte.textContent()).replace(/\s+/g, ' '), /Fond de carte indisponible/);
+    assert.ok(await alerte.evaluate((el) => el.closest('[role="status"]') !== null), 'message dans une zone role="status"');
+    assert.ok(c.tuiles.length > 0, 'des tuiles étaient bien demandées et laissées sans réponse');
+    await c.ferme();
+  });
+
+  await t.test('tuiles servies au bout de 8 s : aucun message, ni avant ni après 15 s', async () => {
+    const c = await carteHorlogeFigee(env);
+    await c.avance(8_000 - c.ecoule());
+    assert.equal(await bandeauFond(c.page), 0, 'aucun message à 8 s');
+    const servies = c.tuiles.length;
+    await Promise.all(c.tuiles.splice(0).map((route) => route.fulfill({ status: 200, contentType: 'image/png', body: PNG })));
+    await c.page.waitForFunction(() => [...document.querySelectorAll('.leaflet-tile')].some((i) => i.complete && i.naturalWidth > 0), null, { timeout: 10_000 });
+    for (const s of [14_000, 16_000, 20_000, 60_000]) {
+      await c.avance(s - c.ecoule());
+      // Tuiles demandées entre-temps : servies elles aussi (le serveur répond désormais).
+      await Promise.all(c.tuiles.splice(0).map((route) => route.fulfill({ status: 200, contentType: 'image/png', body: PNG })));
+      assert.equal(await bandeauFond(c.page), 0, `aucun message à ${s / 1000} s (${servies} tuiles servies à 8 s)`);
+    }
+    await c.ferme();
+  });
 });
 
 test('R9 — /periodes/ : noms des emblématiques ≥ 12 px, sans débordement ni coupure hors césure', { timeout: 120_000 }, async (t) => {
