@@ -301,11 +301,14 @@ async function carteHorlogeFigee(env) {
   const avance = async (ms) => { await page.clock.runFor(ms); ecoule += ms; };
   // La carte se monte (repères dessinés par lots, sur des minuteurs) : on avance par pas de 100 ms.
   // Le minuteur du silence est armé pendant ce montage, donc entre 0 et `ecoule` ms simulées.
+  // Le temps simulé avancé ici reste sous 2 s (sinon « rien à 14 s » ne prouverait plus rien) ; le temps
+  // réel, lui, est large : sur une machine chargée, le script de la carte peut mettre des secondes à arriver.
+  const limite = Date.now() + 25_000;
   for (;;) {
     const pret = await page.evaluate(() => document.querySelectorAll('.evato-pin, .evato-cluster').length > 0);
     if (pret && tuiles.length > 0) break;
-    assert.ok(ecoule < 2_000, `carte non montée après ${ecoule} ms simulées (${tuiles.length} tuile(s) demandée(s))`);
-    await avance(100);
+    assert.ok(Date.now() < limite, `carte non montée en 25 s réelles (${ecoule} ms simulées, ${tuiles.length} tuile(s) demandée(s))`);
+    if (ecoule < 1_900) await avance(100);
     await new Promise((r) => setTimeout(r, 50));
   }
   const ferme = async () => { await page.unrouteAll({ behavior: 'ignoreErrors' }); await context.close(); };
