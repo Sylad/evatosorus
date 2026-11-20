@@ -578,6 +578,8 @@ lots:
     review: { date: 2026-11-20, verdict: "conforme (r4 du lead sur e8ffae1 et 04ca240 : R8 bis sous horloge simulée, rouge sur 5 mutations du minuteur, attente de montage tolérante sans toucher aux bornes ; diff relu)", commit: 04ca2408c2dfb03f23d635fd235ca8215befdbba }
     ux: { date: 2026-11-20, verdict: "conforme (lead, captures 1050 et 348 px de la frise) : titres, dates et noms lisibles sur le fond photo, cartes sélectionnées marquées, aucune coupure ni débordement au téléphone ; écarts restants dans t1-t3" }
     finished: 2026-11-20
+    notes:
+      - { date: 2026-11-20, text: "20-11 QA prod conforme (d3efce4, 5 pages × 1440/390, repli tuiles OK) — rapport tmp/qa-L52.md" }
 acknowledged:
   - { sha: b040a6b1146eebff81608b2a10fa71ba24d61fa2, subject: "chore: ignorer .playwright-mcp/ (artefacts du MCP Playwright, comme warhammer40k)", date: 2026-10-08, reason: "hygiène : artefacts du MCP Playwright ignorés, aucun lot" }
   - { sha: 18b70694dcbb22b308e3751c8c95aacf95880ad6, subject: "plan: visible: true sur les lots « Revue UX — » (règle raf check de cadence L271)", date: 2026-10-23, reason: "plan seul : pose visible: true sur les revues UX, cite un lot du dépôt cadence" }
