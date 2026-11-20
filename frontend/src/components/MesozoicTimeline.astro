@@ -1,5 +1,5 @@
 ---
-import { fitStyle, LS } from '../lib/title-fit.mjs';
+import { fitStyle, hyphenateName, LS, ICONIC_CARD_MAX_EM } from '../lib/title-fit.mjs';
 // Frise horizontale interactive 252 → 66 Ma. Sans dépendance externe :
 // curseur draggable / clickable sur l'axe + tooltip "Ma actuel" + grille
 // iconique des espèces (.iconic) qui passent en surbrillance quand le
@@ -89,7 +89,7 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
         <span class="meso-iconic-img" style={`--accent:${PERIODS_BY_ID[sp.period].accentColor};`}>
           {sp.image ? <img src={sp.image} alt={sp.common} loading="lazy" /> : <span class="meso-iconic-fallback">𓆗</span>}
         </span>
-        <span class="meso-iconic-name" style={fitStyle(sp.common, LS.card)}>{sp.common}</span>
+        <span class="meso-iconic-name" style={fitStyle(sp.common, LS.card)}>{hyphenateName(sp.common, LS.card, ICONIC_CARD_MAX_EM)}</span>
         <span class="meso-iconic-range">{sp.early}—{sp.late} Ma</span>
       </a>
     ))}
@@ -395,8 +395,10 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
-    padding: 0.6rem;
-    /* L52 (revue r1) : 0,85 et non 0,4 — la grille passe sur la photo de fond de la page ; à 0,4,
+    /* L52/t2 : retrait latéral 0,45rem (0,6 avant) : à 12 px, « Pachycéphalosaure » (138,2 px) tient
+       entier dans la carte la plus étroite (9rem → 139,75 px de contenu) ; la césure reste un filet. */
+    padding: 0.6rem 0.45rem;
+    /* L52 (revue r1) : 0,7 et non 0,4 — la grille passe sur la photo de fond de la page ; à 0,4,
        la plage d'une carte atténuée tombait à 2,7:1 sur ses pixels les plus clairs (1440 px). */
     background: rgba(26, 18, 10, 0.7);
     border: 1px solid rgba(212, 165, 94, 0.15);
@@ -446,8 +448,11 @@ const toWidth = (start: number, end: number) => `${((start - end) / SPAN) * 100}
   }
   .meso-iconic-name {
     /* L22 : 0,78rem, réduit si le plus long mot du nom ne tient pas dans la carte
-       (--word-em, lib/title-fit.mjs) ; coupure en dernier recours (espacements imposés). */
-    --fit-floor: 0.65rem;
+       (--word-em, lib/title-fit.mjs). L52/t2 : plancher 0,6875rem (12 px, ICONIC_CARD) ; à 0,65rem
+       (11,4 px) « Pachycéphalosaure » tenait sans coupure, au plancher il se coupe à sa césure douce
+       (Pachycéphalo-saure, hyphenateName), jamais au milieu d'une lettre. */
+    --fit-floor: 0.6875rem;
+    hyphens: manual;
     font-family: var(--font-display);
     font-size: 0.78rem;
     overflow-wrap: break-word;

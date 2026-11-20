@@ -114,3 +114,33 @@ export function softHyphenate(text, letterSpacingEm, maxEm) {
     return out.join(SHY);
   });
 }
+
+/** Suffixes de nom d'animal composé (« Pachycéphalo-saure ») : coupure préférée devant eux. */
+const NAME_SUFFIX = /(saure|saurus|ptéryx|pteryx|don|tops|raptor|mimus|mime)$/i;
+
+/**
+ * L52/t2 — nom d'espèce dans une carte étroite : une seule césure douce, devant le suffixe
+ * du composé (Pachycéphalo-saure) quand la tête tient dans maxEm avec son trait ; sinon les
+ * césures syllabiques de softHyphenate. Les mots qui tiennent restent tels quels.
+ * @param {string} text @param {number} letterSpacingEm @param {number} maxEm @returns {string}
+ */
+export function hyphenateName(text, letterSpacingEm, maxEm) {
+  return String(text).replace(/[^\s-]+/g, (word) => {
+    if (wordEm(word, letterSpacingEm) <= maxEm) return word;
+    const m = word.match(NAME_SUFFIX);
+    const head = m ? word.slice(0, m.index) : '';
+    if (m && [...head].length >= 3 && wordEm(`${head}-`, letterSpacingEm) <= maxEm) return `${head}${SHY}${m[0]}`;
+    return softHyphenate(word, letterSpacingEm, maxEm);
+  });
+}
+
+/**
+ * L52/t2 — grille des espèces emblématiques de la frise (MesozoicTimeline.astro) : carte la plus
+ * étroite = colonne minimale 9rem moins le retrait latéral (2 × 0,45rem) et la bordure (2 × 1 px), police
+ * racine 17,5 px ; plancher du nom 0,6875rem (12,03 px, ≥ 12 px). La CSS (.meso-iconic-name,
+ * --fit-floor, minmax(9rem)) suit ces valeurs.
+ */
+export const ICONIC_CARD = { floorRem: 0.6875, rootPx: 17.5, minColRem: 9, padRem: 0.45, borderPx: 1 };
+export const ICONIC_CARD_MAX_EM =
+  (ICONIC_CARD.minColRem * ICONIC_CARD.rootPx - 2 * ICONIC_CARD.padRem * ICONIC_CARD.rootPx - 2 * ICONIC_CARD.borderPx)
+  / (ICONIC_CARD.floorRem * ICONIC_CARD.rootPx);

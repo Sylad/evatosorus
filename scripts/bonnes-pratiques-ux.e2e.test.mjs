@@ -11,6 +11,11 @@
 // R5 — fiche espèce : image des espèces voisines en alt="" (le nom suit dans le lien), pas d'aside imbriqué.
 // R6 — fiche espèce (C10) : la vidéo atteinte au clavier porte l'anneau ambre (WCAG 2.4.7, global.css).
 // R7 — cartes d'espèce (C7) : étiquette de période et étiquette « silhouette » ≥ 12 px.
+// R8 — /carte/ (t1, invariant 12) : serveur de tuiles bloqué → message sur la carte, effacé dès qu'une
+//      tuile arrive ; sans JavaScript, un texte de repli et la liste des sites remplacent la carte.
+// R9 — /periodes/ (t2) : noms des espèces emblématiques ≥ 12 px, et aucun ne déborde ni ne se coupe
+//      ailleurs qu'à une césure (« Pachycéphalo-saure ») de 320 à 1440 px, 736 et 920 compris.
+// R10 — /carte/ (t3) : boutons de zoom + et − d'au moins 44 × 44 px, dans le coin, la carte visible.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
@@ -217,5 +222,115 @@ test('R7 — cartes d’espèce : période et « silhouette » ≥ 12 px', { tim
       assert.deepEqual(r.periodes.filter((f) => f < 12), [], `${path} ${w}px : étiquette de période sous 12 px`);
       assert.deepEqual(r.silhouettes.filter((f) => f < 12), [], `${path} ${w}px : étiquette « silhouette » sous 12 px`);
     }
+  }
+});
+
+const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=', 'base64');
+
+test('R8 — /carte/ : fond de carte bloqué → message sur la carte ; sans JavaScript → texte de repli', { timeout: 90_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  for (const w of [390, 1440]) {
+    const context = await env.browser.newContext({ viewport: { width: w, height: 844 }, reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    let bloque = true;
+    await page.route(/arcgisonline\.com/, (route) => (bloque ? route.abort('blockedbyclient') : route.fulfill({ status: 200, contentType: 'image/png', body: PNG })));
+    await page.route(/^https?:\/\/(?!127\.0\.0\.1)(?!.*arcgisonline)/, (route) => route.abort());
+    await page.goto(`${env.base}/carte/`, { waitUntil: 'load' });
+    const alerte = page.locator('.paleo-map-alert [data-base-down]');
+    await alerte.waitFor({ timeout: 10_000 });
+    const r = await alerte.evaluate((el) => {
+      const carte = document.querySelector('.paleo-map').getBoundingClientRect();
+      const b = el.getBoundingClientRect();
+      return {
+        texte: el.textContent.replace(/\s+/g, ' '),
+        status: el.closest('[role="status"]') !== null,
+        dansLaCarte: b.top >= carte.top && b.bottom <= carte.bottom && b.left >= carte.left && b.right <= carte.right,
+        // Le bandeau ne couvre qu'une partie de la carte : les repères restent visibles.
+        part: (b.width * b.height) / (carte.width * carte.height),
+        repères: document.querySelectorAll('.evato-pin, .evato-cluster').length,
+        bouton: el.querySelector('button')?.getBoundingClientRect().height,
+      };
+    });
+    assert.match(r.texte, /Fond de carte indisponible/, `${w}px : message d'échec`);
+    assert.ok(r.status, `${w}px : message dans une zone role="status" (annoncé)`);
+    assert.ok(r.dansLaCarte, `${w}px : message posé sur la carte`);
+    assert.ok(r.part < 0.35, `${w}px : le message couvre ${(r.part * 100).toFixed(0)} % de la carte`);
+    assert.ok(r.repères > 0, `${w}px : les repères restent dessinés`);
+    assert.ok(r.bouton >= 44, `${w}px : bouton Réessayer de ${r.bouton} px`);
+    // Réessayer, serveur revenu : le message s'efface quand les tuiles arrivent.
+    bloque = false;
+    await page.click('.paleo-map-alert button');
+    await page.waitForFunction(() => !document.querySelector('.paleo-map-alert [data-base-down]'), null, { timeout: 10_000 });
+    await context.close();
+  }
+  // Sans JavaScript : l'îlot ne rend rien, le texte de repli et la liste des sites prennent sa place.
+  const context = await env.browser.newContext({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto(`${env.base}/carte/`, { waitUntil: 'load' });
+  const r = await page.evaluate(() => ({
+    repli: document.querySelector('.map-noscript')?.getBoundingClientRect().height ?? 0,
+    texte: document.querySelector('.map-noscript')?.textContent ?? '',
+    pays: document.querySelectorAll('.map-sites li').length,
+    liens: document.querySelectorAll('.map-sites a[href^="/especes/"]').length,
+  }));
+  assert.ok(r.repli > 0, 'texte de repli visible sans JavaScript');
+  assert.match(r.texte, /JavaScript/);
+  assert.ok(r.pays > 5, `liste des sites : ${r.pays} pays`);
+  assert.ok(r.liens >= r.pays, 'chaque pays liste ses espèces avec un lien vers leur fiche');
+  await context.close();
+});
+
+test('R9 — /periodes/ : noms des emblématiques ≥ 12 px, sans débordement ni coupure hors césure', { timeout: 120_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  for (const w of [320, 390, 736, 920, 1440]) {
+    const page = await ouvre(env, w, '/periodes/');
+    await page.evaluate(() => document.fonts.ready);
+    const noms = await page.evaluate(() => [...document.querySelectorAll('.meso-iconic-name')].map((e) => {
+      const carte = e.closest('.meso-iconic');
+      const cs = getComputedStyle(carte);
+      const interieur = carte.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      // Lignes du nom : une coupure ne doit tomber qu'à une espace ou une césure douce (U+00AD).
+      const r = document.createRange(); const txt = e.firstChild; const coupures = [];
+      let haut = null;
+      for (let i = 0; i < txt.length; i++) {
+        r.setStart(txt, i); r.setEnd(txt, i + 1);
+        // Dernier rectangle : au bord d'une coupure, une lettre en rend deux (fin et début de ligne).
+        const rect = [...r.getClientRects()].at(-1); if (!rect) continue;
+        if (haut !== null && rect.top > haut + 2) coupures.push(txt.data[i - 1]);
+        haut = rect.top;
+      }
+      return { nom: e.textContent.replaceAll('­', ''), px: parseFloat(getComputedStyle(e).fontSize), large: e.scrollWidth, interieur, coupures };
+    }));
+    assert.ok(noms.some((n) => n.nom === 'Pachycéphalosaure'), `${w}px : Pachycéphalosaure dans la grille`);
+    for (const n of noms) {
+      assert.ok(n.px >= 12, `${w}px : « ${n.nom} » à ${n.px.toFixed(2)} px`);
+      assert.ok(n.large <= Math.ceil(n.interieur) + 1, `${w}px : « ${n.nom} » déborde (${n.large} > ${n.interieur})`);
+      for (const c of n.coupures) assert.ok(c === ' ' || c === '­' || c === '-', `${w}px : « ${n.nom} » coupé après « ${c} » (hors césure)`);
+    }
+  }
+});
+
+test('R10 — /carte/ : boutons de zoom ≥ 44 × 44 px, dans le coin de la carte', { timeout: 60_000 }, async (t) => {
+  const env = await setupBrowser(t);
+  if (!env) return;
+  for (const w of [390, 1440]) {
+    const context = await env.browser.newContext({ viewport: { width: w, height: 844 }, reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (route) => route.fulfill({ status: 200, contentType: 'image/png', body: PNG }));
+    await page.goto(`${env.base}/carte/`, { waitUntil: 'load' });
+    await page.waitForSelector('.leaflet-control-zoom a');
+    const r = await page.evaluate(() => {
+      const carte = document.querySelector('.paleo-map').getBoundingClientRect();
+      const bts = [...document.querySelectorAll('.leaflet-control-zoom a')].map((a) => a.getBoundingClientRect());
+      const bloc = document.querySelector('.leaflet-control-zoom').getBoundingClientRect();
+      return { tailles: bts.map((b) => [b.width, b.height]), part: (bloc.width * bloc.height) / (carte.width * carte.height), coin: bloc.left - carte.left < 20 && bloc.top - carte.top < 20 };
+    });
+    assert.equal(r.tailles.length, 2);
+    for (const [lw, lh] of r.tailles) assert.ok(lw >= 44 && lh >= 44, `${w}px : bouton de zoom ${lw}×${lh} px`);
+    assert.ok(r.coin, `${w}px : boutons dans le coin haut gauche`);
+    assert.ok(r.part < 0.03, `${w}px : les boutons couvrent ${(r.part * 100).toFixed(1)} % de la carte`);
+    await context.close();
   }
 });

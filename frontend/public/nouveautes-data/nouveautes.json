@@ -1,7 +1,26 @@
 {
   "project": "evatosorus",
-  "generated": "2026-11-20 10:29",
+  "generated": "2026-11-20 11:51",
   "entries": [
+    {
+      "slug": "2026-11-20-la-carte-previent-quand-son-fond-ne-charge-pas",
+      "title": "La carte prévient quand son fond ne charge pas",
+      "date": "2026-11-20",
+      "lots": [
+        "L52"
+      ],
+      "captures": [
+        "captures/L52-carte-fond-indisponible-bureau.png",
+        "captures/L52-carte-fond-indisponible-telephone.png",
+        "captures/L52-frise-pachycephalosaure.png"
+      ],
+      "alts": [
+        "La carte paléo-monde sur ordinateur, fond noir faute de tuiles : un bandeau doré en haut annonce « Fond de carte indisponible » avec un bouton Réessayer, les pastilles des sites restent visibles, et les deux boutons de zoom sont plus grands",
+        "La même carte sur téléphone : bandeau « Fond de carte indisponible » à droite des boutons + et −, bouton Réessayer dessous, puis les pastilles 13, 7, 4 et 2 sur fond noir",
+        "Bas de la grille des espèces de la frise sur tablette : Ankylosaure, puis Pachycéphalosaure écrit en entier sur une ligne sous l'illustration du troupeau, dates 68—66 Ma"
+      ],
+      "html": "<p>Suite de la passe de lisibilité du jour, sur la <strong>carte</strong> et la <strong>frise</strong>.</p>\n<ul><li>Si le <strong>fond de la carte</strong> ne charge pas (serveur de tuiles en panne ou bloqué), un bandeau le dit sur la carte, avec un bouton <strong>Réessayer</strong> ; les sites fossiles restent placés. Avant, la carte restait noire sans explication.</li><li>Sous la carte, une <strong>liste des sites par pays</strong> donne les mêmes espèces, avec un lien vers chaque fiche. Sans JavaScript, un message remplace la carte et renvoie vers cette liste.</li><li>Les boutons <strong>+ et −</strong> de la carte passent à 44 px, plus faciles à toucher au doigt.</li><li>Dans la frise, les noms des espèces ne descendent plus sous 12 px : les vignettes gagnent un peu de place pour que « Pachycéphalosaure » tienne entier ; si le texte est agrandi, il se coupe proprement en « Pachycéphalo-saure ».</li></ul>"
+    },
     {
       "slug": "2026-11-20-les-petits-textes-du-site-se-lisent-sans-plisser-les-yeux",
       "title": "Les petits textes du site se lisent sans plisser les yeux",

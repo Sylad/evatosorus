@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { longestWordEm, wordEm, fitStyle, LS, SHY, syllableBreaks, softHyphenate, SPECIES_TITLE, SPECIES_TITLE_MAX_EM } from '../frontend/src/lib/title-fit.mjs';
+import { longestWordEm, wordEm, fitStyle, LS, SHY, syllableBreaks, softHyphenate, hyphenateName, ICONIC_CARD, ICONIC_CARD_MAX_EM, SPECIES_TITLE, SPECIES_TITLE_MAX_EM } from '../frontend/src/lib/title-fit.mjs';
 
 const ROOT_PX = 17.5; // police racine du site
 const CONTENT_320 = 320 - 2 * 1.25 * ROOT_PX; // contenu à 320 px : 276,25 px
@@ -91,4 +91,22 @@ test('cartes d\'espèces : au plancher, seul Micropachycephalosaurus dépasse la
     const tooWide = [...new Set(all.filter((s) => longestWordEm(s, LS.card) * floor > NARROWEST_CARD))];
     assert.deepEqual(tooWide, ['Micropachycephalosaurus'], file);
   }
+});
+
+test('L52/t2 — frise : nom d’espèce coupé devant son suffixe, plancher CSS et carte minimale suivis par ICONIC_CARD', () => {
+  const show = (w) => hyphenateName(w, LS.card, ICONIC_CARD_MAX_EM).replaceAll(SHY, '·');
+  assert.equal(show('Pachycéphalosaure'), 'Pachycéphalo·saure');
+  assert.equal(show('Tyrannosaure'), 'Tyrannosaure', 'un nom qui tient reste entier');
+  assert.equal(show('Parasaurolophus'), 'Parasaurolophus');
+  // Sans suffixe connu, ou tête trop large : césures syllabiques.
+  assert.equal(hyphenateName('Mmmmmmmmmmmmmmmm', LS.card, 5), softHyphenate('Mmmmmmmmmmmmmmmm', LS.card, 5));
+  // Chaque morceau tient dans la carte la plus étroite, trait compris.
+  for (const p of hyphenateName('Pachycéphalosaure', LS.card, ICONIC_CARD_MAX_EM).split(SHY)) {
+    assert.ok(wordEm(`${p}-`, LS.card) <= ICONIC_CARD_MAX_EM, p);
+  }
+  const src = read('components/MesozoicTimeline.astro');
+  assert.equal(floorRem(src, '.meso-iconic-name {'), ICONIC_CARD.floorRem);
+  assert.ok(ICONIC_CARD.floorRem * ROOT_PX >= 12, 'plancher ≥ 12 px');
+  assert.match(src, new RegExp(`minmax\\(min\\(${ICONIC_CARD.minColRem}rem, 100%\\)`));
+  assert.match(src.slice(src.indexOf('.meso-iconic {')), new RegExp(`padding:\\s*[\\d.]+rem ${ICONIC_CARD.padRem}rem;`));
 });

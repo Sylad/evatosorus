@@ -33,6 +33,16 @@ const speciesOf = (pid: string) => new Set(markers.filter((m) => m.periodId === 
 const legend = PERIODS.map((p) => ({ id: p.id, name: p.name, color: p.accentColor, count: speciesOf(p.id) }));
 const mapped = new Set(markers.map((m) => m.speciesId)).size;
 const especes = (n: number) => `${n} espèce${n > 1 ? 's' : ''}`;
+
+// L52/t1 — repli texte de la carte : les sites par pays, rendus au build. Sert sans JavaScript
+// (l'îlot client:only ne rend rien) et quand le fond de carte ne charge pas.
+const sites = [...markers.reduce((acc, m) => {
+  const list = acc.get(m.country) ?? [];
+  if (!list.some((x) => x.speciesId === m.speciesId)) list.push(m);
+  return acc.set(m.country, list);
+}, new Map<string, typeof markers>())]
+  .sort(([a], [b]) => a.localeCompare(b, 'fr'))
+  .map(([country, list]) => ({ country, list: list.sort((a, b) => (a.commonName ?? a.name).localeCompare(b.commonName ?? b.name, 'fr')) }));
 ---
 <CodexLayout
   title="Carte paléo-monde — Evatosorus"
@@ -61,6 +71,12 @@ const especes = (n: number) => `${n} espèce${n > 1 ? 's' : ''}`;
   </ul>
 
   <PaleoMap client:only="react" markers={markers} />
+  <noscript>
+    <p class="map-noscript">
+      La carte interactive demande JavaScript, désactivé dans ce navigateur. Ses
+      {especes(mapped)} et leurs sites sont dans la liste ci-dessous.
+    </p>
+  </noscript>
 
   <p class="map-note">
     Les coordonnées sont approximatives (capitales / régions fossiles), pas
@@ -69,6 +85,22 @@ const especes = (n: number) => `${n} espèce${n > 1 ? 's' : ''}`;
     couleur de sa période majoritaire. Au clavier : Tab passe d'un repère à
     l'autre, Entrée l'ouvre, Échap referme la fiche.
   </p>
+
+  <details class="map-sites" id="liste-des-sites">
+    <summary>Liste des sites par pays ({sites.length} pays, {especes(mapped)})</summary>
+    <ul>
+      {sites.map((g) => (
+        <li>
+          <span class="map-sites-country">{g.country}</span>
+          <span>
+            {g.list.map((m, i) => (
+              <>{i > 0 && ', '}<a href={`/especes/${encodeURIComponent(m.speciesId)}/`}>{m.commonName ?? m.name}</a></>
+            ))}
+          </span>
+        </li>
+      ))}
+    </ul>
+  </details>
 
   {/*
     Leaflet + leaflet.markercluster sont importés via npm dans
@@ -130,6 +162,35 @@ const especes = (n: number) => `${n} espèce${n > 1 ? 's' : ''}`;
       background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--c) 92%, white 8%), var(--c) 75%);
       border: 2px solid color-mix(in srgb, var(--c) 50%, #0d0a06);
     }
+    /* Repli sans JavaScript : un cadre à la place de la carte (L52/t1). */
+    .map-noscript {
+      padding: 1.5rem;
+      border: 1px solid var(--color-evato-amber);
+      border-radius: 8px;
+      background: #0d0a06;
+      color: var(--color-evato-bone);
+      max-width: none;
+    }
+    .map-sites {
+      margin-top: 1rem;
+      max-width: 65ch;
+      color: var(--color-evato-bone-muted);
+    }
+    .map-sites summary {
+      cursor: pointer;
+      /* list-item garde le triangle d'ouverture ; 44 px de cible (interface-utilisable). */
+      display: list-item;
+      min-height: 44px;
+      padding: 0.65rem 0;
+      box-sizing: border-box;
+      font-family: var(--font-display);
+      letter-spacing: 0.06em;
+      color: var(--color-evato-amber);
+    }
+    .map-sites ul { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+    .map-sites li { padding: 0.35rem 0; border-bottom: 1px dashed rgba(212, 165, 94, 0.15); line-height: 1.6; }
+    .map-sites-country { display: block; color: var(--color-evato-bone); font-weight: 600; }
+    .map-sites a { color: var(--color-evato-amber-bright); text-decoration: underline; }
     .map-note {
       font-size: 0.85rem;
       color: var(--color-evato-bone-muted);

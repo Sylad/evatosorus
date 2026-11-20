@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet.markercluster';
 import { PERIODS } from '../data/periods';
@@ -43,6 +43,10 @@ const escHtml = (s: string) =>
 
 export function PaleoMap({ markers }: { markers: Marker[] }) {
   const ref = useRef<HTMLDivElement>(null);
+  // L52/t1 (invariant 12) : fond de carte indisponible → message sur la carte, jamais un fond
+  // noir muet qui ressemble à une carte vide. retry relance le chargement des tuiles.
+  const [baseDown, setBaseDown] = useState(false);
+  const retry = useRef<() => void>(() => {});
 
   useEffect(() => {
     if (!ref.current) return;
@@ -75,13 +79,31 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
     // gratuit et sans clé, avec l'attribution Esri. CARTO dark_nolabels, utilisé
     // avant, répond la tuile « API KEY REQUIRED » (constaté le 2026-10-05, L24).
     // Ordre des coordonnées Esri : z/y/x.
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+    const base = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
       // copyrightText publié par le service (relu le 2026-10-05) ; l'ODbL impose
       // le « © OpenStreetMap contributors » avec son lien.
       attribution:
         'Tiles © Esri, HERE, Garmin, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>, and the GIS user community',
       maxZoom: 8,
     }).addTo(map);
+
+    // Suivi du chargement du fond. Une vue dont aucune tuile n'arrive (erreur réseau, serveur
+    // bloqué, réponse non image) affiche le message ; la première tuile reçue l'efface. Un
+    // serveur qui ne répond jamais (requêtes pendantes) est signalé au bout de 15 s.
+    let okTotal = 0;
+    let cycleOk = 0;
+    let cycleErr = 0;
+    base.on('loading', () => { cycleOk = 0; cycleErr = 0; });
+    base.on('tileload', () => { okTotal++; cycleOk++; if (mounted) setBaseDown(false); });
+    base.on('tileerror', () => { cycleErr++; if (cycleOk === 0 && mounted) setBaseDown(true); });
+    // Un cycle sans tuile nouvelle (vue déjà en cache) ne dit rien du serveur : état inchangé.
+    base.on('load', () => {
+      if (!mounted) return;
+      if (cycleOk > 0) setBaseDown(false);
+      else if (cycleErr > 0) setBaseDown(true);
+    });
+    const silence = window.setTimeout(() => { if (okTotal === 0 && mounted) setBaseDown(true); }, 15_000);
+    retry.current = () => { setBaseDown(false); base.redraw(); };
 
     // Regroupe les marqueurs co-localisés sur la même demi-degré pour éviter
     // d'empiler plusieurs popups au même endroit. Les vrais clusters de
@@ -181,6 +203,7 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
 
     return () => {
       mounted = false;
+      window.clearTimeout(silence);
       container.removeEventListener('keydown', onKeydown);
       map?.remove();
     };
@@ -188,13 +211,77 @@ export function PaleoMap({ markers }: { markers: Marker[] }) {
 
   return (
     <>
-      <div
-        ref={ref}
-        className="paleo-map"
-        role="region"
-        aria-label="Carte des sites fossiles : Tab passe d'un repère à l'autre, Entrée l'ouvre, flèches pour déplacer, + et − pour zoomer"
-      />
+      <div className="paleo-map-frame">
+        <div
+          ref={ref}
+          className="paleo-map"
+          role="region"
+          aria-label="Carte des sites fossiles : Tab passe d'un repère à l'autre, Entrée l'ouvre, flèches pour déplacer, + et − pour zoomer"
+        />
+        <div className="paleo-map-alert" role="status">
+          {baseDown && (
+            <div className="paleo-map-alert-box" data-base-down>
+              <p>
+                <strong>Fond de carte indisponible</strong> : le serveur de tuiles Esri ne répond pas.
+                Les sites fossiles restent placés ; la liste des sites, sous la carte, les donne aussi par pays.
+              </p>
+              <button type="button" onClick={() => retry.current()}>Réessayer</button>
+            </div>
+          )}
+        </div>
+      </div>
       <style>{`
+        .paleo-map-frame { position: relative; }
+        /* Bandeau d'échec du fond (L52/t1), en haut de la carte, à droite des boutons de zoom :
+           il laisse voir les repères. Plan d'empilement au-dessus des panes Leaflet (isolées). */
+        .paleo-map-alert {
+          position: absolute;
+          top: 10px;
+          left: 64px;
+          right: 10px;
+          z-index: 1;
+          display: flex;
+          justify-content: center;
+          pointer-events: none;
+        }
+        .paleo-map-alert-box {
+          pointer-events: auto;
+          max-width: 34rem;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 0.4rem 0.8rem;
+          padding: 0.6rem 0.8rem;
+          background: rgba(13, 10, 6, 0.94);
+          border: 1px solid var(--color-evato-amber);
+          border-radius: 6px;
+          color: var(--color-evato-bone);
+          font-size: 0.85rem;
+          line-height: 1.45;
+          box-shadow: 0 8px 24px -10px rgba(0, 0, 0, 0.7);
+        }
+        .paleo-map-alert-box p { margin: 0; flex: 1 1 14rem; }
+        .paleo-map-alert-box strong { color: var(--color-evato-amber-bright); }
+        .paleo-map-alert-box button {
+          min-height: 44px;
+          padding: 0 1rem;
+          font: inherit;
+          font-family: var(--font-display);
+          letter-spacing: 0.08em;
+          color: #0d0a06;
+          background: var(--color-evato-amber);
+          border: 0;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+        /* Cibles de zoom à 44 px (L52/t3, WCAG 2.5.5 / interface-utilisable) au lieu des 30 px de
+           leaflet.css (.leaflet-touch .leaflet-bar a) ; deux boutons, 88 px de haut dans le coin. */
+        .paleo-map .leaflet-bar.leaflet-control-zoom a {
+          width: 44px;
+          height: 44px;
+          line-height: 44px;
+          font-size: 24px;
+        }
         .paleo-map {
           height: 600px;
           border-radius: 8px;

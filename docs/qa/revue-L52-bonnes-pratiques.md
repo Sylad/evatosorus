@@ -77,6 +77,19 @@ sur la photo), R3 (bord à 0,4 → 2,32:1, contraste mesuré au pixel et non plu
 | **L52/t2** — Nom des cartes de la frise sous 12 px | « Pachycéphalosaure » ajusté à 11,4–11,96 px selon la largeur (`--fit-floor: 0.65rem`) ; un plancher à 12 px coupe le mot à 736 et 920 px (`headings-fit.e2e`) | skill (≥ 12 px) | demande de changer la grille (largeur mini des cartes) ou d'autoriser une césure | `minmax(min(10rem, 100%), 1fr)` ou césure `hyphens: auto` + `lang`, puis plancher 0,6875 rem |
 | **L52/t3** — Boutons de zoom de la carte à 44 px | `+` / `−` Leaflet à 30×30 px (≥ 24, minimum tenu ; < 44 visés) | WCAG 2.5.5 (AAA), skill §3 | réglage visuel de la carte à revoir avec la légende | `.leaflet-control-zoom a { width/height: 44px; line-height: 44px }` |
 
+### Suite : sous-lots corrigés (20-11, tests R8–R10 de `scripts/bonnes-pratiques-ux.e2e.test.mjs`)
+
+- **t1** — bandeau « Fond de carte indisponible » (`role="status"`, bouton Réessayer de 44 px) dès qu'une vue n'a reçu
+  aucune tuile, ou après 15 s sans tuile ; effacé à la première tuile reçue. Pas de bascule automatique sur OSM : un
+  autre fond changerait l'attribution et l'aspect sans le dire ; à rouvrir si Esri tombe souvent. Liste des sites par
+  pays sous la carte (`<details>`, liens vers les fiches) et `<noscript>` qui y renvoie quand JavaScript manque.
+  Mesuré (R8) à 390 et 1440 px, tuiles bloquées : bandeau dans la carte, < 35 % de sa surface, repères dessinés.
+- **t2** — plancher du nom 0,6875 rem (12,03 px) ; retrait latéral des cartes 0,45 rem (0,6 avant) : le mot (138,2 px
+  à 12 px) tient dans la carte la plus étroite (139,75 px) ; colonnes inchangées (à 10 rem, une seule colonne à 390 px).
+  Filet : césure douce unique devant le suffixe du composé (`hyphenateName`, « Pachycéphalo-saure ») si le texte grandit. Mesuré (R9) à
+  320, 390, 736, 920 et 1440 px : tous les noms ≥ 12 px, aucun débordement, coupures seulement à une espace ou une césure.
+- **t3** — boutons + et − à 44 × 44 px (R10 : dans le coin, < 3 % de la carte).
+
 ## Notes de mesure (non-écarts)
 
 - **Curseur de la frise** (`[data-meso-cursor]`, `role="slider"`) : signalé « sans anneau » par la mesure automatique
